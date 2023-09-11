@@ -1,0 +1,76 @@
+/* styling for the Routine page */
+.food-page {
+    min-height: 100vh;
+    height: fit-content;
+    padding: 3vw;
+    font-family: var(--font);
+}
+
+/* page title */
+.food-page .css-1jkx6l7 {
+    color: var(--shade5);
+    font-family: var(--font);
+}
+
+/* no food message */
+.food-page .css-1dklj6k {
+    color: var(--shade4);
+    font-family: var(--font);
+}
+
+/* new food button */
+.food-page .css-ez23ye {
+    font-size: 1.5vw;
+    padding: 3vh 1.5vw 3vh 1.5vw;
+    margin-bottom: 1vh;
+    background-color: var(--shade4);
+    color: white;
+}
+
+/* new food button */
+.food-page .css-ez23ye:hover {
+    background-color: var(--shade5);
+}
+
+/* table headers */
+.food-page .css-1zts0j {
+    text-align: center;
+    color: var(--shade6);
+}
+
+/* table content */
+.food-page .css-xumdn4, .food-page .css-xumdn4[data-is-numeric=true] {
+    text-align: center;
+}
+
+/* food card headers */
+.food-page .css-1jb3vzl {
+    color: var(--shade5);
+    font-family: var(--font);
+}
+
+/* food edit and delete button */
+.food-page .css-fx3q01 {
+    background-color: var(--trans);
+}
+
+/* food edit and delete button */
+.food-page .css-fx3q01:hover {
+    background-color: var(--shade2);
+}
+
+.food-page .css-5605sr {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 768px) {
+    .food-page {
+        padding: 5vw;
+    }
+    /* new food button */
+    .food-page .css-ez23ye {
+        font-size: 3vw;
+        padding: 1vh 3vw 1vh 3vw;
+        margin-bottom: 1vh;
+    }
+}

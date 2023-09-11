@@ -1,4 +1,4 @@
-const { Profile, User, Post, Routine, Planner } = require('../models');
+const { Profile, User, Food, Meal, Planner } = require('../models');
 const { AuthenticationError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
 
@@ -40,6 +40,12 @@ const resolvers = {
         return Profile.findOne({ _id: context.user._id })
       }
       throw new AuthenticationError("You need to be logged in!")
+    },
+    foods: async () => {
+      return Food.find().sort({ name: 1 });
+    },
+    food: async (parent, { foodId }) => {
+      return Food.findOne({ _id: foodId });
     },
     meals: async () => {
       return Meal.find().sort({ name: 1 });
@@ -120,7 +126,7 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in to add food!");
     },
-    updateFood: async (parent, { name, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
+    updateFood: async (parent, { foodId, name, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
       if (context.user) {
         return Food.findOneAndUpdate(
           { _id: foodId },
@@ -156,7 +162,7 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in add a meal!");
     },
-    updateMeal: async (parent, { name, numberOfServing, food }, context) => {
+    updateMeal: async (parent, { mealId, name, numberOfServing, food }, context) => {
       if (context.user) {
         return Meal.findOneAndUpdate(
           { _id: mealId },

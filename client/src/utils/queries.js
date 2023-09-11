@@ -16,41 +16,36 @@ export const QUERY_USER = gql`
         calories
         activityLevel
       }
-      routines {
+      foods {
         _id
-        author
-        title
-        text
+        name
+        servingSize
+        servingUnit
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
       }
-      posts {
+      meals {
         _id
-        title
-        text
-        author
-        createdAt
-        likes {
-          username
-        }
-        comments {
-            _id
-            commentText
-            commentAuthor
-            commentCreatedAt
+        name
+        numberOfServing
+        food {
+          _id
         }
       }
-      liked {
-        _id
-      }
-      tracker {
+      planner {
         _id
         date
-        scheduledRoutines {
+        diet {
           _id
-          routineName
-          complete
+          type
+          numberOfServing
+          meal
         }
         weight
-        calorie
       }
     }
   }
@@ -72,41 +67,36 @@ export const QUERY_ME = gql`
         calories
         activityLevel
       }
-      routines {
+      foods {
         _id
-        author
-        title
-        text
+        name
+        servingSize
+        servingUnit
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
       }
-      posts {
+      meals {
         _id
-        title
-        text
-        author
-        createdAt
-        likes {
-              username
-            }
-        comments {
+        name
+        numberOfServing
+        food {
           _id
-          commentText
-          commentAuthor
-          commentCreatedAt
         }
       }
-      liked {
-        _id
-      }
-      tracker {
+      planner {
         _id
         date
-        scheduledRoutines {
+        diet {
           _id
-          routineName
-          complete
+          type
+          numberOfServing
+          meal
         }
         weight
-        calorie
       }
     }
   }
@@ -126,48 +116,6 @@ export const QUERY_MYPROFILE = gql`
     }
   }
 `;
-
-export const QUERY_POSTS = gql`
-    query getPosts {
-        posts {
-            _id
-            title
-            text
-            author
-            likes {
-              _id
-            }
-            createdAt
-            comments {
-              _id
-              commentText
-              commentAuthor
-              commentCreatedAt
-          }
-        }
-    }
-`
-
-export const QUERY_POST = gql`
-    query getPost($postId: ID!) {
-        post(postId: $postId){
-          _id
-          title
-          text
-          author
-          likes {
-            _id
-          }
-          createdAt
-          comments {
-            _id
-            commentText
-            commentAuthor
-            commentCreatedAt
-          }
-        }
-    }
-`
 
 export const QUERY_PROFILES = gql`
   query allProfiles {

@@ -1,0 +1,13 @@
+/* styling for the Routine page */
+.login-modal, .signup-modal {
+    font-family: var(--font);
+}
+
+.css-133nkbt {
+    display: block;
+}
+
+/* input styling */
+.login-modal input, .signup-modal input {
+    border-color: var(--shade1);
+}

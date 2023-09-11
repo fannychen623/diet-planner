@@ -1,0 +1,27 @@
+/* styling for the header/navigation bar */
+.navBar {
+    background-color: var(--shade1);
+    height: fit-content;
+    font-family: var(--font);
+    padding: 1vw 1vw;
+    border-bottom: 0.75vw solid var(--shade6)
+}
+
+/* link/icon color */
+.navBar a, .navBar button {
+    color: var(--shade6);
+    font-size: 2vw;
+}
+
+@media (max-width: 768px) {
+    /* styling for the header/navigation bar */
+    .navBar {
+        padding: 3vw 2vw;
+        border-bottom: 2vw solid var(--shade6)
+    }
+    /* link/icon color */
+    .navBar a, .navBar button {
+        color: var(--shade6);
+        font-size: 5vw;
+    }
+}

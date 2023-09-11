@@ -55,19 +55,43 @@ export const UPDATE_PROFILE = gql`
   }
 `;
 
-export const ADD_ROUTINE = gql`
-  mutation addRoutine($title: String!, $text: String!) {
-    addRoutine(title: $title, text: $text) {
+export const ADD_FOOD = gql`
+  mutation addFood($name: String!, $servingSize: Int!, $servingUnit: String!, $calories: Int!, $carbs: Int!, $fat: Int!, $protein: Int!, $sodium: Int!, $sugar: Int!) {
+    addFood(name: $name, servingSize: $servingSize, servingUnit: $servingUnit, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
       _id
-      title
-      text
+      name
+      servingSize
+      servingUnit
+      calories
+      carbs
+      fat
+      protein
+      sodium
+      sugar
     }
   }
 `;
 
-export const REMOVE_ROUTINE = gql`
-    mutation removeRoutine($routineId: ID!){
-      removeRoutine(routineId: $routineId){
+export const UPDATE_FOOD = gql`
+  mutation updateFood($foodId: ID!, $name: String!, $servingSize: Int!, $servingUnit: String!, $calories: Int!, $carbs: Int!, $fat: Int!, $protein: Int!, $sodium: Int!, $sugar: Int!) {
+    updateFood(foodId: $foodId, name: $name, servingSize: $servingSize, servingUnit: $servingUnit, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
+      _id
+      name
+      servingSize
+      servingUnit
+      calories
+      carbs
+      fat
+      protein
+      sodium
+      sugar
+    }
+  }
+`;
+
+export const REMOVE_FOOD = gql`
+    mutation removeFood($foodId: ID!){
+      removeFood(foodId: $foodId){
         _id
       }
     }

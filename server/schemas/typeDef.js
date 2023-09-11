@@ -71,7 +71,9 @@ const typeDef = gql`
     profiles: [Profile]
     profile(profileId: ID!): Profile
     foods: [Food]
+    food: [Food]
     meals: [Meal]
+    meal: [Meal]
   }
 
   type Mutation {
@@ -80,6 +82,7 @@ const typeDef = gql`
     addProfile(age: Int!, sex: String!, weight: Int!, height: Int!, goalWeight: Int!, activityLevel: Float!, calories: Int): Profile
     updateProfile(profileId: ID!, age: Int, sex: String, weight: Int, height: Int, goalWeight: Int, activityLevel: Float, calories: Int): Profile
     addFood(name: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
+    updateFood(foodId: ID!, name: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
     removeFood(foodId: ID!): Food
     addMeal(name: String!, numberOfServing: Int!, food: String!): Meal
     updateMeal(mealId: ID!, name: String!, numberOfServing: Int!, food: String!): Meal

@@ -1,0 +1,137 @@
+/* styling for the Calendar page */
+.calendar-page {
+    min-height: 100vh;
+    height: fit-content;
+    padding: 3vw;
+}
+
+/* list date */
+.calendar-page .css-k2u5zu {
+    font-family: var(--font);
+    font-size: 3vw;
+    color: var(--shade6);
+    border: none;
+    padding: 0;
+}
+
+/* routine, calorie, and weight sub-headings */
+.calendar-page .css-tgwblw, .calendar-page .css-h0uhjz  {
+    color: var(--shade2);
+    font-family: var(--font);
+}
+
+/* add/remove tracker button */
+.calendar-page .css-8j2k67:hover {
+    background: var(--shade1);
+    color: white;
+}
+
+/* add, delete, edit buttons */
+.calendar-page .css-1jfvl37, .calendar-page .css-81d84v {
+    background: var(--shade1);
+    color: white;
+}
+
+/* add, delete, edit buttons */
+.calendar-page .css-1jfvl37:hover, .calendar-page .css-81d84v:hover {
+    background: var(--shade5);
+}
+
+/* add, delete, edit buttons */
+.calendar-page input[type="number"] {
+    padding: 0.75vw;
+    border-radius: 0.5rem;
+    border: none;
+    margin-right: 1vw;
+}
+
+/* calendar styling, imported/associated with calendar package */
+/* customized certain styling/colors */
+.react-calendar {
+    width: 100%;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    font-family: var(--font);
+    font-size: 2.75vw;
+    padding: 2vw;
+}
+
+.react-calendar__tile {
+    text-align: center;
+    padding: 0.75em 0.5em;
+    background: none;
+  }
+
+.react-calendar__navigation button {
+    color: var(--shade6);
+    font-weight: bolder;
+    min-width: 44px;
+    background: none;
+    margin-top: 8px;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+    background-color: white;
+}
+
+.react-calendar__navigation button[disabled] {
+    background-color: var(--shade3);
+}
+
+abbr[title] {
+    text-decoration: none;
+}
+
+.react-calendar__month-view__days__day--weekend {
+    color: var(--shade4);
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background: rgba(211, 211, 211, 0.601);
+    color: var(--shade6);
+    border-radius: 6px;
+}
+
+.react-calendar__tile--now {
+    background: var(--shade1);
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+    background: rgba(211, 211, 211, 0.601);
+    border-radius: 6px;
+    font-weight: bold;
+    color: var(--shade6);
+}
+
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus {
+    background: white;
+}
+
+.react-calendar__tile--active {
+    background: var(--shade6);
+    border-radius: 6px;
+    font-weight: bold;
+    color: white;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+    background: var(--shade6);
+    color: white;
+}
+
+.react-calendar__tile--rangeEnd {
+    border-radius: 6px;
+    background: var(--shade6);
+    color: white;
+}
+   
