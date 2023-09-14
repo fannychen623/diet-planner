@@ -23,16 +23,16 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Profile',
   },
-  meals: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Meal',
-    },
-  ],
   foods: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Food',
+    },
+  ],
+  meals: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Meal',
     },
   ],
   planner: [

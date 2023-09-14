@@ -1,5 +1,5 @@
 /* styling for the Routine page */
-.food-page {
+.meal-page, .new-meal-page {
     min-height: 100vh;
     height: fit-content;
     padding: 3vw;
@@ -7,19 +7,27 @@
 }
 
 /* page title */
-.food-page .css-1jkx6l7 {
+.meal-page .css-1jkx6l7, .new-meal-page .css-1mxx7z2 {
     color: var(--shade5);
     font-family: var(--font);
 }
 
+/* number input field */
+.new-meal-page .css-1dqab6m {
+    outline: none;
+    border-color: var(--shade5);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 /* no food message */
-.food-page .css-1dklj6k {
+.meal-page .css-1dklj6k {
     color: var(--shade4);
     font-family: var(--font);
 }
 
 /* new food button */
-.food-page .css-ez23ye {
+.meal-page .css-ez23ye {
     font-size: 1.5vw;
     padding: 3vh 1.5vw 3vh 1.5vw;
     margin-bottom: 1vh;
@@ -28,43 +36,60 @@
 }
 
 /* new food button */
-.food-page .css-ez23ye:hover {
+.meal-page .css-ez23ye:hover  {
     background-color: var(--shade5);
 }
 
 /* table headers */
-.food-page .css-1zts0j {
+.meal-page .css-1zts0j, .new-meal-page .css-1zts0j {
     text-align: center;
     color: var(--shade6);
 }
 
 /* table content */
-.food-page .css-xumdn4, .food-page .css-xumdn4[data-is-numeric=true] {
+.meal-page .css-xumdn4, 
+.meal-page .css-xumdn4[data-is-numeric=true],
+.new-meal-page .css-xumdn4, 
+.new-meal-page .css-xumdn4[data-is-numeric=true] {
     text-align: center;
 }
 
+/* add meal button */
+.new-meal-page .css-ez23ye {
+    font-size: 3vw;
+    padding: 6vh 3vw 6vh 3vw;
+    background-color: var(--shade1);
+    color: var(--shade5);
+}
+
+/* add meal button */
+.new-meal-page .css-ez23ye:hover  {
+    background-color: var(--shade3);
+}
+
+
 /* food card headers */
-.food-page .css-1jb3vzl {
+.meal-page .css-1jb3vzl {
     color: var(--shade5);
     font-family: var(--font);
 }
 
 /* food edit and delete button */
-.food-page .css-fx3q01 {
+.meal-page .css-fx3q01 {
     background-color: var(--trans);
 }
 
 /* food edit and delete button */
-.food-page .css-fx3q01:hover {
+.meal-page .css-fx3q01:hover {
     background-color: var(--shade2);
 }
 
 @media (max-width: 768px) {
-    .food-page {
+    .meal-page {
         padding: 5vw;
     }
     /* new food button */
-    .food-page .css-ez23ye {
+    .meal-page .css-ez23ye {
         font-size: 3vw;
         padding: 1vh 3vw 1vh 3vw;
         margin-bottom: 1vh;

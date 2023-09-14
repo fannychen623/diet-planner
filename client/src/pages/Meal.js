@@ -48,7 +48,7 @@ const Food = () => {
         <Box>
           {/* button to create new routine, embedded with link to the createRoutines component */}
           {/* alternative, can use navigate onClick to achieve the same results */}
-          <Button variant='solid'><Link to='/routines/createRoutine'>New Meal</Link></Button>
+          <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
         </Box>
       </Flex>
       {/* populate page only once data loads */}

@@ -18,7 +18,7 @@ export const QUERY_USER = gql`
       }
       foods {
         _id
-        name
+        title
         servingSize
         servingUnit
         calories
@@ -30,10 +30,13 @@ export const QUERY_USER = gql`
       }
       meals {
         _id
-        name
+        title
         numberOfServing
-        food {
-          _id
+        content {
+          servings
+          food {
+            _id
+          }
         }
       }
       planner {
@@ -69,7 +72,7 @@ export const QUERY_ME = gql`
       }
       foods {
         _id
-        name
+        title
         servingSize
         servingUnit
         calories
@@ -81,10 +84,13 @@ export const QUERY_ME = gql`
       }
       meals {
         _id
-        name
+        title
         numberOfServing
-        food {
-          _id
+        content {
+          servings
+          food {
+            _id
+          }
         }
       }
       planner {
@@ -143,7 +149,6 @@ export const QUERY_SINGLE_PROFILE = gql`
         goalWeight
         calories
         activityLevel
-
     }
 }
 `

@@ -42,13 +42,13 @@ const resolvers = {
       throw new AuthenticationError("You need to be logged in!")
     },
     foods: async () => {
-      return Food.find().sort({ name: 1 });
+      return Food.find().sort({ title: 1 });
     },
     food: async (parent, { foodId }) => {
       return Food.findOne({ _id: foodId });
     },
     meals: async () => {
-      return Meal.find().sort({ name: 1 });
+      return Meal.find().sort({ title: 1 });
     },
     meal: async (parent, { mealId }) => {
       return Meal.findOne({ _id: mealId });
@@ -105,10 +105,10 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in!");
     },
-    addFood: async (parent, { name, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
+    addFood: async (parent, { title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
       if (context.user) {
         const food = await Food.create({
-          name, 
+          title, 
           servingSize, 
           servingUnit, 
           calories, 
@@ -126,11 +126,11 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in to add food!");
     },
-    updateFood: async (parent, { foodId, name, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
+    updateFood: async (parent, { foodId, title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
       if (context.user) {
         return Food.findOneAndUpdate(
           { _id: foodId },
-          { $set: { name: name, servingSize: servingSize, servingUnit: servingUnit, calories: calories, carbs: carbs, fat: fat, protein: protein, sodium: sodium, sugar: sugar } },
+          { $set: { title: title, servingSize: servingSize, servingUnit: servingUnit, calories: calories, carbs: carbs, fat: fat, protein: protein, sodium: sodium, sugar: sugar } },
           { new: true }
         );
       }
@@ -150,10 +150,10 @@ const resolvers = {
         "You need to be logged in to delete a routine!"
       );
     },
-    addMeal: async (parent, { name, numberOfServing, food }, context) => {
+    addMeal: async (parent, { title, numberOfServing, content: {servings, food} }, context) => {
       if (context.user) {
         const meal = await Meal.create(
-          { name, numberOfServing, food, });
+          { title, numberOfServing, content: {servings, food} });
         await User.findOneAndUpdate(
           { _id: context.user._id },
           { $addToSet: { meals: meal._id } }
@@ -162,11 +162,11 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in add a meal!");
     },
-    updateMeal: async (parent, { mealId, name, numberOfServing, food }, context) => {
+    updateMeal: async (parent, { mealId, title, numberOfServing, content: {servings, food} }, context) => {
       if (context.user) {
         return Meal.findOneAndUpdate(
           { _id: mealId },
-          { $set: { name: name, numberOfServing: numberOfServing, food: food } },
+          { $set: { title: title, numberOfServing: numberOfServing, content: {servings, food} } },
           { new: true }
         );
       }

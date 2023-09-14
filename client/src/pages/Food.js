@@ -16,13 +16,8 @@ import {
   Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   Input, InputGroup, InputLeftAddon, InputRightAddon,
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton, useDisclosure,
+  Drawer, DrawerBody, DrawerFooter, DrawerHeader,
+  DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure,
 } from '@chakra-ui/react'
 
 // import icons
@@ -96,7 +91,7 @@ const Food = () => {
     const { id } = event.target;
 
     // check that both title and text are not empty
-    if (formState.name !== '' &&
+    if (formState.title !== '' &&
       formState.servingSize !== '' &&
       formState.servingUnit !== '' &&
       formState.calories !== '' &&
@@ -140,6 +135,26 @@ const Food = () => {
     }
   };
 
+  // if not routines were passed, return message
+  if (!foods.length) {
+    console.log(foods)
+    return (
+      <Box className='food-page'>
+        <Flex mb='5'>
+          <Box>
+            <Heading>You don't have any foods yet. Click 'Add Food' to get started!</Heading>
+          </Box>
+          <Spacer />
+          <Box>
+            {/* button to create new routine, embedded with link to the createRoutines component */}
+            {/* alternative, can use navigate onClick to achieve the same results */}
+            <Button variant='solid'><Link to='/food/add'>Add Food</Link></Button>
+          </Box>
+        </Flex >
+      </Box>
+    );
+  };
+
   return (
     <Box className='food-page'>
       <Flex mb='5'>
@@ -181,7 +196,7 @@ const Food = () => {
               <Tbody>
                 {foods.map((food, index) => (
                   <Tr key={index} _hover={{ bg: 'var(--shade4)' }}>
-                    <Td>{food.name}</Td>
+                    <Td>{food.title}</Td>
                     <Td isNumeric>{food.servingSize}</Td>
                     <Td>{food.servingUnit}</Td>
                     <Td isNumeric>{food.calories}</Td>
@@ -194,7 +209,7 @@ const Food = () => {
                       setEditIndex(`${index}`);
                       setFormState({
                         ...formState,
-                        name: (`${food.name}`),
+                        title: (`${food.title}`),
                         servingSize: parseInt(`${food.servingSize}`),
                         servingUnit: (`${food.servingUnit}`),
                         calories: parseInt(`${food.calories}`),
@@ -224,7 +239,7 @@ const Food = () => {
               <DrawerHeader borderBottomWidth='1vh' mb='2vh'>
                 Edit
                 <span style={{ color: 'var(--shade4)', marginLeft: '1.5%' }}>
-                  {foods[editIndex].name}
+                  {foods[editIndex].title}
                 </span>
               </DrawerHeader>
               <DrawerBody>
@@ -237,8 +252,8 @@ const Food = () => {
                       color='white'
                     />
                     <Input
-                      name='name'
-                      value={formState.name}
+                      name='title'
+                      value={formState.title}
                       onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                   </InputGroup>

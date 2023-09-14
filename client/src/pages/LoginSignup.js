@@ -35,7 +35,7 @@ const LoginSignup = () => {
       {/* link modal open status to respective functions */}
       <Modal isOpen={isOpen} onClose={returnToHome}>
         <ModalOverlay />
-        <ModalContent maxW={isMobile ? '75vw' : '40vw'}>
+        <ModalContent maxW={isMobile ? '75vw' : '35vw'}>
           {/* tabs fill entire modal width and default tab to the first tab */}
           <Tabs isFitted variant='enclosed' defaultIndex={0}>
             <ModalHeader>

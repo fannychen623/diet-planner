@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Food from "./pages/Food";
 import AddFood from "./components/AddFood";
 import Meal from "./pages/Meal";
+import NewMeal from "./pages/NewMeal";
 import Calendar from "./pages/Calendar";
 
 // import local global style sheet
@@ -49,11 +50,12 @@ function App() {
           <Header />
           <div>
             <Routes>
-              <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Home />} />
               <Route path="/loginSignup" element={<LoginSignup />} />
               <Route path="/food" element={<Food />} />
               <Route path="/food/add" element={<AddFood />} />
               <Route path="/meal" element={<Meal />} />
+              <Route path="/meal/new" element={<NewMeal />} />
               <Route path="/calendar" element={<Calendar />} />
             </Routes>
           </div>

@@ -31,7 +31,7 @@ const typeDef = gql`
 
   type Food {
     _id: ID!
-    name: String!
+    title: String!
     servingSize: Int!
     servingUnit: String!
     calories: Int!
@@ -41,11 +41,16 @@ const typeDef = gql`
     sodium: Int!
     sugar: Int!
   }
-
+  
   type Meal {
     _id: ID
-    name: String!
+    title: String!
     numberOfServing: Int!
+    content: [Content]
+  }
+
+  input Content {
+    servings: Int!
     food: [Food]
   }
   
@@ -81,11 +86,11 @@ const typeDef = gql`
     login(email: String!, password: String!): Auth
     addProfile(age: Int!, sex: String!, weight: Int!, height: Int!, goalWeight: Int!, activityLevel: Float!, calories: Int): Profile
     updateProfile(profileId: ID!, age: Int, sex: String, weight: Int, height: Int, goalWeight: Int, activityLevel: Float, calories: Int): Profile
-    addFood(name: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
-    updateFood(foodId: ID!, name: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
+    addFood(title: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
+    updateFood(foodId: ID!, title: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
     removeFood(foodId: ID!): Food
-    addMeal(name: String!, numberOfServing: Int!, food: String!): Meal
-    updateMeal(mealId: ID!, name: String!, numberOfServing: Int!, food: String!): Meal
+    addMeal(title: String!, numberOfServing: Int!, content: Sting!): Meal
+    updateMeal(mealId: ID!, title: String!, numberOfServing: Int!, content: Sting!): Meal
     removeMeal(mealId: ID!): Meal
     addPlanner(date: String!): Planner
     removePlanner(plannerId: ID!): Planner

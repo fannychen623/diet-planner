@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const mealSchema = new Schema(
     {
-        name: {
+        title: {
             type: String,
             required: true,
             minlength: 1,
@@ -13,11 +13,19 @@ const mealSchema = new Schema(
             type: Number,
             required: false,
         },
-        food: [
+        content: [
             {
-                type: Schema.Types.ObjectId,
-                ref: 'Food',
-            }
+                servings: {
+                    type: Number,
+                    require: true,
+                },
+                food: [
+                    {
+                        type: Schema.Types.ObjectId,
+                        ref: 'Food',
+                    }
+                ],
+            },
         ],
     }
 )
