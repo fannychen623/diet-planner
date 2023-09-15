@@ -12,6 +12,31 @@
     font-family: var(--font);
 }
 
+/* no food message */
+.meal-page .css-1dklj6k {
+    color: var(--shade4);
+    font-family: var(--font);
+}
+
+/* accordian component */
+.meal-page .accordian {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+
+/* meal edit and delete button */
+.meal-page .css-22xpxh {
+    background-color: var(--trans);
+    color: var(--shade6);
+    margin-right: 0.5vw;
+}
+
+/* meal edit and delete button */
+.meal-page .css-22xpxh:hover {
+    background-color: var(--shade5);
+    color: white;
+}
+
 /* number input field */
 .new-meal-page .css-1dqab6m {
     outline: none;
@@ -20,13 +45,7 @@
     border-bottom-left-radius: 0;
 }
 
-/* no food message */
-.meal-page .css-1dklj6k {
-    color: var(--shade4);
-    font-family: var(--font);
-}
-
-/* new food button */
+/* add meal button */
 .meal-page .css-ez23ye {
     font-size: 1.5vw;
     padding: 3vh 1.5vw 3vh 1.5vw;
@@ -35,20 +54,28 @@
     color: white;
 }
 
-/* new food button */
+/* add meal button */
 .meal-page .css-ez23ye:hover  {
     background-color: var(--shade5);
 }
 
 /* table headers */
-.meal-page .css-1zts0j, .new-meal-page .css-1zts0j {
+.meal-page .css-15wjwcp {
+    text-align: center;
+    color: var(--shade6);
+}
+
+.meal-page .css-1vmvwla {
+    text-align: center;
+}
+
+/* table headers */
+.new-meal-page .css-1zts0j {
     text-align: center;
     color: var(--shade6);
 }
 
 /* table content */
-.meal-page .css-xumdn4, 
-.meal-page .css-xumdn4[data-is-numeric=true],
 .new-meal-page .css-xumdn4, 
 .new-meal-page .css-xumdn4[data-is-numeric=true] {
     text-align: center;
@@ -56,8 +83,8 @@
 
 /* add meal button */
 .new-meal-page .css-ez23ye {
-    font-size: 3vw;
-    padding: 6vh 3vw 6vh 3vw;
+    font-size: 2.5vw;
+    padding: 4.5vh 2vw 4.5vh 2vw;
     background-color: var(--shade1);
     color: var(--shade5);
 }
@@ -65,23 +92,6 @@
 /* add meal button */
 .new-meal-page .css-ez23ye:hover  {
     background-color: var(--shade3);
-}
-
-
-/* food card headers */
-.meal-page .css-1jb3vzl {
-    color: var(--shade5);
-    font-family: var(--font);
-}
-
-/* food edit and delete button */
-.meal-page .css-fx3q01 {
-    background-color: var(--trans);
-}
-
-/* food edit and delete button */
-.meal-page .css-fx3q01:hover {
-    background-color: var(--shade2);
 }
 
 @media (max-width: 768px) {

@@ -150,10 +150,10 @@ const resolvers = {
         "You need to be logged in to delete a routine!"
       );
     },
-    addMeal: async (parent, { title, numberOfServing, content: {servings, food} }, context) => {
+    addMeal: async (parent, { title, numberOfServing }, context) => {
       if (context.user) {
         const meal = await Meal.create(
-          { title, numberOfServing, content: {servings, food} });
+          { title, numberOfServing });
         await User.findOneAndUpdate(
           { _id: context.user._id },
           { $addToSet: { meals: meal._id } }
@@ -162,11 +162,31 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in add a meal!");
     },
-    updateMeal: async (parent, { mealId, title, numberOfServing, content: {servings, food} }, context) => {
+    addMealFood: async (parent, { mealId, servings, food }, context) => {
       if (context.user) {
         return Meal.findOneAndUpdate(
           { _id: mealId },
-          { $set: { title: title, numberOfServing: numberOfServing, content: {servings, food} } },
+          { $addToSet: { content: { servings, food }, }, },
+          { new: true, runValidators: true }
+        );
+      }
+      throw new AuthenticationError("You need to be logged in to update routine!");
+    },
+    updateMeal: async (parent, { mealId, title, numberOfServing }, context) => {
+      if (context.user) {
+        return Meal.findOneAndUpdate(
+          { _id: mealId },
+          { $set: { title: title, numberOfServing: numberOfServing } },
+          { new: true }
+        );
+      }
+    },
+    updateMealFood: async (parent, { mealId, servings, food }, context) => {
+      if (context.user) {
+        return Meal.findOneAndUpdate(
+          { _id: mealId },
+          { $pull: { content } },
+          { $addToSet: { content: { servings, food }, }, },
           { new: true }
         );
       }

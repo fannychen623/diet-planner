@@ -12,6 +12,7 @@ import Food from "./pages/Food";
 import AddFood from "./components/AddFood";
 import Meal from "./pages/Meal";
 import NewMeal from "./pages/NewMeal";
+import EditMeal from "./pages/EditMeal";
 import Calendar from "./pages/Calendar";
 
 // import local global style sheet
@@ -56,6 +57,7 @@ function App() {
               <Route path="/food/add" element={<AddFood />} />
               <Route path="/meal" element={<Meal />} />
               <Route path="/meal/new" element={<NewMeal />} />
+              <Route path="/meal/edit/:mealId" element={<EditMeal />} />
               <Route path="/calendar" element={<Calendar />} />
             </Routes>
           </div>

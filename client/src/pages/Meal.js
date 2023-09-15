@@ -1,13 +1,15 @@
 // import packages
 import React from 'react';
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
 // importy query
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
+import { REMOVE_MEAL } from '../utils/mutations';
 
 // // import local component
-// import FoodCards from '../components/FoodCards';
+import MealContent from '../components/MealContent';
 
 // import package components
 import {
@@ -30,16 +32,74 @@ import {
 import '../styles/Meal.css';
 
 // functional component for the routines page
-const Food = () => {
+const Meal = () => {
+
+  // navigate for the edit post button
+  const navigate = useNavigate();
+  // emulates a fetch (useQuery expects a Promise)
+  // used to re-query data and re-render page on event listener/change
+  const emulateFetch = _ => {
+    return new Promise(resolve => {
+      resolve([{ data: 'ok' }]);
+    });
+  };
 
   // query all data associated with the signed in user
-  const { loading, data } = useQuery(QUERY_ME);
+  const { loading, data, refetch } = useQuery(QUERY_ME, emulateFetch, {
+    refetchOnWindowFocus: false,
+    // enabled set to true allows query to run on page initialization
+    enabled: true
+  });
 
   // extract the routines from the query data
+  const meals = data?.me.meals || [];
   const foods = data?.me.foods || [];
 
+  // define add routine mutation
+  const [removeMeal, { removeError, removeData }] = useMutation(REMOVE_MEAL);
+
+  // on click to remove food (delete button)
+  const handleRemoveMeal = async (id) => {
+    console.log(id)
+
+    // if id is not blank
+    if (id !== '') {
+      try {
+        // remove comment with variables postId and commentId
+        const { removeData } = await removeMeal({
+          variables: { mealId: id },
+        });
+
+        // re-render the page
+        refetch();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
+  // if not routines were passed, return message
+  if (!meals.length) {
+    console.log(meals)
+    return (
+      <Box className='meal-page'>
+        <Flex mb='5'>
+          <Box>
+            <Heading>You don't have any meals yet. Click 'New Meal' to get started!</Heading>
+          </Box>
+          <Spacer />
+          <Box>
+            {/* button to create new routine, embedded with link to the createRoutines component */}
+            {/* alternative, can use navigate onClick to achieve the same results */}
+            <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
+          </Box>
+        </Flex >
+      </Box>
+    );
+  };
+
   return (
-    <Box className='food-page'>
+    <Box className='meal-page'>
       <Flex mb='5'>
         <Box>
           <Heading size='2xl'>Meals</Heading>
@@ -57,89 +117,38 @@ const Food = () => {
           <Link to='/'><Spinner /> Loading...</Link>
         </Box>
       ) : (
-        // populate with food data once loaded
-        <div>
-          <Accordion allowMultiple>
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
+        <Box>
+          {meals.map((meal, index) => (
+            <Accordion allowMultiple className='accordian'>
+              <AccordionItem>
+                <AccordionButton 
+                _hover={{ bg: 'var(--shade4)'}}
+                _expanded={{ bg: 'var(--shade4)'}}
+                color='var(--shade6)'
+                fontSize='2vw'
+                >
                   <Box as="span" flex='1' textAlign='left'>
-                    Meal Name
+                    {meal.title}
+                    
                   </Box>
-                  <AccordionIcon />
+                  <Spacer />
+                  <Box>
+                  <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit />} />
+                  <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 />} />
+                  </Box>
+                  <AccordionIcon ml='0.5vw'/>
                 </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
-                <TableContainer width='fit-content' m='auto'>
-                  <Table variant='simple' size='md'>
-                    <Thead>
-                      <Tr>
-                        <Th text>Food</Th>
-                        <Th isNumeric># of Serving</Th>
-                        <Th>Serving Size</Th>
-                        <Th isNumeric>Calories (kcal)</Th>
-                        <Th isNumeric>Carbs (g)</Th>
-                        <Th isNumeric>Fat (g)</Th>
-                        <Th isNumeric>Protein (g)</Th>
-                        <Th isNumeric>Sodium (mg)</Th>
-                        <Th isNumeric>Sugar (g)</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      <Tr>
-                        <Td>Tomato</Td>
-                        <Td isNumeric>1</Td>
-                        <Td>1 med</Td>
-                        <Td isNumeric>22</Td>
-                        <Td isNumeric>4.8</Td>
-                        <Td isNumeric>0.2</Td>
-                        <Td isNumeric>1.1</Td>
-                        <Td isNumeric>6.2</Td>
-                        <Td isNumeric>3.2</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Corn</Td>
-                        <Td isNumeric>2</Td>
-                        <Td>100 gram</Td>
-                        <Td isNumeric>86</Td>
-                        <Td isNumeric>18.7</Td>
-                        <Td isNumeric>1.4</Td>
-                        <Td isNumeric>3.3</Td>
-                        <Td isNumeric>15</Td>
-                        <Td isNumeric>6.3</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>2% American Cheese</Td>
-                        <Td isNumeric>2</Td>
-                        <Td>1 slice</Td>
-                        <Td isNumeric>45</Td>
-                        <Td isNumeric>2</Td>
-                        <Td isNumeric>2.5</Td>
-                        <Td isNumeric>4</Td>
-                        <Td isNumeric>210</Td>
-                        <Td isNumeric>2</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Total</Td>
-                        <Td></Td>
-                        <Td></Td>
-                        <Td isNumeric>45</Td>
-                        <Td isNumeric>2</Td>
-                        <Td isNumeric>2.5</Td>
-                        <Td isNumeric>4</Td>
-                        <Td isNumeric>210</Td>
-                        <Td isNumeric>2</Td>
-                      </Tr>
-                    </Tbody>
-                  </Table>
-                </TableContainer>
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-        </div>
+                <AccordionPanel pb={4}>
+                <MealContent contents={meal.content} foods={foods} />
+                  
+                </AccordionPanel>
+              </AccordionItem>
+            </Accordion>
+          ))}
+        </Box>
       )}
     </Box>
   );
 }
 
-export default Food;
+export default Meal;

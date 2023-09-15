@@ -30,6 +30,14 @@ import { FiSearch } from 'react-icons/fi';
 // import local style sheet
 import '../styles/Food.css';
 
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
+}
 
 // functional component to create routines modal
 const AddFood = () => {
@@ -49,6 +57,8 @@ const AddFood = () => {
     sugar: '',
   });
 
+  const [errorMessage, setErrorMessage] = useState('')
+
   const isMobile = useMediaQuery({ query: `(max-width: 768px)` });
 
   // navigate back to routines on close
@@ -62,24 +72,34 @@ const AddFood = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      // add routine with variables routineNanem and routine
-      const { data } = await addFood({
-        variables: { ...formState },
-      });
+    let formComplete = !Object.values(formState).some(item => item === 0 || item.length === 0);
+      try {
+        // add routine with variables routineNanem and routine
+        const { data } = await addFood({
+          variables: { ...formState },
+        });
 
-      // redirect back to the routines page
-      window.location.assign('/food');
-    } catch (e) {
-      console.error(e);
-    }
+        // redirect back to the routines page
+        window.location.assign('/food');
+      } catch (e) {
+        console.error(e);
+        if (!formComplete) { setErrorMessage('Error: Missing fields') }
+        if (isNaN(formState.servingSize)) { setErrorMessage('Error: Invalid serving size input') }
+        if (/\d/.test(formState.servingUnit)) { setErrorMessage('Error: Invalid serving unit input') }
+        if (isNaN(formState.calories)) { setErrorMessage('Error: Invalid calories input') }
+        if (isNaN(formState.carbs)) { setErrorMessage('Error: Invalid carbs input') }
+        if (isNaN(formState.fat)) { setErrorMessage('Error: Invalid fat input') }
+        if (isNaN(formState.protein)) { setErrorMessage('Error: Invalid protein input') }
+        if (isNaN(formState.sodium)) { setErrorMessage('Error: Invalid sodium input') }
+        if (isNaN(formState.sugar)) { setErrorMessage('Error: Invalid sugar input') }
+      }
   };
 
   return (
     <Box className='food-modal'>
       <Modal isOpen={isOpen} onClose={redirectFood} isCentered >
         <ModalOverlay />
-        <ModalContent mt={isMobile ? '25%' : 'auto'}  maxW={isMobile ? '75vw' : '50vw'} maxH={isMobile ? '80vh' : 'fit-content'} overflowY='auto' >
+        <ModalContent mt={isMobile ? '25%' : 'auto'} maxW={isMobile ? '75vw' : '50vw'} maxH={isMobile ? '80vh' : 'fit-content'} overflowY='auto' >
           <ModalHeader fontSize='3xl' color='var(--shade6)'>New Food</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -107,7 +127,7 @@ const AddFood = () => {
                     bg='var(--shade5)'
                     color='white'
                   />
-                  <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, title: e.target.value }) }} />
+                  <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, title: toTitleCase(e.target.value) }) }} />
                 </InputGroup>
                 <SimpleGrid columns={isMobile ? '1' : '2'} spacing={3}>
                   <Box>
@@ -122,11 +142,11 @@ const AddFood = () => {
                     </InputGroup>
                   </Box>
                   <Box>
-                    <Input placeholder='serving unit' 
-                    borderWidth='2px' 
-                    borderColor='var(--shade5)' 
-                    borderRadius='10' 
-                    onChange={(e) => { setFormState({ ...formState, servingUnit: e.target.value }) }} />
+                    <Input placeholder='serving unit'
+                      borderWidth='2px'
+                      borderColor='var(--shade5)'
+                      borderRadius='10'
+                      onChange={(e) => { setFormState({ ...formState, servingUnit: e.target.value.toLowerCase() }) }} />
                   </Box>
                   <Box>
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
@@ -232,6 +252,7 @@ const AddFood = () => {
                   </Box>
                 </SimpleGrid>
               </FormControl>
+              <Text textAlign='center' mt='2vh'>{errorMessage}</Text>
             </Box>
           </ModalBody>
 

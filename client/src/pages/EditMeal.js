@@ -1,12 +1,11 @@
 // import package
 import React, { useState, useEffect } from 'react';
-import { useStateWithCallbackInstant } from 'use-state-with-callback';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 // importy query
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
-import { ADD_MEAL, ADD_MEAL_FOOD } from '../utils/mutations';
+import { UPDATE_MEAL, UPDATE_MEAL_FOOD } from '../utils/mutations';
 
 // // import local component
 // import FoodCards from '../components/FoodCards';
@@ -18,9 +17,6 @@ import {
   Checkbox, useCheckbox, useCheckboxGroup,
   Popover, PopoverTrigger, PopoverContent, PopoverHeader,
   PopoverBody, PopoverFooter, PopoverArrow,
-  PopoverCloseButton, PopoverAnchor,
-  Accordion, AccordionItem,
-  AccordionButton, AccordionPanel, AccordionIcon,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   NumberInput, NumberInputField,
   NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
@@ -48,7 +44,7 @@ function toTitleCase(str) {
 }
 
 // functional component for the foods page
-const NewMeal = () => {
+const EditMeal = () => {
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -65,9 +61,12 @@ const NewMeal = () => {
     enabled: true
   });
 
+  // define the postId from the url parameter
+  const { mealId } = useParams();
+
   // define add routine mutation
-  const [addMeal, { mealError, mealData }] = useMutation(ADD_MEAL);
-  const [addMealFood, { mealFoodError, mealFoodData }] = useMutation(ADD_MEAL_FOOD);
+  const [updateMeal, { mealError, mealData }] = useMutation(UPDATE_MEAL);
+  const [updateMealFood, { mealFoodError, mealFoodData }] = useMutation(UPDATE_MEAL_FOOD);
 
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -75,13 +74,13 @@ const NewMeal = () => {
 
   // extract the foods from the query data
   const foods = data?.me.foods || [];
-
-  const [foodsList, setFoodList] = useState(foods)
+  const meals = data?.me.meals || [];
+  const meal = meals[meals.findIndex(meal => meal._id === mealId)]
 
   // set state of combined preview text
   const [foodPreview, setFoodPreview] = useState('')
 
-  const [mealDetails, setMealDetails] = useState({ title: '', numberOfServing: 1.00 })
+  const [mealDetails, setMealDetails] = useState({ title: meal.title, numberOfServing: meal.numberOfServing })
 
   const [total, setTotal] = useState({
     calories: 0,
@@ -92,9 +91,32 @@ const NewMeal = () => {
     sugar: 0,
   });
 
-  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
+  const getMealFood = () => {
+    let mealContent = meal.content
+    let mealFoodServings = mealContent.map(thisMeal => thisMeal.servings)
+    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
+    let mealFoodAdded = []
+    for (let i=0; i < mealContent.length; i++) {
+      mealFoodAdded.push({servings: mealFoodServings[i], id: mealFoodIds[i]})
+    }
+    return mealFoodAdded
+  }
 
-  const [foodAdded, setFoodAdded] = useState([])
+  const [foodAdded, setFoodAdded] = useState(getMealFood())
+
+  const getFoodList = () => {
+    let mealContent = meal.content
+    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
+    let mealFoodAdded = foods
+    for (let i = 0; i < mealFoodIds.length; i++) {
+      mealFoodAdded = mealFoodAdded.filter((food) => food._id != mealFoodIds[i])
+    }
+    return mealFoodAdded
+  }
+
+  const [foodsList, setFoodList] = useState(getFoodList())
+
+  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
 
   useEffect(() => {
     let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
@@ -191,7 +213,7 @@ const NewMeal = () => {
     }
   };
 
-  const handleAddMeal = async (event) => {
+  const handleUpdateMeal = async (event) => {
     event.preventDefault()
 
     let error = false
@@ -208,11 +230,11 @@ const NewMeal = () => {
     if (!error) {
       try {
         // add routine with variables routineNanem and routine
-        const { mealData } = await addMeal({
+        const { mealData } = await updateMeal({
           variables: { ...mealDetails },
 
           onCompleted(mealData) {
-            handleAddMealFood(mealData.addMeal._id)
+            handleUpdateMealFood(mealData.addMeal._id)
           }
         });
 
@@ -224,14 +246,14 @@ const NewMeal = () => {
     }
   };
 
-  const handleAddMealFood = async (mealId) => {
+  const handleUpdateMealFood = async (mealId) => {
     for (let i = 0; i < foodAdded.length; i++) {
       let servings = parseInt(foodAdded[i].servings)
       let food = foodAdded[i].id
       console.log(mealId)
       try {
         // add routine with variables routineNanem and routine
-        const { mealFoodData } = await addMealFood({
+        const { mealFoodData } = await updateMealFood({
           variables: { mealId, servings, food },
         });
 
@@ -245,7 +267,7 @@ const NewMeal = () => {
 
   return (
     <Box className='new-meal-page'>
-      <Heading size='2xl' mb='5vh'>Create a New Meal</Heading>
+      <Heading size='2xl' mb='5vh'>Modify Meal</Heading>
       <Flex mb='5'>
         <Box>
           <InputGroup size='lg' width='65vw' borderWidth='2px' borderColor='var(--shade5)' borderRadius='10'>
@@ -254,6 +276,7 @@ const NewMeal = () => {
               type='text'
               name='title'
               placeholder='i.e. Protein Shake'
+              value={mealDetails.title}
               onChange={(e) => { setMealDetails({ ...mealDetails, title: toTitleCase(e.target.value) }) }}
             />
           </InputGroup>
@@ -263,7 +286,7 @@ const NewMeal = () => {
           <InputGroup size='lg' width='25vw' borderWidth='2px' borderColor='var(--shade5)' borderRadius='10'>
             <InputLeftAddon children='Number of Serving' bg='var(--shade3)' />
             <NumberInput
-              defaultValue={1}
+              defaultValue={mealDetails.numberOfServing}
               min={0.25}
               precision={2}
               step={0.25}
@@ -316,6 +339,7 @@ const NewMeal = () => {
                       htmlSize={4}
                       width='auto'
                       textAlign='center'
+                      value={addFood.servings}
                       id={addFood.id}
                       onChange={handleUpdateServings}
                     />
@@ -368,7 +392,7 @@ const NewMeal = () => {
         <Text textAlign='center' mt='2vh' fontSize='2vw'>{errorMessage}</Text>
       </Box>
       <Box textAlign='center' my='3vh'>
-        <Button variant='solid' onClick={handleAddMeal}>Add Meal</Button>
+        <Button variant='solid' onClick={handleUpdateMeal}>Update Meal</Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -430,4 +454,4 @@ const NewMeal = () => {
   );
 }
 
-export default NewMeal;
+export default EditMeal;

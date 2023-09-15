@@ -49,7 +49,7 @@ const typeDef = gql`
     content: [Content]
   }
 
-  input Content {
+  type Content {
     servings: Int!
     food: [Food]
   }
@@ -89,8 +89,10 @@ const typeDef = gql`
     addFood(title: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
     updateFood(foodId: ID!, title: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
     removeFood(foodId: ID!): Food
-    addMeal(title: String!, numberOfServing: Int!, content: Sting!): Meal
-    updateMeal(mealId: ID!, title: String!, numberOfServing: Int!, content: Sting!): Meal
+    addMeal(title: String!, numberOfServing: Int!): Meal
+    addMealFood(mealId: ID!, servings: Int!, food: ID!): Meal
+    updateMeal(title: String!, numberOfServing: Int!): Meal
+    updateMealFood(mealId: ID!, servings: Int!, food: ID!): Meal
     removeMeal(mealId: ID!): Meal
     addPlanner(date: String!): Planner
     removePlanner(plannerId: ID!): Planner

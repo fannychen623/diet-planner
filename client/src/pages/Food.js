@@ -137,7 +137,6 @@ const Food = () => {
 
   // if not routines were passed, return message
   if (!foods.length) {
-    console.log(foods)
     return (
       <Box className='food-page'>
         <Flex mb='5'>
