@@ -28,12 +28,12 @@ const MealContent = ({ contents, foods }) => {
         let sodium = 0
         let sugar = 0
         for (let i = 0; i < contents.length; i++) {
-            calories += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].calories;
-            carbs += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].carbs;
-            fat += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].fat;
-            protein += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].protein;
-            sodium += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].sodium;
-            sugar += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].sugar;
+            calories += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].calories * contents[i].servings;
+            carbs += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].carbs * contents[i].servings;
+            fat += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].fat * contents[i].servings;
+            protein += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].protein * contents[i].servings;
+            sodium += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].sodium * contents[i].servings;
+            sugar += foods[foods.findIndex(food => food._id === contents[i].food[0]._id)].sugar * contents[i].servings;
         }
 
         return (
@@ -51,38 +51,38 @@ const MealContent = ({ contents, foods }) => {
         )
     }
 
-    const foodName = (id) => {
+    const foodName = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
         return foods[foodIndex].title
     }
-    const foodServing = (id) => {
+    const foodServing = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
         let serving = foods[foodIndex].servingSize + ' ' + foods[foodIndex].servingUnit
         return serving
     }
-    const foodCalories = (id) => {
+    const foodCalories = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].calories
+        return foods[foodIndex].calories * servings
     }
-    const foodCarbs = (id) => {
+    const foodCarbs = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].carbs
+        return foods[foodIndex].carbs * servings
     }
-    const foodFat = (id) => {
+    const foodFat = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].fat
+        return foods[foodIndex].fat * servings
     }
-    const foodProtein = (id) => {
+    const foodProtein = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].protein
+        return foods[foodIndex].protein * servings
     }
-    const foodSodium = (id) => {
+    const foodSodium = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].sodium
+        return foods[foodIndex].sodium * servings
     }
-    const foodSugar = (id) => {
+    const foodSugar = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].sugar
+        return foods[foodIndex].sugar * servings
     }
 
     // if not comment exist for post
@@ -110,17 +110,17 @@ const MealContent = ({ contents, foods }) => {
                     </Thead>
                     <Tbody>
                         {/* map through comment, create a flex text line for each comment */}
-                        {contents.map((content, index) => (
+                        {contents.map((content) => (
                             <Tr>
                                 <Td>{foodName(content.food[0]._id)}</Td>
                                 <Td isNumeric>{content.servings}</Td>
-                                <Td>{foodServing(content.food[0]._id)}</Td>
-                                <Td isNumeric>{foodCalories(content.food[0]._id)}</Td>
-                                <Td isNumeric>{foodCarbs(content.food[0]._id)}</Td>
-                                <Td isNumeric>{foodFat(content.food[0]._id)}</Td>
-                                <Td isNumeric>{foodProtein(content.food[0]._id)}</Td>
-                                <Td isNumeric>{foodSodium(content.food[0]._id)}</Td>
-                                <Td isNumeric>{foodSugar(content.food[0]._id)}</Td>
+                                <Td>{foodServing(content.food[0]._id, content.servings)}</Td>
+                                <Td isNumeric>{foodCalories(content.food[0]._id, content.servings)}</Td>
+                                <Td isNumeric>{foodCarbs(content.food[0]._id, content.servings)}</Td>
+                                <Td isNumeric>{foodFat(content.food[0]._id, content.servings)}</Td>
+                                <Td isNumeric>{foodProtein(content.food[0]._id, content.servings)}</Td>
+                                <Td isNumeric>{foodSodium(content.food[0]._id, content.servings)}</Td>
+                                <Td isNumeric>{foodSugar(content.food[0]._id, content.servings)}</Td>
                             </Tr>
                         ))}
                         {getTotal()}

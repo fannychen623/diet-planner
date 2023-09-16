@@ -37,7 +37,7 @@ import '../styles/Meal.css';
 function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
-    function(txt) {
+    function (txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     }
   );
@@ -96,8 +96,20 @@ const EditMeal = () => {
     let mealFoodServings = mealContent.map(thisMeal => thisMeal.servings)
     let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
     let mealFoodAdded = []
-    for (let i=0; i < mealContent.length; i++) {
-      mealFoodAdded.push({servings: mealFoodServings[i], id: mealFoodIds[i]})
+    for (let i = 0; i < mealContent.length; i++) {
+      let foodIndex = foods.findIndex(food => food._id === mealFoodIds[i])
+      mealFoodAdded.push({
+        id: mealFoodIds[i],
+        title: foods[foodIndex].title,
+        servingSizeUnit: foods[foodIndex].servingSize + ' ' + foods[foodIndex].servingUnit,
+        servings: mealFoodServings[i],
+        calories: foods[foodIndex].calories,
+        carbs: foods[foodIndex].carbs,
+        fat: foods[foodIndex].fat,
+        protein: foods[foodIndex].protein,
+        sodium: foods[foodIndex].sodium,
+        sugar: foods[foodIndex].sugar,
+      })
     }
     return mealFoodAdded
   }
@@ -173,13 +185,23 @@ const EditMeal = () => {
   const handleAddFoods = async (event) => {
     event.preventDefault()
 
-    let foodIds = foodAdded
     // loop through all the checked routines to add
     for (let i = 0; i < checkedState.length; i++) {
       if (checkedState[i]) {
         let foodIndex = foods.findIndex(food => food.title === foodsList[i].title)
-        if (foodIds.indexOf(foods[foodIndex]._id) === -1) {
-          foodIds.push({ servings: 0, id: foods[foodIndex]._id })
+        if (foodAdded.indexOf(foods[foodIndex]._id) === -1) {
+          foodAdded.push({
+            id: foods[foodIndex]._id,
+            title: foods[foodIndex].title,
+            servingSizeUnit: foods[foodIndex].servingSize + ' ' + foods[foodIndex].servingUnit,
+            servings: 1,
+            calories: foods[foodIndex].calories,
+            carbs: foods[foodIndex].carbs,
+            fat: foods[foodIndex].fat,
+            protein: foods[foodIndex].protein,
+            sodium: foods[foodIndex].sodium,
+            sugar: foods[foodIndex].sugar,
+          })
         }
         checkedState[i] = false
         setFoodList(foods => foods.filter((food) => food.title != foodsList[i].title))
@@ -193,15 +215,40 @@ const EditMeal = () => {
     event.preventDefault()
     const { id, value } = event.target
 
-    let foodAddedIndex = foodAdded.findIndex(food => food.id === id)
-    let foodAddedCopy = foodAdded
-    let updatedFood = {
-      ...foodAddedCopy[foodAddedIndex],
-      servings: value
+    if (value) {
+      for (let i = 0; i < foodAdded.length; i++) {
+        if (foodAdded[i].id === id) {
+          foodAdded[i].servings = parseInt(value);
+          foodAdded[i].calories = foods[foods.findIndex(food => food._id === id)].calories * value;
+          foodAdded[i].carbs = foods[foods.findIndex(food => food._id === id)].carbs * value;
+          foodAdded[i].fat = foods[foods.findIndex(food => food._id === id)].fat * value;
+          foodAdded[i].protein = foods[foods.findIndex(food => food._id === id)].protein * value;
+          foodAdded[i].sodium = foods[foods.findIndex(food => food._id === id)].sodium * value;
+          foodAdded[i].sugar = foods[foods.findIndex(food => food._id === id)].sugar * value
+        }
+      }
+      let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+
+      for (let i = 0; i < foodAdded.length; i++) {
+        newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories * foodAdded[i].servings
+        newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs * foodAdded[i].servings
+        newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat * foodAdded[i].servings
+        newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein * foodAdded[i].servings
+        newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium * foodAdded[i].servings
+        newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar * foodAdded[i].servings
+      }
+
+      setTotal({
+        calories: newTotal.calories,
+        carbs: newTotal.carbs,
+        fat: newTotal.fat,
+        protein: newTotal.protein,
+        sodium: newTotal.sodium,
+        sugar: newTotal.sugar
+      })
+
     }
-    foodAddedCopy[foodAddedIndex] = updatedFood
-    setFoodAdded(foodAddedCopy)
-  }
+  };
 
   const handleRemoveFood = async (event) => {
     event.preventDefault()
@@ -227,14 +274,15 @@ const EditMeal = () => {
         error = true
       }
     }
+
     if (!error) {
       try {
         // add routine with variables routineNanem and routine
         const { mealData } = await updateMeal({
-          variables: { ...mealDetails },
+          variables: { mealId, ...mealDetails, content: [] },
 
           onCompleted(mealData) {
-            handleUpdateMealFood(mealData.addMeal._id)
+            handleUpdateMealFood()
           }
         });
 
@@ -246,23 +294,23 @@ const EditMeal = () => {
     }
   };
 
-  const handleUpdateMealFood = async (mealId) => {
+  const handleUpdateMealFood = async () => {
     for (let i = 0; i < foodAdded.length; i++) {
       let servings = parseInt(foodAdded[i].servings)
       let food = foodAdded[i].id
-      console.log(mealId)
+
       try {
         // add routine with variables routineNanem and routine
         const { mealFoodData } = await updateMealFood({
           variables: { mealId, servings, food },
         });
 
-        // redirect back to the routines page
-        window.location.assign('/meal');
       } catch (e) {
         console.error(e)
       }
     }
+    // redirect back to the routines page
+    window.location.assign('/meal');
   };
 
   return (
@@ -320,7 +368,7 @@ const EditMeal = () => {
               </Tr>
             </Thead>
             <Tbody fontSize='1.75vw'>
-              {foodAdded.map((addFood) => (
+              {foodAdded.map((addFood, index) => (
                 <Tr>
                   <Td>
                     <IconButton
@@ -333,24 +381,24 @@ const EditMeal = () => {
                       onClick={handleRemoveFood}
                     />
                   </Td>
-                  <Td>{foods[foods.findIndex(food => food._id === addFood.id)].title}</Td>
+                  <Td>{addFood.title}</Td>
                   <Td isNumeric>
                     <Input
                       htmlSize={4}
                       width='auto'
                       textAlign='center'
-                      value={addFood.servings}
+                      defaultValue={1}
                       id={addFood.id}
                       onChange={handleUpdateServings}
                     />
                   </Td>
-                  <Td>{foods[foods.findIndex(food => food._id === addFood.id)].servingSize} {foods[foods.findIndex(food => food._id === addFood.id)].servingUnit}</Td>
-                  <Td isNumeric>{foods[foods.findIndex(food => food._id === addFood.id)].calories}</Td>
-                  <Td isNumeric>{foods[foods.findIndex(food => food._id === addFood.id)].carbs}</Td>
-                  <Td isNumeric>{foods[foods.findIndex(food => food._id === addFood.id)].fat}</Td>
-                  <Td isNumeric>{foods[foods.findIndex(food => food._id === addFood.id)].protein}</Td>
-                  <Td isNumeric>{foods[foods.findIndex(food => food._id === addFood.id)].sodium}</Td>
-                  <Td isNumeric>{foods[foods.findIndex(food => food._id === addFood.id)].sugar}</Td>
+                  <Td>{addFood.servingSizeUnit}</Td>
+                  <Td isNumeric>{addFood.calories}</Td>
+                  <Td isNumeric>{addFood.carbs}</Td>
+                  <Td isNumeric>{addFood.fat}</Td>
+                  <Td isNumeric>{addFood.protein}</Td>
+                  <Td isNumeric>{addFood.sodium}</Td>
+                  <Td isNumeric>{addFood.sugar}</Td>
                 </Tr>
               ))}
               <Tr>

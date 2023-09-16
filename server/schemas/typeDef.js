@@ -91,7 +91,7 @@ const typeDef = gql`
     removeFood(foodId: ID!): Food
     addMeal(title: String!, numberOfServing: Int!): Meal
     addMealFood(mealId: ID!, servings: Int!, food: ID!): Meal
-    updateMeal(title: String!, numberOfServing: Int!): Meal
+    updateMeal(mealId: ID!, title: String!, numberOfServing: Int!, content: [[Float]]): Meal
     updateMealFood(mealId: ID!, servings: Int!, food: ID!): Meal
     removeMeal(mealId: ID!): Meal
     addPlanner(date: String!): Planner

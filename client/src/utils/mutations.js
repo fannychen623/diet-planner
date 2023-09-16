@@ -101,6 +101,7 @@ export const ADD_MEAL = gql`
   mutation addMeal($title: String!, $numberOfServing: Int!) {
     addMeal(title: $title, numberOfServing: $numberOfServing) {
       _id
+      title
       numberOfServing
       content {
         servings
@@ -116,6 +117,7 @@ export const ADD_MEAL_FOOD = gql`
   mutation addMealFood($mealId: ID!, $servings: Int!, $food: ID!) {
     addMealFood(mealId: $mealId, servings: $servings, food: $food) {
       _id
+      title
       numberOfServing
       content {
         servings
@@ -128,9 +130,10 @@ export const ADD_MEAL_FOOD = gql`
 `;
 
 export const UPDATE_MEAL = gql`
-  mutation updateMeal($title: String!, $numberOfServing: Int!) {
-    updateMeal(title: $title, numberOfServing: $numberOfServing) {
+  mutation updateMeal($mealId: ID!, $title: String!, $numberOfServing: Int!, $content: [[Float]]) {
+    updateMeal(mealId: $mealId, title: $title, numberOfServing: $numberOfServing, content: $content) {
       _id
+      title
       numberOfServing
       content {
         servings
@@ -146,6 +149,7 @@ export const UPDATE_MEAL_FOOD = gql`
   mutation updateMealFood($mealId: ID!, $servings: Int!, $food: ID!) {
     updateMealFood(mealId: $mealId, servings: $servings, food: $food) {
       _id
+      title
       numberOfServing
       content {
         servings

@@ -172,11 +172,11 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in to update routine!");
     },
-    updateMeal: async (parent, { mealId, title, numberOfServing }, context) => {
+    updateMeal: async (parent, { mealId, title, numberOfServing, content }, context) => {
       if (context.user) {
         return Meal.findOneAndUpdate(
           { _id: mealId },
-          { $set: { title: title, numberOfServing: numberOfServing } },
+          { $set: { title: title, numberOfServing: numberOfServing , content: content } },
           { new: true }
         );
       }
@@ -185,7 +185,6 @@ const resolvers = {
       if (context.user) {
         return Meal.findOneAndUpdate(
           { _id: mealId },
-          { $pull: { content } },
           { $addToSet: { content: { servings, food }, }, },
           { new: true }
         );
