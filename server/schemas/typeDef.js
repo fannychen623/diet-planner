@@ -63,9 +63,9 @@ const typeDef = gql`
 
   type Diet {
     _id: ID
-    type: String!
+    title: String!
     numberOfServing: Int!
-    meal: String!
+    content: [Content]
   }
 
   type Query {
@@ -96,8 +96,10 @@ const typeDef = gql`
     removeMeal(mealId: ID!): Meal
     addPlanner(date: String!): Planner
     removePlanner(plannerId: ID!): Planner
-    addDiet(plannerId: ID!, type: String!, numberOfServing: Int!, meal: String!): Planner
-    updateDiet(dietId: ID!, type: String!, numberOfServing: Int!, meal: String!): Planner
+    addDiet(plannerId: ID!, title: String!, numberOfServing: Int!, content: [[Float]]): Planner
+    addDietContent(plannerId: ID!, dietId: ID!, servings: Int!, food: ID!): Planner
+
+    updateDiet(dietId: ID!, numberOfServing: Int!, meal: String!): Planner
     removeDiet(plannerId: ID!, dietId: ID!): Planner
     addWeight(plannerId: ID!, weight: Int!): Planner
     updateWeight(plannerId: ID!, weight: Int!): Planner

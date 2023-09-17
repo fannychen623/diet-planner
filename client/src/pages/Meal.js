@@ -140,7 +140,6 @@ const Meal = () => {
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                 <MealContent contents={meal.content} foods={foods} />
-                  
                 </AccordionPanel>
               </AccordionItem>
             </Accordion>

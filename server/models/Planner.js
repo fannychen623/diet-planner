@@ -1,26 +1,39 @@
 const { Schema, model } = require('mongoose');
+const { format } = require('date-fns');
 
 const plannerSchema = new Schema({
   date: {
     type: Date,
     required: true,
-    unique: true,
+    // unique: true,
+    get: (date)=> format(date, 'MM/dd/yyyy')
   },
   diet: [
     {
-      type: {
+      title: {
         type: String,
-        require: false,
+        required: true,
+        minlength: 1,
+        maxlength: 300,
+        trim: true,
       },
       numberOfServing: {
         type: Number,
         required: false,
       },
-      meal: [
+      content: [
         {
-          type: Schema.Types.ObjectId,
-          ref: 'Meal',
-        }
+          servings: {
+            type: Number,
+            require: true,
+          },
+          food: [
+            {
+              type: Schema.Types.ObjectId,
+              ref: 'Food',
+            }
+          ],
+        },
       ],
     },
   ],

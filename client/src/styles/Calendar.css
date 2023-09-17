@@ -6,12 +6,13 @@
 }
 
 /* list date */
-.calendar-page .css-k2u5zu {
+.calendar-page .css-1sl53ol {
     font-family: var(--font);
     font-size: 3vw;
     color: var(--shade6);
     border: none;
-    padding: 0;
+    padding: 3%;
+    margin-bottom: -3%;
 }
 
 /* routine, calorie, and weight sub-headings */
@@ -97,7 +98,7 @@ abbr[title] {
 }
 
 .react-calendar__tile--now {
-    background: var(--shade1);
+    background: var(--shade3);
     border-radius: 6px;
     font-weight: bold;
     color: white;

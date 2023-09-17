@@ -169,6 +169,48 @@ export const REMOVE_MEAL = gql`
     }
 `;
 
+export const ADD_PLANNER = gql`
+  mutation addPlanner($date: String!) {
+    addPlanner(date: $date) {
+      _id
+      date
+      diet {
+        _id
+        title
+        numberOfServing
+        content {
+          servings
+          food {
+            _id
+          }
+        }
+      }
+      weight
+    }
+  }
+`;
+
+export const ADD_DIET = gql`
+  mutation addDiet($plannerId: ID!, $title: String!, $numberOfServing: Int!, $content: [[Float]]) {
+    addDiet(plannerId: $plannerId, title: $title, numberOfServing: $numberOfServing, content: $content) {
+      _id
+      date
+      diet {
+        _id
+        title
+        numberOfServing
+        content {
+          servings
+          food {
+            _id
+          }
+        }
+      }
+      weight
+    }
+  }
+`;
+
 export const ADD_POST = gql`
     mutation addPost($title: String!, $text: String!){
         addPost(title: $title, text: $text){

@@ -387,7 +387,7 @@ const EditMeal = () => {
                       htmlSize={4}
                       width='auto'
                       textAlign='center'
-                      defaultValue={1}
+                      defaultValue={addFood.servings}
                       id={addFood.id}
                       onChange={handleUpdateServings}
                     />

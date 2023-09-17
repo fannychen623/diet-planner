@@ -44,9 +44,14 @@ export const QUERY_USER = gql`
         date
         diet {
           _id
-          type
+          title
           numberOfServing
-          meal
+          content {
+            servings
+            food {
+              _id
+            }
+          }
         }
         weight
       }
@@ -98,9 +103,14 @@ export const QUERY_ME = gql`
         date
         diet {
           _id
-          type
+          title
           numberOfServing
-          meal
+          content {
+            servings
+            food {
+              _id
+            }
+          }
         }
         weight
       }

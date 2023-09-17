@@ -29,7 +29,7 @@ function Header() {
   }
 
   return (
-    <div>
+    <Box>
       {/* check that user is logged in and token is not expired */}
       {Auth.loggedIn() && !Auth.isTokenExpired() ? (
         // if user is logged in, display all linked icon buttons and logout button
@@ -51,7 +51,7 @@ function Header() {
                     <IconButton variant='link' px='1vw' aria-label='Meals' icon={<RiRestaurantLine />} />
                   </Tooltip>
                 </Link>
-                <Link to='/'>
+                <Link to='/search'>
                   <Tooltip label='Search Food' bg='var(--shade6)' color='white'>
                     <IconButton variant='link' px='1vw' aria-label='Search Food' icon={<RiPhoneFindLine />} />
                   </Tooltip>
@@ -101,7 +101,7 @@ function Header() {
           </Flex>
         </nav>
       )}
-    </div>
+    </Box>
   );
 }
 

@@ -218,21 +218,32 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in to start tracking!");
     },
-    addDiet: async (parent, { plannerId, type, numberOfServing, meal }, context) => {
+    addDiet: async (parent, { plannerId, title, numberOfServing, content }, context) => {
       if (context.user) {
         return Planner.findOneAndUpdate(
           { _id: plannerId },
-          { $addToSet: { diet: { type: type, numberOfServing: numberOfServing, meal: meal }, }, },
+          { $addToSet: { diet: { title: title, numberOfServing: numberOfServing, content: content }, }, },
           { new: true, runValidators: true }
         );
       }
       throw new AuthenticationError("You need to be logged in to update routine!");
     },
-    updateDiet: async (parent, { dietId, type, numberOfServing, meal }, context) => {
+    addDietContent: async (parent, { dietId, servings, food }, context) => {
+      if (context.user) {
+        return Meal.findOneAndUpdate(
+          { "diet._id": dietId },
+          { $addToSet: { content: { servings, food }, }, },
+          { new: true, runValidators: true }
+        );
+      }
+      throw new AuthenticationError("You need to be logged in to update routine!");
+    },
+
+    updateDiet: async (parent, { dietId, numberOfServing, meal }, context) => {
       if (context.user) {
         return await Planner.findOneAndUpdate(
           { "diet._id": dietId },
-          { $set: { "diet.$.type": type, "diet.$.numberOfServing": numberOfServing, "diet.$.meal": meal } },
+          { $set: { "diet.$.numberOfServing": numberOfServing, "diet.$.meal": meal } },
           { new: true }
         );
       }

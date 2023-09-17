@@ -64,5 +64,6 @@ window.env = {
   "VSCODE_GIT_ASKPASS_NODE": "/Applications/Visual Studio Code.app/Contents/Frameworks/Code Helper (Plugin).app/Contents/MacOS/Code Helper (Plugin)",
   "npm_node_execpath": "/Users/fannychen/.nvm/versions/node/v16.19.0/bin/node",
   "npm_config_prefix": "/Users/fannychen/.nvm/versions/node/v16.19.0",
-  "COLORTERM": "truecolor"
+  "COLORTERM": "truecolor",
+  "USDA_API_KEY": "b9MszePRK9HB2phIqbYOz2fzKNJ4kBltgzR2kDsF"
 };
