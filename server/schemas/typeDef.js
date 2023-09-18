@@ -22,11 +22,16 @@ const typeDef = gql`
     _id: ID!
     age: Int!
     sex: String!
-    weight: Int!
     height: Int!
+    weight: Int!
     goalWeight: Int!
     activityLevel: Float!
-    calories: Int
+    calories: Int!
+    carbs: Int!
+    fat: Int!
+    protein: Int!
+    sodium: Int!
+    sugar: Int!
   }
 
   type Food {
@@ -62,7 +67,7 @@ const typeDef = gql`
   }
 
   type Diet {
-    _id: ID
+    _id: ID!
     title: String!
     numberOfServing: Int!
     content: [Content]
@@ -82,28 +87,142 @@ const typeDef = gql`
   }
 
   type Mutation {
-    addUser(username: String!, email: String!, password: String!): Auth
-    login(email: String!, password: String!): Auth
-    addProfile(age: Int!, sex: String!, weight: Int!, height: Int!, goalWeight: Int!, activityLevel: Float!, calories: Int): Profile
-    updateProfile(profileId: ID!, age: Int, sex: String, weight: Int, height: Int, goalWeight: Int, activityLevel: Float, calories: Int): Profile
-    addFood(title: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
-    updateFood(foodId: ID!, title: String!, servingSize: Int!, servingUnit: String!, calories: Int!, carbs: Int!, fat: Int!, protein: Int!, sodium: Int!, sugar: Int!): Food
-    removeFood(foodId: ID!): Food
-    addMeal(title: String!, numberOfServing: Int!): Meal
-    addMealFood(mealId: ID!, servings: Int!, food: ID!): Meal
-    updateMeal(mealId: ID!, title: String!, numberOfServing: Int!, content: [[Float]]): Meal
-    updateMealFood(mealId: ID!, servings: Int!, food: ID!): Meal
-    removeMeal(mealId: ID!): Meal
-    addPlanner(date: String!): Planner
-    removePlanner(plannerId: ID!): Planner
-    addDiet(plannerId: ID!, title: String!, numberOfServing: Int!, content: [[Float]]): Planner
-    addDietContent(plannerId: ID!, dietId: ID!, servings: Int!, food: ID!): Planner
+    addUser(
+      username: String!, 
+      email: String!, 
+      password: String!
+    ): Auth
 
-    updateDiet(dietId: ID!, numberOfServing: Int!, meal: String!): Planner
-    removeDiet(plannerId: ID!, dietId: ID!): Planner
-    addWeight(plannerId: ID!, weight: Int!): Planner
-    updateWeight(plannerId: ID!, weight: Int!): Planner
-    removeWeight(plannerId: ID!, weight: ID!): Planner
+    login(
+      email: String!, 
+      password: String!
+    ): Auth
+
+    addProfile(
+      age: Int!, 
+      sex: String!, 
+      height: Int!, 
+      weight: Int!,
+      goalWeight: Int!, 
+      activityLevel: Float!, 
+      calories: Int!
+      carbs: Int!
+      fat: Int!
+      protein: Int!
+      sodium: Int!
+      sugar: Int!
+    ): Profile
+
+    updateProfile(
+      profileId: ID!, 
+      age: Int, 
+      sex: String, 
+      height: Int, 
+      weight: Int,
+      goalWeight: Int, 
+      activityLevel: Float, 
+      calories: Int!
+      carbs: Int!
+      fat: Int!
+      protein: Int!
+      sodium: Int!
+      sugar: Int!
+    ): Profile
+
+    addFood(
+      title: String!, 
+      servingSize: Int!, 
+      servingUnit: String!, 
+      calories: Int!, 
+      carbs: Int!, 
+      fat: Int!, 
+      protein: Int!, 
+      sodium: Int!, 
+      sugar: Int!
+    ): Food
+
+    updateFood(
+      foodId: ID!, 
+      title: String!, 
+      servingSize: Int!, 
+      servingUnit: String!, 
+      calories: Int!, 
+      carbs: Int!, 
+      fat: Int!, 
+      protein: Int!, 
+      sodium: Int!, 
+      sugar: Int!
+    ): Food
+
+    removeFood(
+      foodId: ID!
+    ): Food
+
+    addMeal(
+      title: String!, 
+      numberOfServing: Int!
+    ): Meal
+
+    addMealFood(
+      mealId: ID!, 
+      servings: Int!, 
+      food: ID!
+    ): Meal
+
+    updateMeal(
+      mealId: ID!, 
+      title: String!, 
+      numberOfServing: Int!, 
+      content: [[Float]]
+    ): Meal
+
+    updateMealFood(
+      mealId: ID!, 
+      servings: Int!, 
+      food: ID!
+    ): Meal
+
+    removeMeal(
+      mealId: ID!
+    ): Meal
+
+    addPlanner(
+      date: String!
+    ): Planner
+    removePlanner(
+      plannerId: ID!
+    ): Planner
+    addDiet(
+      plannerId: ID!, 
+      title: String!, 
+      numberOfServing: Int!,
+    ): Planner
+
+    addDietFood(
+      dietId: ID!, 
+      servings: Int!, 
+      food: ID!
+    ): Planner
+    removeDietFood(
+      plannerId: ID!
+      dietId: ID!
+    ): Planner
+
+    addWeight(
+      plannerId: ID!, 
+      weight: Int!
+    ): Planner
+    
+    updateDiet(
+      dietId: ID!, 
+      numberOfServing: Int!, 
+      meal: String!
+    ): Planner
+    removeDiet(
+      plannerId: ID!, 
+      dietId: ID!
+    ): Planner
+    
   }
 `;
 

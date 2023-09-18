@@ -1,13 +1,13 @@
 // import packages
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useStateWithCallbackInstant, useStateWithCallbackLazy } from 'use-state-with-callback';
-import { format, formatISO } from 'date-fns';
+import { format } from 'date-fns';
 
 // import queries and mutations
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_ME } from '../utils/queries';
-import { ADD_PLANNER, ADD_DIET } from '../utils/mutations';
+import { ADD_PLANNER, ADD_DIET, ADD_DIET_FOOD, REMOVE_DIET_FOOD, ADD_WEIGHT } from '../utils/mutations';
 
 // import local components/stylesheet and pacakge components/stylesheet
 // import CalendarList from '../components/CalendarList';
@@ -18,16 +18,21 @@ import '../styles/Calendar.css';
 // import package components and icons
 import {
   Grid, GridItem, Box, Spacer, Stack, Flex,
-  IconButton, Spinner, Text, Button,
+  IconButton, Spinner, Text, Button, SimpleGrid,
   Card, CardHeader, CardBody, Checkbox,
   Input, CircularProgress, CircularProgressLabel,
+  Accordion, AccordionItem,
+  AccordionButton, AccordionPanel, AccordionIcon,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   Popover, PopoverTrigger, PopoverContent, PopoverBody,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
 
-import { FiCheck, FiSave, FiInfo, FiEdit, FiPlusSquare, FiMinusSquare, FiMinus } from 'react-icons/fi';
+import {
+  FiCheck, FiSave, FiInfo, FiPlus, FiEdit3, FiTrash2,
+  FiEdit, FiPlusSquare, FiMinusSquare, FiMinus
+} from 'react-icons/fi';
 
 
 // functional component for the calendar page
@@ -55,7 +60,10 @@ const CalendarPage = () => {
   const foods = data?.me.foods || [];
   const meals = data?.me.meals || [];
 
-  const [date, setDate] = useState(format(new Date(), 'MM/dd/yyyy'))
+  // define the postId from the url parameter
+  const { fetchDate } = useParams();
+
+  const [date, setDate] = useState(fetchDate.replace(/_/g, '/'))
 
   const convertToISO = () => {
     let darr = date.split('/');
@@ -63,42 +71,53 @@ const CalendarPage = () => {
     return new Date(dobj.toISOString())
   }
 
-  // const getPlannerId = () => {
-  //   let plannerDates = planners.map(planner => planner.date)
-  //   if (plannerDates.includes(date)) {
-  //     return planners[planners.findIndex(planner => planner.date === date)]._id
-  //   } else {
-  //     return 'n/a'
-  //   }
-  // }
-
   // const [plannerDates, setPlannerDates] = useState (planners.map(planner => planner.date))
   const [plannerId, setPlannerId] = useState('n/a')
 
   const [currentPlanner, setCurrentPlanner] = useState([])
 
+  const [weight, setWeight] = useState('')
+
   useEffect(() => {
     if (!data) {
       return;
     } else {
+      setWeight('')
       let plannerDates = planners.map(planner => planner.date)
       let plannerIds = planners.map(planner => planner._id)
-      let planId = 'n/a'
       if (plannerDates.length !== 0) {
         let planId = plannerIds[plannerDates.findIndex(plannerDate => plannerDate === date)]
-        setPlannerId(planId)
+        if (planId) {
+          setPlannerId(planId)
+        } else {
+          setPlannerId('n/a')
+        }
+      } else {
+        setPlannerId('n/a')
       }
       let dietInfo = []
       let plannerInfo = planners[plannerDates.findIndex(plannerDate => plannerDate === date)]
       if (plannerInfo) {
         for (let i = 0; i < plannerInfo.diet.length; i++) {
-          dietInfo.push({ title: plannerInfo.diet[i].title, numberOfServing: plannerInfo.diet[i].numberOfServing })
+          let dietContent = plannerInfo.diet[i].content.map(content => ({ servings: content.servings, food: content.food[0]._id }))
+          // console.log(dietContent)
+          dietInfo.push({
+            id: plannerInfo.diet[i]._id,
+            title: plannerInfo.diet[i].title,
+            numberOfServing: plannerInfo.diet[i].numberOfServing,
+            content: dietContent
+          })
         }
+        if (plannerInfo.weight) {
+          setWeight(plannerInfo.weight)
+        }
+      } else {
+        setWeight('')
       }
       setCurrentPlanner(dietInfo)
-      console.log(plannerId)
-      console.log(currentPlanner)
+      // console.log(dietInfo)
     }
+
 
   }, [data, date, planners, plannerId]);
 
@@ -151,40 +170,43 @@ const CalendarPage = () => {
 
   // mutation to add tracker
   const [addPlanner, { plannerData }] = useMutation(ADD_PLANNER);
+
   const handleAddPlanner = async (type) => {
-    console.log(type)
-    if (type === 'diet') {
-      try {
-        const { plannerData } = await addPlanner({
-          // pass in the selected date to add new tracking data
-          variables: { date: date },
 
-          onCompleted(plannerData) {
-            setPlannerId(plannerData.addPlanner._id)
+    try {
+      const { plannerData } = await addPlanner({
+        // pass in the selected date to add new tracking data
+        variables: { date: date },
+
+        onCompleted(plannerData) {
+          setPlannerId(plannerData.addPlanner._id)
+          if (type === 'diet') {
             handleAddDiet(plannerData.addPlanner._id)
+          } else if (type === 'weight') {
+            handleAddWeight(plannerData.addPlanner._id)
           }
-        });
-
-      } catch (e) {
-        console.error(e);
-      }
-    } else if (type === 'weight') {
-
+        }
+      });
+    } catch (e) {
+      console.error(e);
     }
   };
 
   const [addDiet, { dietError, dietData }] = useMutation(ADD_DIET);
 
-  const handleAddDiet = async (method) => {
-    let planId = plannerId
-    if (method === 'initialization') {
-      // getPlannerId();
-      planId = plannerId
-    } else {
-      planId = method
-    }
+  const handleAddDiet = async (id) => {
+    const planId = id
 
-    if (planId !== 'n/a') {
+    if (planId === 'n/a') {
+      let type = 'diet'
+      handleAddPlanner(type);
+    } else {
+      let dietId = ''
+      let dietMeals = []
+      const setDietData = ( a, b ) => {
+        dietId = a
+        dietMeals = b
+      }
       for (let i = 0; i < checkedState.length; i++) {
         if (checkedState[i]) {
           try {
@@ -193,105 +215,95 @@ const CalendarPage = () => {
               variables: { plannerId: planId, title: meals[i].title, numberOfServing: 1, content: [] },
 
               onCompleted(dietData) {
-                console.log(dietData)
-                // handleAddMeals(plannerData.addPlanner._id)
+                setDietData(dietData.addDiet._id, dietData.addDiet.diet)
               }
             });
-
-            // set the storedDare in the local storage to the new date
-            // localStorage.setItem('storedDate', date);
-
-            // re-render the components to show the tracking list
-            // refetch();
           } catch (e) {
             console.error(e);
           }
           checkedState[i] = false
         }
       }
-    } else {
-      let type = 'diet'
-      handleAddPlanner(type);
+      handleAddDietContent(dietMeals, dietId)
+    }
+  };
+
+  const [addDietFood, { dietFoodError, dietFoodData }] = useMutation(ADD_DIET_FOOD);
+
+  const handleAddDietContent = (dietMeals, planId) => {
+    dietMeals.forEach((meal) => {
+      let dietId = meal._id
+      let title = meal.title
+      let mealItem = meals[meals.findIndex(meal => meal.title === title)].content
+      console.log(mealItem)
+      mealItem.forEach((food) => {
+        let servings = food.servings
+        let id = food.food[0]._id
+        console.log(foods[foods.findIndex(food => food._id === id)].title)
+        try {
+          // add routine with variables routineNanem and routine
+          const { dietFoodData } = addDietFood({
+            variables: { dietId, servings, food: id },
+          });
+
+        } catch (e) {
+          console.error(e)
+        }
+      });
+    });
+
+    refetch();
+    onClose()
+  };
+
+  const [removeDietFood, { removeFoodError, removeFoodData }] = useMutation(REMOVE_DIET_FOOD);
+
+  const handleRemoveDietFood = async (event) => {
+    event.preventDefault()
+    const { id } = event.target
+    if (id !== '') {
+      try {
+        // add routine with variables routineNanem and routine
+        const { removeFoodData } = await removeDietFood({
+          variables: { plannerId, dietId: id },
+
+          onCompleted(removeFoodData) {
+            refetch();
+          }
+        });
+
+      } catch (e) {
+        console.error(e)
+      }
     }
 
     onClose()
   };
 
-  // const handleAddMeals = async (event) => {
-  //   event.preventDefault()
+  const [addWeight, { addWeightError, addWeightData }] = useMutation(ADD_WEIGHT);
 
-  //   // loop through all the checked routines to add
-  //   for (let i = 0; i < checkedState.length; i++) {
-  //     if (checkedState[i]) {
-  //       let foodIndex = foods.findIndex(food => food.title === foodsList[i].title)
-  //       if (foodAdded.indexOf(foods[foodIndex]._id) === -1) {
-  //         foodAdded.push({
-  //           id: foods[foodIndex]._id,
-  //           title: foods[foodIndex].title,
-  //           servingSizeUnit: foods[foodIndex].servingSize + ' ' + foods[foodIndex].servingUnit,
-  //           servings: 1,
-  //           calories: foods[foodIndex].calories,
-  //           carbs: foods[foodIndex].carbs,
-  //           fat: foods[foodIndex].fat,
-  //           protein: foods[foodIndex].protein,
-  //           sodium: foods[foodIndex].sodium,
-  //           sugar: foods[foodIndex].sugar,
-  //         })
-  //       }
-  //       checkedState[i] = false
-  //       setFoodList(foods => foods.filter((food) => food.title != foodsList[i].title))
-  //     }
-  //   }
+  const handleAddWeight = async (id) => {
+    const planId = id
 
-  //   onClose()
-  // };
+    if (planId === 'n/a') {
+      let type = 'weight'
+      handleAddPlanner(type)
+    } else {
+      try {
+        const { addWeightData } = await addWeight({
+          // pass in the selected date to add new tracking data
+          variables: { plannerId: planId, weight: parseInt(weight) },
 
-  // set state and instantly run the callback functions
-  // if a storedDate exist in local storage, set it as the initial date on render, otherwise, set it to today's date
-  // all dates stored in millisecond (.getTime()) format for consistency and match functions
-  // const [date, setDate] = useStateWithCallbackInstant(new Date(localStorage.getItem('storedDate')).getTime() || new Date().getTime(), newDate => {
-
-  //   localStorage.setItem('storedDate', date);
-  // });
-
-  // // define the millisecond conversion of the selected date
-  // const dateTime = new Date(date).getTime()
-
-  // on date change (on the calendar)
-  // const handleChangeDate = (e) => {
-
-  //   setDate(e)
-  // };
-
-
-
-  // // function to add tracker on click
-
-
-  // // mutation to remove tracker
-  // const [removeTracker, { removeTrackerData }] = useMutation(REMOVE_TRACKER);
-
-  // // function to remove tracker on click
-  // const handleRemoveTracker = async (event) => {
-  //   event.preventDefault();
-
-  //   try {
-  //     const { removeTrackerData } = await removeTracker({
-  //       // pass in the trackerId of the current selected date
-  //       variables: { trackerId: tracker[trackerIndex]._id },
-  //     });
-
-  //     // hide the tracking list
-  //     setShowList(false)
-  //     setTracked(false)
-  //     // re-render the components to hide the tracking list
-  //     refetch();
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-  // define add routine mutation
-
+          onCompleted(weightData) {
+            // redirect to posts page
+            window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   return (
     <Box className='calendar-page'>
@@ -302,7 +314,7 @@ const CalendarPage = () => {
               {/* react calendar component */}
               <Calendar
                 value={convertToISO()}
-                defaultValue={new Date()}
+                defaultValue={convertToISO()}
                 onClickDay={(e) => { setDate(format(e, 'MM/dd/yyyy')) }}
                 calendarType='US' />
             </Box>
@@ -323,30 +335,45 @@ const CalendarPage = () => {
                     bg='var(--shade5)'
                     color='white'
                     _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-                    icon={<FiPlusSquare />}
+                    icon={<FiPlus />}
                     onClick={onOpen}
                   />
                   <Text>Add meal</Text>
                 </Box>
                 <Spacer />
                 <Box display='flex' alignItems='center'>
-                  <Text mr='2' >Weight:</Text>
-                  <Input />
-                  <IconButton
-                    ml='3'
-                    size='md'
-                    bg='var(--shade5)'
-                    color='white'
-                    _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-                    icon={<FiSave />}
+                  <Text mr='3'>Weight:</Text>
+                  <Input defaultValue={weight} onChange={(e) => { setWeight(parseInt(e.target.value)) }} />
+                  {weight ? (
+                    <IconButton
+                      ml='3'
+                      size='md'
+                      bg='var(--shade5)'
+                      color='white'
+                      _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+                      value={plannerId}
+                      icon={<FiCheck />}
+                      onClick={(e) => { handleAddWeight(plannerId) }}
+                    />
+                  ) : (
+                    <IconButton
+                      ml='3'
+                      size='md'
+                      bg='var(--shade5)'
+                      color='white'
+                      _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+                      value={plannerId}
+                      icon={<FiPlus />}
+                      onClick={(e) => { handleAddWeight(plannerId) }}
+                    />
+                  )}
 
-                  />
                 </Box>
               </Box>
               {/* if tracked and query is complete */}
               {loading ? (
-                <Box m='auto' mb='5'>
-                  <Link to='/'><Spinner /> Loading...</Link>
+                <Box ml='40%' mb='5' display='flex' alignItems='center'>
+                  <Spinner mr='3' /><Text>Loading...</Text>
                 </Box>
               ) : (
                 <Box>
@@ -354,79 +381,143 @@ const CalendarPage = () => {
                     <Box></Box>
                   ) : (
                     <Box>
-                      <TableContainer>
-                        <Table size='md'>
-                          <Thead bg='var(--shade5)'>
-                            <Tr>
-                              <Th width='5%'></Th>
-                              <Th width='5%'></Th>
-                              <Th color='white'>Meal</Th>
-                              <Th isNumeric color='white'>Servings</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
-                            {currentPlanner.map((planner) => (
-                              <Tr>
-                                <Td pl='0'>
+                      <Accordion allowToggle>
+                        <AccordionItem bg='var(--shade5)' color='white'>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex='1' textAlign='left'>
+                                <IconButton isDisabled size='md' mr='3' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                                <IconButton isDisabled size='md' mr='3' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                                Meal
+                              </Box>
+                              <Box as="span" flex='1' textAlign='right'>
+                                Serving
+                              </Box>
+                            </AccordionButton>
+                          </h2>
+                        </AccordionItem>
+                        {currentPlanner.map((planner) => (
+                          <AccordionItem>
+                            <h2>
+                              <AccordionButton _hover={{ bg: 'var(--shade3)' }}>
+                                <Box as="span" flex='1' textAlign='left'>
                                   <IconButton
                                     size='md'
-                                    ml='0'
+                                    mr='3'
                                     bg='var(--shade5)'
                                     color='white'
                                     _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
                                     icon={<FiMinusSquare />}
+                                    id={planner.id}
+                                    onClick={handleRemoveDietFood}
                                   />
-                                </Td>
-                                <Td pl='0'>
                                   <IconButton
                                     size='md'
-                                    ml='0'
+                                    mr='3'
                                     bg='var(--shade5)'
                                     color='white'
                                     _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
                                     icon={<FiEdit />}
                                   />
-                                </Td>
-                                <Td>{planner.title}</Td>
-                                <Td isNumeric>{planner.numberOfServing}</Td>
-                              </Tr>
-                            ))}
-                          </Tbody>
-                        </Table>
-                      </TableContainer>
-                      <TableContainer variant='unstyled'>
-                        <Table size='md'>
-                          <Tbody>
-                            <Tr>
-                              <Td fontSize='2.5vw' mr='3' color='var(--shade5)'>Calories</Td>
-                              <Td>
-                                <CircularProgress value={40} color='green.400' size='7vw' >
-                                  <CircularProgressLabel>40%</CircularProgressLabel>
-                                </CircularProgress>
-                              </Td>
-                              <Td fontSize='2.5vw' ml='3' color='var(--shade5)'>1025/1400 kcal</Td>
-                            </Tr>
-                            <Tr>
-                              <Td fontSize='2.5vw' mr='3' color='var(--shade5)'>Carbs</Td>
-                              <Td>
-                                <CircularProgress value={70} color='blue.400' size='7vw' >
-                                  <CircularProgressLabel>70%</CircularProgressLabel>
-                                </CircularProgress>
-                              </Td>
-                              <Td fontSize='2.5vw' ml='3' color='var(--shade5)'>1025/1400 g</Td>
-                            </Tr>
-                            <Tr>
-                              <Td fontSize='2.5vw' mr='3' color='var(--shade5)'>Fat</Td>
-                              <Td>
-                                <CircularProgress value={30} color='orange.400' size='7vw' >
-                                  <CircularProgressLabel>30%</CircularProgressLabel>
-                                </CircularProgress>
-                              </Td>
-                              <Td fontSize='2.5vw' ml='3' color='var(--shade5)'>1025/1400 g</Td>
-                            </Tr>
-                          </Tbody>
-                        </Table>
-                      </TableContainer>
+                                  {planner.title}
+                                </Box>
+                                <Box as="span" flex='1' textAlign='right'>
+                                  {planner.numberOfServing}
+                                </Box>
+                                <AccordionIcon ml='3' />
+                              </AccordionButton>
+                            </h2>
+                            <AccordionPanel pb={4}>
+                              {planner.content.map((content) => (
+                                <Text>{foods[foods.findIndex(food => food._id === content.food)].title} {content.servings}</Text>
+                              ))}
+                            </AccordionPanel>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                      <Accordion allowToggle defaultIndex={[0]} mt='4'>
+  <AccordionItem>
+    <h2>
+      <AccordionButton color='var(--shade5)' _hover={{ bg:'var(--shade3)'}} _expanded={{bg:'var(--shade5)', color:'white'}}>
+      <AccordionIcon />
+        <Box as="span" flex='1' textAlign='center' fontSize='2vw' _expanded={{color:'white'}}>
+          Daily Stats
+        </Box>
+        <AccordionIcon />
+      </AccordionButton>
+    </h2>
+    <AccordionPanel pb={4}>
+    <SimpleGrid columns={4} pt='5' spacingX='20px' spacingY='20px' textAlign='center'>
+                        <Box p='2'>
+                          <Stack>
+                            <Text fontSize='2vw' color='var(--shade5)'>Calories</Text>
+                            <Text fontSize='1.15vw' color='var(--shade5)'>1025/1400 kcal</Text>
+                          </Stack>
+                        </Box>
+                        <Box pt='2'>
+                          <CircularProgress value={40} color='#a7d489' size='7vw' >
+                            <CircularProgressLabel>40%</CircularProgressLabel>
+                          </CircularProgress>
+                        </Box>
+                        <Box p='2'>
+                          <Stack>
+                            <Text fontSize='2vw' color='var(--shade5)'>Carbs</Text>
+                            <Text fontSize='1.15vw' color='var(--shade5)'>102/140 g</Text>
+                          </Stack>
+                        </Box>
+                        <Box pt='2'>
+                          <CircularProgress value={20} color='#6baee1' size='7vw' >
+                            <CircularProgressLabel>20%</CircularProgressLabel>
+                          </CircularProgress>
+                        </Box>
+                        <Box p='2'>
+                          <Stack>
+                            <Text fontSize='2vw' color='var(--shade5)'>Fat</Text>
+                            <Text fontSize='1.15vw' color='var(--shade5)'>125/400 g</Text>
+                          </Stack>
+                        </Box>
+                        <Box pt='2'>
+                          <CircularProgress value={73} color='#ffef85' size='7vw' >
+                            <CircularProgressLabel>73%</CircularProgressLabel>
+                          </CircularProgress>
+                        </Box>
+                        <Box p='2'>
+                          <Stack>
+                            <Text fontSize='2vw' color='var(--shade5)'>Protein</Text>
+                            <Text fontSize='1.5vw' color='var(--shade5)'>1067/1460 g</Text>
+                          </Stack>
+                        </Box>
+                        <Box pt='2'>
+                          <CircularProgress value={60} color='#f6ac69' size='7vw' >
+                            <CircularProgressLabel>60%</CircularProgressLabel>
+                          </CircularProgress>
+                        </Box>
+                        <Box p='2'>
+                          <Stack>
+                            <Text fontSize='2vw' color='var(--shade5)'>Sodium</Text>
+                            <Text fontSize='1.15vw' color='var(--shade5)'>956/1230 mg</Text>
+                          </Stack>
+                        </Box>
+                        <Box pt='2'>
+                          <CircularProgress value={45} color='#ff6972' size='7vw' >
+                            <CircularProgressLabel>45%</CircularProgressLabel>
+                          </CircularProgress>
+                        </Box>
+                        <Box p='2'>
+                          <Stack>
+                            <Text fontSize='2vw' color='var(--shade5)'>Sugar</Text>
+                            <Text fontSize='1.15vw' color='var(--shade5)'>15/100 g</Text>
+                          </Stack>
+                        </Box>
+                        <Box pt='2'>
+                          <CircularProgress value={30} color='#9f7dad' size='7vw' >
+                            <CircularProgressLabel>30%</CircularProgressLabel>
+                          </CircularProgress>
+                        </Box>
+                      </SimpleGrid>
+    </AccordionPanel>
+  </AccordionItem>
+</Accordion>
                     </Box>
                   )}
                 </Box>
@@ -486,7 +577,7 @@ const CalendarPage = () => {
             <Button bg='var(--shade5)'
               color='var(--shade1)'
               _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-              value={'initialization'}
+              value={plannerId}
               onClick={(e) => { handleAddDiet(e.target.value) }}
             >
               Add Meal(s)

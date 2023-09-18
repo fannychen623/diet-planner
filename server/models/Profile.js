@@ -11,13 +11,13 @@ const profileSchema = new Schema(
         type: String, 
         required: true,
     },
-    weight: {
-        type: Number,
-        required: true,
-    },
     height: {
         type: Number,
         required: true, 
+    },
+    weight: {
+        type: Number,
+        required: true,
     },
     goalWeight: {
         type: Number, 
@@ -29,7 +29,27 @@ const profileSchema = new Schema(
     },
     calories: {
         type: Number,
-        required: false
+        required: true
+    },
+    carbs: {
+        type: Number,
+        required: true
+    },
+    fat: {
+        type: Number,
+        required: true
+    },
+    protein: {
+        type: Number,
+        required: true
+    },
+    sodium: {
+        type: Number,
+        required: true
+    },
+    sugar: {
+        type: Number,
+        required: true
     }
 }
 );

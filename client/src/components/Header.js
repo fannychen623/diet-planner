@@ -1,7 +1,8 @@
 // import package and local auth
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Auth from '../utils/auth';
+import { format } from 'date-fns';
 
 // import package components
 import {
@@ -9,10 +10,10 @@ import {
 } from '@chakra-ui/react';
 
 // import icons
-import { 
+import {
   RiFridgeLine, RiRestaurantLine, RiPhoneFindLine,
   RiCalendarEventLine, RiLineChartLine, RiAccountCircleLine,
-  RiLoginBoxLine, RiLogoutBoxLine, 
+  RiLoginBoxLine, RiLogoutBoxLine,
 } from 'react-icons/ri';
 
 // import local style sheet
@@ -28,6 +29,9 @@ function Header() {
     Auth.logout()
   }
 
+  // navigate for the edit post button
+  const navigate = useNavigate();
+
   return (
     <Box>
       {/* check that user is logged in and token is not expired */}
@@ -36,46 +40,44 @@ function Header() {
         <nav className='navBar' separator='   '>
           <Flex alignItems='center'>
             <Box width='50vw' display='flex'>
-                {/* <Link to='/'>
+              {/* <Link to='/'>
                   <Tooltip label='Home' bg='var(--shade6)' color='white'>
                     <Image src='./logo.png' alt='Step It Up' width='70px' mr='1vw' />
                   </Tooltip>
                 </Link> */}
-                <Link to='/food'>
-                  <Tooltip label='Food' bg='var(--shade6)' color='white'>
-                    <IconButton variant='link' px='1vw' aria-label='Food' icon={<RiFridgeLine />} />
-                  </Tooltip>
-                </Link>
-                <Link to='/meal'>
-                  <Tooltip label='Meals' bg='var(--shade6)' color='white'>
-                    <IconButton variant='link' px='1vw' aria-label='Meals' icon={<RiRestaurantLine />} />
-                  </Tooltip>
-                </Link>
-                <Link to='/search'>
-                  <Tooltip label='Search Food' bg='var(--shade6)' color='white'>
-                    <IconButton variant='link' px='1vw' aria-label='Search Food' icon={<RiPhoneFindLine />} />
-                  </Tooltip>
-                </Link>
+              <Link to='/food'>
+                <Tooltip label='Food' bg='var(--shade6)' color='white'>
+                  <IconButton variant='link' px='1vw' aria-label='Food' icon={<RiFridgeLine />} />
+                </Tooltip>
+              </Link>
+              <Link to='/meal'>
+                <Tooltip label='Meals' bg='var(--shade6)' color='white'>
+                  <IconButton variant='link' px='1vw' aria-label='Meals' icon={<RiRestaurantLine />} />
+                </Tooltip>
+              </Link>
+              <Link to='/search'>
+                <Tooltip label='Search Food' bg='var(--shade6)' color='white'>
+                  <IconButton variant='link' px='1vw' aria-label='Search Food' icon={<RiPhoneFindLine />} />
+                </Tooltip>
+              </Link>
             </Box>
             <Box width='50vw' textAlign='end' pr='1vw'>
-                <Link to='/calendar'>
-                  <Tooltip label='Calendar' bg='var(--shade6)' color='white'>
-                    <IconButton variant='link' px='1vw' aria-label='Calendar' icon={<RiCalendarEventLine />} />
-                  </Tooltip>
-                </Link>
-                <Link to='/'>
-                  <Tooltip label='Tracker' bg='var(--shade6)' color='white'>
-                    <IconButton variant='link' px='1vw' aria-label='Tracker' icon={<RiLineChartLine />} />
-                  </Tooltip>
-                </Link>
-                <Link to='/'>
-                  <Tooltip label='Profile' bg='var(--shade6)' color='white'>
-                    <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiAccountCircleLine />} />
-                  </Tooltip>
-                </Link>
-                <Tooltip label='Logout' bg='var(--shade6)' color='white'>
-                  <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiLogoutBoxLine />} onClick={logout} />
+              <Tooltip label='Calendar' bg='var(--shade6)' color='white'>
+                <IconButton variant='link' px='1vw' aria-label='Calendar' icon={<RiCalendarEventLine />} onClick={() => { navigate(`/calendar/${format(new Date(), 'MM_dd_yyyy')}`) }} />
+              </Tooltip>
+              <Link to='/'>
+                <Tooltip label='Tracker' bg='var(--shade6)' color='white'>
+                  <IconButton variant='link' px='1vw' aria-label='Tracker' icon={<RiLineChartLine />} />
                 </Tooltip>
+              </Link>
+              <Link to='/'>
+                <Tooltip label='Profile' bg='var(--shade6)' color='white'>
+                  <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiAccountCircleLine />} />
+                </Tooltip>
+              </Link>
+              <Tooltip label='Logout' bg='var(--shade6)' color='white'>
+                <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiLogoutBoxLine />} onClick={logout} />
+              </Tooltip>
             </Box>
           </Flex>
         </nav>
@@ -85,7 +87,7 @@ function Header() {
         <nav className='navBar' separator='   '>
           <Flex alignItems='center'>
             <Box width='50vw'>
-                {/* <Link to='/'>
+              {/* <Link to='/'>
                   <Tooltip label='Home' bg='var(--shade6)' color='white'>
                     <Image src='./logo.png' alt='Step It Up' width='60px' mr='2' />
                   </Tooltip>
@@ -93,10 +95,10 @@ function Header() {
             </Box>
             <Box width='50vw' textAlign='end' pr='5'>
               <Link to='/loginSignup'>
-                  <Tooltip label='Login/Signup' bg='var(--shade6)' color='white'>
-                    <IconButton variant='link' px='1vw' aria-label='Login' icon={<RiLoginBoxLine />} />
-                  </Tooltip>
-                </Link>
+                <Tooltip label='Login/Signup' bg='var(--shade6)' color='white'>
+                  <IconButton variant='link' px='1vw' aria-label='Login' icon={<RiLoginBoxLine />} />
+                </Tooltip>
+              </Link>
             </Box>
           </Flex>
         </nav>

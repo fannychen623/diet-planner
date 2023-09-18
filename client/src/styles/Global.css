@@ -6,11 +6,12 @@
   --shade5: #41664c;
   --shade6: #203627;
   --trans:  #ffffff00;
-  --font: 'Pathway Gothic One', sans-serif;
+  --font: 'Questrial', sans-serif;
 }
 
 /* import font used throughout pages */
-@import url('https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Pathway+Gothic+One&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
 
 /* gradient background across all pages */
 .global {

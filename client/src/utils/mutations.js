@@ -26,31 +26,41 @@ export const LOGIN_USER = gql`
 `;
 
 export const ADD_PROFILE = gql`
-  mutation addProfile($newAge: Int!, $newSex: String!, $newWeight: Int!, $newHeight: Int!, $newGoalWeight: Int!, $activityLevel: Float!, $calories: Int) {
-    addProfile(age: $newAge, sex: $newSex, weight: $newWeight, height: $newHeight, goalWeight: $newGoalWeight, activityLevel: $activityLevel, calories: $calories) {
+  mutation addProfile($age: Int!, $sex: String!, $height: Int!, $weight: Int!, $goalWeight: Int!, $activityLevel: Float!, $calories: Int!, $carbs: Int!, $fat: Int!, $protein: Int!, $sodium: Int!, $sugar: Int!) {
+    addProfile(age: $age, sex: $sex, weight: $weight, height: $height, goalWeight: $goalweight, activityLevel: $activityLevel, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
         _id
         age
         sex
-        weight
         height
+        weight
         goalWeight
-        calories
         activityLevel
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
     }
 }
 `;
 
 export const UPDATE_PROFILE = gql`
-  mutation updateProfile($profileId: ID!, $age: Int, $sex: String, $weight: Int, $height: Int, $goalWeight: Int, $calories: Int, $activityLevel: Float) {
-    updateProfile(profileId: $profileId, age: $age, sex: $sex, weight: $weight, height: $height, goalWeight: $goalWeight, calories: $calories, activityLevel: $activityLevel) {
+  mutation updateProfile($profileId: ID!, $age: Int, $sex: String, $height: Int, $weight: Int, $goalWeight: Int, $activityLevel: Float, $calories: Int, $carbs: Int, $fat: Int, $protein: Int, $sodium: Int, $sugar: Int) {
+    updateProfile(profileId: $profileId, age: $age, sex: $sex, height: $height, weight: $weight, goalWeight: $goalWeight, activityLevel: $activityLevel, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
       _id
       age
       sex
-      weight
       height
+      weight
       goalWeight
-      calories
       activityLevel
+      calories
+      carbs
+      fat
+      protein
+      sodium
+      sugar
     } 
   }
 `;
@@ -91,7 +101,7 @@ export const UPDATE_FOOD = gql`
 
 export const REMOVE_FOOD = gql`
     mutation removeFood($foodId: ID!) {
-      removeFood(foodId: $foodId){
+      removeFood(foodId: $foodId) {
         _id
       }
     }
@@ -191,8 +201,58 @@ export const ADD_PLANNER = gql`
 `;
 
 export const ADD_DIET = gql`
-  mutation addDiet($plannerId: ID!, $title: String!, $numberOfServing: Int!, $content: [[Float]]) {
-    addDiet(plannerId: $plannerId, title: $title, numberOfServing: $numberOfServing, content: $content) {
+  mutation addDiet($plannerId: ID!, $title: String!, $numberOfServing: Int!) {
+    addDiet(plannerId: $plannerId, title: $title, numberOfServing: $numberOfServing) {
+      _id
+      date
+      diet {
+        _id
+        title
+        numberOfServing
+        content {
+          servings
+          food {
+            _id
+          }
+        }
+      }
+      weight
+    }
+  }
+`;
+
+export const ADD_DIET_FOOD = gql`
+  mutation addDietFood($dietId: ID!, $servings: Int!, $food: ID!) {
+    addDietFood(dietId: $dietId, servings: $servings, food: $food) {
+      _id
+      date
+      diet {
+        _id
+        title
+        numberOfServing
+        content {
+          servings
+          food {
+            _id
+          }
+        }
+      }
+      weight
+    }
+  }
+`;
+
+export const REMOVE_DIET_FOOD = gql`
+    mutation removeDietFood($plannerId: ID!, $dietId: ID!) {
+      removeDietFood(plannerId: $plannerId, dietId: $dietId) {
+        _id
+      }
+    }
+`;
+
+export const ADD_WEIGHT = gql`
+  mutation addWeight($plannerId: ID!, $weight: Int!) {
+    addWeight(plannerId: $plannerId, weight: $weight) {
       _id
       date
       diet {

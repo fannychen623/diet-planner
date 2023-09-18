@@ -1,6 +1,7 @@
 const { Profile, User, Food, Meal, Planner } = require('../models');
 const { AuthenticationError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
+const { mongoose } = require('mongoose');
 
 
 const resolvers = {
@@ -80,26 +81,29 @@ const resolvers = {
     },
     addProfile: async (
       parent,
-      { age, sex, weight, height, goalWeight, activityLevel, calories },
+      { age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar },
       context
     ) => {
       if (context.user) {
         const profile = await Profile.create(
-          { age, sex, weight, height, goalWeight, activityLevel, calories });
-        await User.updateOne({ _id: context.user._id }, { profile: profile._id })
+          { age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar });
+        await User.updateOne(
+          { _id: context.user._id },
+          { profile: profile._id }
+        )
         return profile
       }
       throw new AuthenticationError("You need to be logged in!");
     },
     updateProfile: async (
       parent,
-      { profileId, age, sex, weight, height, goalWeight, activityLevel, calories },
+      { profileId, age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar },
       context
     ) => {
       if (context.user) {
         return await Profile.findOneAndUpdate(
           { _id: profileId },
-          { age, sex, weight, height, goalWeight, activityLevel, calories },
+          { age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar },
           { new: true }
         );
       }
@@ -107,17 +111,8 @@ const resolvers = {
     },
     addFood: async (parent, { title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
       if (context.user) {
-        const food = await Food.create({
-          title, 
-          servingSize, 
-          servingUnit, 
-          calories, 
-          carbs, 
-          fat, 
-          protein, 
-          sodium, 
-          sugar,
-        });
+        const food = await Food.create(
+          { title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar });
         await User.findOneAndUpdate(
           { _id: context.user._id },
           { $addToSet: { foods: food._id } }
@@ -130,7 +125,7 @@ const resolvers = {
       if (context.user) {
         return Food.findOneAndUpdate(
           { _id: foodId },
-          { $set: { title: title, servingSize: servingSize, servingUnit: servingUnit, calories: calories, carbs: carbs, fat: fat, protein: protein, sodium: sodium, sugar: sugar } },
+          { title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar },
           { new: true }
         );
       }
@@ -176,7 +171,7 @@ const resolvers = {
       if (context.user) {
         return Meal.findOneAndUpdate(
           { _id: mealId },
-          { $set: { title: title, numberOfServing: numberOfServing , content: content } },
+          { title, numberOfServing, content },
           { new: true }
         );
       }
@@ -218,76 +213,65 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in to start tracking!");
     },
-    addDiet: async (parent, { plannerId, title, numberOfServing, content }, context) => {
+    addDiet: async (parent, { plannerId, title, numberOfServing }, context) => {
       if (context.user) {
         return Planner.findOneAndUpdate(
           { _id: plannerId },
-          { $addToSet: { diet: { title: title, numberOfServing: numberOfServing, content: content }, }, },
+          { $addToSet: { diet: { title: title, numberOfServing: numberOfServing }, }, },
           { new: true, runValidators: true }
         );
       }
       throw new AuthenticationError("You need to be logged in to update routine!");
     },
-    addDietContent: async (parent, { dietId, servings, food }, context) => {
+    addDietFood: async (parent, { dietId, servings, food }, context) => {
       if (context.user) {
-        return Meal.findOneAndUpdate(
+        return Planner.findOneAndUpdate(
           { "diet._id": dietId },
-          { $addToSet: { content: { servings, food }, }, },
+          { $addToSet: { "diet.$.content" : { servings, food }, }, },
           { new: true, runValidators: true }
         );
       }
       throw new AuthenticationError("You need to be logged in to update routine!");
     },
-
-    updateDiet: async (parent, { dietId, numberOfServing, meal }, context) => {
-      if (context.user) {
-        return await Planner.findOneAndUpdate(
-          { "diet._id": dietId },
-          { $set: { "diet.$.numberOfServing": numberOfServing, "diet.$.meal": meal } },
-          { new: true }
-        );
-      }
-    },
-    removeDiet: async (parent, { plannerId, dietId }, context) => {
+    removeDietFood: async (parent, { plannerId, dietId }, context) => {
       if (context.user) {
         return Planner.findOneAndUpdate(
           { _id: plannerId },
           { $pull: { diet: { _id: dietId, }, }, }
         );
       }
-      throw new AuthenticationError(
-        "You need to be logged in to remove a scheduled routine!"
-      );
+      throw new AuthenticationError("You need to be logged in to update routine!");
     },
+
+    // updateDiet: async (parent, { plannerId, dietId, numberOfServing, meal }, context) => {
+    //   if (context.user) {
+    //     return await Planner.findOneAndUpdate(
+    //       { $and: [{ _id: plannerId }, { "diet._id": dietId }] },
+    //       { $set: { "diet.$.numberOfServing": numberOfServing, "diet.$.meal": meal } },
+    //       { new: true }
+    //     );
+    //   }
+    // },
+    // removeDiet: async (parent, { plannerId, dietId }, context) => {
+    //   if (context.user) {
+    //     return Planner.findOneAndUpdate(
+    //       { _id: plannerId },
+    //       { $pull: { diet: { _id: dietId, }, }, }
+    //     );
+    //   }
+    //   throw new AuthenticationError(
+    //     "You need to be logged in to remove a scheduled routine!"
+    //   );
+    // },
     addWeight: async (parent, { plannerId, weight }, context) => {
       if (context.user) {
         return Planner.findOneAndUpdate(
           { _id: plannerId },
-          { $addToSet: { weight: weight } },
+          { $set: { weight: weight } },
           { new: true, runValidators: true }
         );
       }
       throw new AuthenticationError("You need to be logged in to update routine!");
-    },
-    updateWeight: async (parent, { plannerId, weight }, context) => {
-      if (context.user) {
-        return Planner.findOneAndUpdate(
-          { _id: plannerId },
-          { $set: { weight: weight } },
-          { new: true }
-        );
-      }
-    },
-    removeWeight: async (parent, { plannerId, weightId }, context) => {
-      if (context.user) {
-        return Planner.findOneAndUpdate(
-          { _id: plannerId },
-          { $pull: { weight: { _id: weightId, }, }, }
-        );
-      }
-      throw new AuthenticationError(
-        "You need to be logged in to remove a scheduled routine!"
-      );
     },
     removePlanner: async (parent, { plannerId }, context) => {
       if (context.user) {

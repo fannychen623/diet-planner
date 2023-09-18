@@ -124,11 +124,16 @@ export const QUERY_MYPROFILE = gql`
       _id
       age
       sex
-      weight
       height
+      weight
       goalWeight
-      calories
       activityLevel
+      calories
+      carbs
+      fat
+      protein
+      sodium
+      sugar
     }
   }
 `;
@@ -136,14 +141,19 @@ export const QUERY_MYPROFILE = gql`
 export const QUERY_PROFILES = gql`
   query allProfiles {
     profiles {
-        _id
-        age
-        sex
-        weight
-        height
-        goalWeight
-        activityLevel
-        calories
+      _id
+      age
+      sex
+      height
+      weight
+      goalWeight
+      activityLevel
+      calories
+      carbs
+      fat
+      protein
+      sodium
+      sugar
     }
   }
 `;
@@ -151,14 +161,19 @@ export const QUERY_PROFILES = gql`
 export const QUERY_SINGLE_PROFILE = gql`
   query singleProfile($profileId: ID!) {
     profile(profileId: $profileId) {
-       _id
-        age
-        sex
-        weight
-        height
-        goalWeight
-        calories
-        activityLevel
+      _id
+      age
+      sex
+      height
+      weight
+      goalWeight
+      activityLevel
+      calories
+      carbs
+      fat
+      protein
+      sodium
+      sugar
     }
 }
 `

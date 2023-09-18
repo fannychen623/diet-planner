@@ -60,7 +60,7 @@ function App() {
               <Route path="/meal/new" element={<NewMeal />} />
               <Route path="/meal/edit/:mealId" element={<EditMeal />} />
               <Route path="/search" element={<Search />} />
-              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/calendar/:fetchDate" element={<Calendar />} />
             </Routes>
           </div>
         </div>

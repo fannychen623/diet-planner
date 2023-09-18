@@ -174,8 +174,8 @@ const Food = () => {
         </Box>
       ) : (
         // populate with food data once loaded
-        <Box>
-          <TableContainer width='100vw'>
+        <Box width='100%'>
+          <TableContainer width='100%'>
             <Table variant='simple' size='md'>
               <Thead>
                 <Tr>
