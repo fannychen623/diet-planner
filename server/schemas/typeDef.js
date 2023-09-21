@@ -22,16 +22,14 @@ const typeDef = gql`
     _id: ID!
     age: Int!
     sex: String!
-    height: Int!
-    weight: Int!
-    goalWeight: Int!
-    activityLevel: Float!
+    height: Float!
+    weight: Float!
+    activityLevel: String!
+    goal: String!
     calories: Int!
     carbs: Int!
     fat: Int!
     protein: Int!
-    sodium: Int!
-    sugar: Int!
   }
 
   type Food {
@@ -101,32 +99,28 @@ const typeDef = gql`
     addProfile(
       age: Int!, 
       sex: String!, 
-      height: Int!, 
-      weight: Int!,
-      goalWeight: Int!, 
-      activityLevel: Float!, 
-      calories: Int!
-      carbs: Int!
-      fat: Int!
+      height: Float!, 
+      weight: Float!,
+      activityLevel: String!, 
+      goal: String!,
+      calories: Int!,
+      carbs: Int!,
+      fat: Int!,
       protein: Int!
-      sodium: Int!
-      sugar: Int!
     ): Profile
 
     updateProfile(
       profileId: ID!, 
-      age: Int, 
-      sex: String, 
-      height: Int, 
-      weight: Int,
-      goalWeight: Int, 
-      activityLevel: Float, 
-      calories: Int!
-      carbs: Int!
-      fat: Int!
+      age: Int!, 
+      sex: String!, 
+      height: Float!, 
+      weight: Float!,
+      activityLevel: String!, 
+      goal: String!,
+      calories: Int!,
+      carbs: Int!,
+      fat: Int!,
       protein: Int!
-      sodium: Int!
-      sugar: Int!
     ): Profile
 
     addFood(

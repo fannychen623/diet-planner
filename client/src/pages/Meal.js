@@ -83,7 +83,7 @@ const Meal = () => {
     console.log(meals)
     return (
       <Box className='meal-page'>
-        <Flex mb='5'>
+        <Flex>
           <Box>
             <Heading>You don't have any meals yet. Click 'New Meal' to get started!</Heading>
           </Box>
@@ -100,9 +100,9 @@ const Meal = () => {
 
   return (
     <Box className='meal-page'>
-      <Flex mb='5'>
+      <Flex>
         <Box>
-          <Heading size='2xl'>Meals</Heading>
+          <Heading>Meals</Heading>
         </Box>
         <Spacer />
         <Box>
@@ -124,21 +124,18 @@ const Meal = () => {
                 <AccordionButton 
                 _hover={{ bg: 'var(--shade4)'}}
                 _expanded={{ bg: 'var(--shade4)'}}
-                color='var(--shade6)'
-                fontSize='2vw'
                 >
                   <Box as="span" flex='1' textAlign='left'>
                     {meal.title}
-                    
                   </Box>
                   <Spacer />
                   <Box>
                   <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit />} />
                   <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 />} />
                   </Box>
-                  <AccordionIcon ml='0.5vw'/>
+                  <AccordionIcon />
                 </AccordionButton>
-                <AccordionPanel pb={4}>
+                <AccordionPanel pb='4'>
                 <MealContent contents={meal.content} foods={foods} />
                 </AccordionPanel>
               </AccordionItem>

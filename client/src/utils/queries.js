@@ -10,11 +10,14 @@ export const QUERY_USER = gql`
         _id
         age
         sex
-        weight
         height
-        goalWeight
-        calories
+        weight
         activityLevel
+        goal
+        calories
+        carbs
+        fat
+        protein
       }
       foods {
         _id
@@ -69,11 +72,14 @@ export const QUERY_ME = gql`
         _id
         age
         sex
-        weight
         height
-        goalWeight
-        calories
+        weight
         activityLevel
+        goal
+        calories
+        carbs
+        fat
+        protein
       }
       foods {
         _id
@@ -126,14 +132,12 @@ export const QUERY_MYPROFILE = gql`
       sex
       height
       weight
-      goalWeight
       activityLevel
+      goal
       calories
       carbs
       fat
       protein
-      sodium
-      sugar
     }
   }
 `;
@@ -146,14 +150,12 @@ export const QUERY_PROFILES = gql`
       sex
       height
       weight
-      goalWeight
       activityLevel
+      goal
       calories
       carbs
       fat
       protein
-      sodium
-      sugar
     }
   }
 `;
@@ -166,14 +168,12 @@ export const QUERY_SINGLE_PROFILE = gql`
       sex
       height
       weight
-      goalWeight
       activityLevel
+      goal
       calories
       carbs
       fat
       protein
-      sodium
-      sugar
     }
 }
 `

@@ -139,7 +139,7 @@ const Food = () => {
   if (!foods.length) {
     return (
       <Box className='food-page'>
-        <Flex mb='5'>
+        <Flex>
           <Box>
             <Heading>You don't have any foods yet. Click 'Add Food' to get started!</Heading>
           </Box>
@@ -156,9 +156,9 @@ const Food = () => {
 
   return (
     <Box className='food-page'>
-      <Flex mb='5'>
+      <Flex>
         <Box>
-          <Heading size='2xl'>Foods</Heading>
+          <Heading>Foods</Heading>
         </Box>
         <Spacer />
         <Box>
@@ -174,9 +174,9 @@ const Food = () => {
         </Box>
       ) : (
         // populate with food data once loaded
-        <Box width='100%'>
-          <TableContainer width='100%'>
-            <Table variant='simple' size='md'>
+        <Box>
+          <TableContainer>
+            <Table variant='simple'>
               <Thead>
                 <Tr>
                   <Th text>Name</Th>
@@ -219,8 +219,8 @@ const Food = () => {
                         sugar: parseInt(`${food.sugar}`),
                       }); onOpen()
                     }}
-                      size='sm' icon={<FiEdit />} /></Td>
-                    <Td><IconButton onClick={() => { handleRemoveFood(`${food._id}`) }} size='sm' icon={<FiTrash2 />} /></Td>
+                      size='sm' icon={<FiEdit p='100%' />} /></Td>
+                    <Td><IconButton onClick={() => { handleRemoveFood(`${food._id}`) }} size='sm' icon={<FiTrash2 p='100%' />} /></Td>
                   </Tr>
                 ))}
               </Tbody>

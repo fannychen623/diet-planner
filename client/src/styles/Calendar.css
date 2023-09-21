@@ -1,49 +1,96 @@
 /* styling for the Calendar page */
 .calendar-page {
+    font-family: var(--font);
     min-height: 100vh;
     height: fit-content;
-    padding: 3vw;
+    padding: 2rem;
 }
 
 /* list date */
 .calendar-page .css-1sl53ol {
     font-family: var(--font);
-    font-size: 3vw;
+    font-size: 2.5em;
+    color: var(--shade5);
+    border: none;
+    padding: 3% 0% 0% 4%;
+}
+
+/* add/edit/remove meal and add weight button */
+.calendar-page .css-22xpxh, .calendar-page .css-x9zq2g {
+    background-color: var(--shade5);
+    color: white;
+}
+
+/* add/edit/remove meal and add weight button */
+.calendar-page .css-22xpxh:hover, .calendar-page .css-x9zq2g:hover {
+    background-color: var(--shade6);
+}
+
+/* add meal and weight container */
+.calendar-page .css-gg4vpm {
+    margin-bottom: 1.5em;
+}
+
+/* meal accordian header */ 
+.calendar-page .css-ohx7pl {
+    border-top-width: 0;
+}
+
+/* meal accordian header */
+.calendar-page .css-uttm9k {
+    font-size: 1.5em;
+    margin-top: 1em;
+    background-color: var(--shade5);
+    color: white;
+}
+
+/* accordian container */
+.calendar-page .css-17mg6aq {
+    border: none;
+}
+/* meal accordian icon (not expanded and expanded) */
+.calendar-page .css-186l2rg, .calendar-page .css-j2ph2z {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+/* meal accordian panel */
+.calendar-page .css-mxa4qn {
+    padding-bottom: 0.75em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid var(--shade4)
+}
+
+/* daily stats accordian header */
+.calendar-page .css-iqe3ys {
+    font-size: 1.5em;
+    margin-top: 0.25em;
+    margin-bottom: 0.5em;
+    background-color: var(--shade5);
+    color: white;
+}
+
+/* daily stat catergories */
+.calendar-page .statTitle {
+    font-size: 2em;
+    color: var(--shade5);
+}
+
+/* daily stats category values */
+.calendar-page .statValue {
+    font-size: 1em;
+    color: var(--shade4);
+}
+
+/* daily stats circle */
+.calendar-page .css-kn46u7 {
+    width: 2.5em;
+    height: 2.5em;
+}
+
+.calendar-page .css-f1j64i {
+    font-size: 0.5em;
     color: var(--shade6);
-    border: none;
-    padding: 3%;
-    margin-bottom: -3%;
-}
-
-/* routine, calorie, and weight sub-headings */
-.calendar-page .css-tgwblw, .calendar-page .css-h0uhjz  {
-    color: var(--shade2);
-    font-family: var(--font);
-}
-
-/* add/remove tracker button */
-.calendar-page .css-8j2k67:hover {
-    background: var(--shade1);
-    color: white;
-}
-
-/* add, delete, edit buttons */
-.calendar-page .css-1jfvl37, .calendar-page .css-81d84v {
-    background: var(--shade1);
-    color: white;
-}
-
-/* add, delete, edit buttons */
-.calendar-page .css-1jfvl37:hover, .calendar-page .css-81d84v:hover {
-    background: var(--shade5);
-}
-
-/* add, delete, edit buttons */
-.calendar-page input[type="number"] {
-    padding: 0.75vw;
-    border-radius: 0.5rem;
-    border: none;
-    margin-right: 1vw;
 }
 
 /* calendar styling, imported/associated with calendar package */

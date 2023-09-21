@@ -30,7 +30,7 @@ import {
 } from '@chakra-ui/react'
 
 import {
-  FiCheck, FiSave, FiInfo, FiPlus, FiEdit3, FiTrash2,
+  FiCheck, FiSave, FiInfo, FiPlus, FiEdit2, FiEdit3, FiTrash2,
   FiEdit, FiPlusSquare, FiMinusSquare, FiMinus
 } from 'react-icons/fi';
 
@@ -203,7 +203,7 @@ const CalendarPage = () => {
     } else {
       let dietId = ''
       let dietMeals = []
-      const setDietData = ( a, b ) => {
+      const setDietData = (a, b) => {
         dietId = a
         dietMeals = b
       }
@@ -307,8 +307,8 @@ const CalendarPage = () => {
 
   return (
     <Box className='calendar-page'>
-      <Grid templateColumns='repeat(10, 1fr)' gap={6}>
-        <GridItem colSpan={5}>
+      <Grid templateColumns='repeat(10, 1fr)' gap='6'>
+        <GridItem colSpan='5'>
           <Box className='calendar'>
             <Box className='calendar-container'>
               {/* react calendar component */}
@@ -320,48 +320,36 @@ const CalendarPage = () => {
             </Box>
           </Box>
         </GridItem>
-        <GridItem colSpan={5}>
+        <GridItem colSpan='5'>
           <Card>
             <CardHeader>
               {/* header with selected date in string format */}
-              <Text fontSize='2.75vw' color='var(--shade5)'>{format(new Date(date), 'MMMM do, yyyy')}</Text>
+              <Text>{format(new Date(date), 'MMMM do, yyyy')}</Text>
             </CardHeader>
             <CardBody>
-              <Box display='flex' justifyContent='space-between' mb='5'>
+              <Box display='flex' justifyContent='space-between'>
                 <Box display='flex' alignItems='center'>
                   <IconButton
-                    mr='3'
                     size='md'
-                    bg='var(--shade5)'
-                    color='white'
-                    _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
                     icon={<FiPlus />}
                     onClick={onOpen}
                   />
-                  <Text>Add meal</Text>
+                  <Text ml='0.5em'>Add meal</Text>
                 </Box>
                 <Spacer />
                 <Box display='flex' alignItems='center'>
-                  <Text mr='3'>Weight:</Text>
+                  <Text mr='0.5em'>Weight:</Text>
                   <Input defaultValue={weight} onChange={(e) => { setWeight(parseInt(e.target.value)) }} />
                   {weight ? (
                     <IconButton
-                      ml='3'
                       size='md'
-                      bg='var(--shade5)'
-                      color='white'
-                      _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
                       value={plannerId}
                       icon={<FiCheck />}
                       onClick={(e) => { handleAddWeight(plannerId) }}
                     />
                   ) : (
                     <IconButton
-                      ml='3'
                       size='md'
-                      bg='var(--shade5)'
-                      color='white'
-                      _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
                       value={plannerId}
                       icon={<FiPlus />}
                       onClick={(e) => { handleAddWeight(plannerId) }}
@@ -372,8 +360,8 @@ const CalendarPage = () => {
               </Box>
               {/* if tracked and query is complete */}
               {loading ? (
-                <Box ml='40%' mb='5' display='flex' alignItems='center'>
-                  <Spinner mr='3' /><Text>Loading...</Text>
+                <Box display='flex' alignItems='center'>
+                  <Spinner /><Text>Loading...</Text>
                 </Box>
               ) : (
                 <Box>
@@ -386,8 +374,8 @@ const CalendarPage = () => {
                           <h2>
                             <AccordionButton>
                               <Box as="span" flex='1' textAlign='left'>
-                                <IconButton isDisabled size='md' mr='3' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
-                                <IconButton isDisabled size='md' mr='3' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                                <IconButton isDisabled size='md' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                                <IconButton isDisabled size='md' mr='1em' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
                                 Meal
                               </Box>
                               <Box as="span" flex='1' textAlign='right'>
@@ -399,125 +387,138 @@ const CalendarPage = () => {
                         {currentPlanner.map((planner) => (
                           <AccordionItem>
                             <h2>
-                              <AccordionButton _hover={{ bg: 'var(--shade3)' }}>
-                                <Box as="span" flex='1' textAlign='left'>
-                                  <IconButton
-                                    size='md'
-                                    mr='3'
-                                    bg='var(--shade5)'
-                                    color='white'
-                                    _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-                                    icon={<FiMinusSquare />}
-                                    id={planner.id}
-                                    onClick={handleRemoveDietFood}
-                                  />
-                                  <IconButton
-                                    size='md'
-                                    mr='3'
-                                    bg='var(--shade5)'
-                                    color='white'
-                                    _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-                                    icon={<FiEdit />}
-                                  />
-                                  {planner.title}
-                                </Box>
-                                <Box as="span" flex='1' textAlign='right'>
-                                  {planner.numberOfServing}
-                                </Box>
-                                <AccordionIcon ml='3' />
+                              <AccordionButton _hover={{ bg: 'var(--shade2)' }} _expanded={{ bg: 'var(--shade2)', fontWeight: 'bold' }}>
+                                <Grid templateColumns='repeat(10, 1fr)' gap='4'>
+                                  <GridItem colSpan='9' alignItems='center'>
+                                    <Box textAlign='left'>
+                                      <IconButton
+                                        size='md'
+                                        icon={<FiMinus />}
+                                        id={planner.id}
+                                        onClick={handleRemoveDietFood}
+                                      />
+                                      <IconButton
+                                        mx='1em'
+                                        size='md'
+                                        icon={<FiEdit3 />}
+                                      />
+                                      {planner.title}
+                                    </Box>
+                                  </GridItem>
+                                  <GridItem colSpan='1' display='flex' alignItems='center'>
+                                    <Box textAlign='right'>
+                                      {planner.numberOfServing}
+                                    </Box>
+                                    <AccordionIcon />
+                                  </GridItem>
+                                </Grid>
                               </AccordionButton>
                             </h2>
-                            <AccordionPanel pb={4}>
+                            <AccordionPanel>
+                            <Grid templateColumns='repeat(10, 1fr)' gap='4'>
+                            <GridItem colSpan='7'>
+                              <Text as='b'>Contains: </Text>
                               {planner.content.map((content) => (
-                                <Text>{foods[foods.findIndex(food => food._id === content.food)].title} {content.servings}</Text>
+                                <Text>{content.servings} serving of {foods[foods.findIndex(food => food._id === content.food)].title}</Text>
                               ))}
+                              </GridItem>
+                              <GridItem colSpan='3' textAlign='right'>
+                              <Text as='b'>Total Nutrition Value: </Text>
+                                <Text>Calories: 45 kcal</Text>
+                                <Text>Carbs: 45 kcal</Text>
+                                <Text>Fat: 45 kcal</Text>
+                                <Text>Protein: 45 kcal</Text>
+                                <Text>Sodium: 45 kcal</Text>
+                                <Text>Sugar: 45 kcal</Text>
+                              </GridItem>
+                              </Grid>
                             </AccordionPanel>
                           </AccordionItem>
                         ))}
                       </Accordion>
-                      <Accordion allowToggle defaultIndex={[0]} mt='4'>
-  <AccordionItem>
-    <h2>
-      <AccordionButton color='var(--shade5)' _hover={{ bg:'var(--shade3)'}} _expanded={{bg:'var(--shade5)', color:'white'}}>
-      <AccordionIcon />
-        <Box as="span" flex='1' textAlign='center' fontSize='2vw' _expanded={{color:'white'}}>
-          Daily Stats
-        </Box>
-        <AccordionIcon />
-      </AccordionButton>
-    </h2>
-    <AccordionPanel pb={4}>
-    <SimpleGrid columns={4} pt='5' spacingX='20px' spacingY='20px' textAlign='center'>
-                        <Box p='2'>
-                          <Stack>
-                            <Text fontSize='2vw' color='var(--shade5)'>Calories</Text>
-                            <Text fontSize='1.15vw' color='var(--shade5)'>1025/1400 kcal</Text>
-                          </Stack>
-                        </Box>
-                        <Box pt='2'>
-                          <CircularProgress value={40} color='#a7d489' size='7vw' >
-                            <CircularProgressLabel>40%</CircularProgressLabel>
-                          </CircularProgress>
-                        </Box>
-                        <Box p='2'>
-                          <Stack>
-                            <Text fontSize='2vw' color='var(--shade5)'>Carbs</Text>
-                            <Text fontSize='1.15vw' color='var(--shade5)'>102/140 g</Text>
-                          </Stack>
-                        </Box>
-                        <Box pt='2'>
-                          <CircularProgress value={20} color='#6baee1' size='7vw' >
-                            <CircularProgressLabel>20%</CircularProgressLabel>
-                          </CircularProgress>
-                        </Box>
-                        <Box p='2'>
-                          <Stack>
-                            <Text fontSize='2vw' color='var(--shade5)'>Fat</Text>
-                            <Text fontSize='1.15vw' color='var(--shade5)'>125/400 g</Text>
-                          </Stack>
-                        </Box>
-                        <Box pt='2'>
-                          <CircularProgress value={73} color='#ffef85' size='7vw' >
-                            <CircularProgressLabel>73%</CircularProgressLabel>
-                          </CircularProgress>
-                        </Box>
-                        <Box p='2'>
-                          <Stack>
-                            <Text fontSize='2vw' color='var(--shade5)'>Protein</Text>
-                            <Text fontSize='1.5vw' color='var(--shade5)'>1067/1460 g</Text>
-                          </Stack>
-                        </Box>
-                        <Box pt='2'>
-                          <CircularProgress value={60} color='#f6ac69' size='7vw' >
-                            <CircularProgressLabel>60%</CircularProgressLabel>
-                          </CircularProgress>
-                        </Box>
-                        <Box p='2'>
-                          <Stack>
-                            <Text fontSize='2vw' color='var(--shade5)'>Sodium</Text>
-                            <Text fontSize='1.15vw' color='var(--shade5)'>956/1230 mg</Text>
-                          </Stack>
-                        </Box>
-                        <Box pt='2'>
-                          <CircularProgress value={45} color='#ff6972' size='7vw' >
-                            <CircularProgressLabel>45%</CircularProgressLabel>
-                          </CircularProgress>
-                        </Box>
-                        <Box p='2'>
-                          <Stack>
-                            <Text fontSize='2vw' color='var(--shade5)'>Sugar</Text>
-                            <Text fontSize='1.15vw' color='var(--shade5)'>15/100 g</Text>
-                          </Stack>
-                        </Box>
-                        <Box pt='2'>
-                          <CircularProgress value={30} color='#9f7dad' size='7vw' >
-                            <CircularProgressLabel>30%</CircularProgressLabel>
-                          </CircularProgress>
-                        </Box>
-                      </SimpleGrid>
-    </AccordionPanel>
-  </AccordionItem>
-</Accordion>
+                      <Accordion allowToggle defaultIndex={[0]}>
+                        <AccordionItem>
+                          <h2>
+                            <AccordionButton _hover={{ bg:'var(--shade5)'}}>
+                              <AccordionIcon />
+                              <Box as="span" flex='1' textAlign='center'>
+                                Daily Stats
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel borderBottom='none'>
+                            <SimpleGrid columns='4' spacingY='1em' textAlign='center' alignItems='center'>
+                              <Box>
+                                <Stack>
+                                  <Text class='statTitle'>Calories</Text>
+                                  <Text class='statValue'>1025/1400 kcal</Text>
+                                </Stack>
+                              </Box>
+                              <Box>
+                                <CircularProgress value={40} color='#a7d489'>
+                                  <CircularProgressLabel>40%</CircularProgressLabel>
+                                </CircularProgress>
+                              </Box>
+                              <Box>
+                                <Stack>
+                                  <Text class='statTitle'>Carbs</Text>
+                                  <Text class='statValue'>102/140 g</Text>
+                                </Stack>
+                              </Box>
+                              <Box>
+                                <CircularProgress value={20} color='#6baee1'>
+                                  <CircularProgressLabel>20%</CircularProgressLabel>
+                                </CircularProgress>
+                              </Box>
+                              <Box>
+                                <Stack>
+                                  <Text class='statTitle'>Fat</Text>
+                                  <Text class='statValue'>125/400 g</Text>
+                                </Stack>
+                              </Box>
+                              <Box>
+                                <CircularProgress value={73} color='#ffef85'>
+                                  <CircularProgressLabel>73%</CircularProgressLabel>
+                                </CircularProgress>
+                              </Box>
+                              <Box>
+                                <Stack>
+                                  <Text class='statTitle'>Protein</Text>
+                                  <Text class='statValue'>1067/1460 g</Text>
+                                </Stack>
+                              </Box>
+                              <Box>
+                                <CircularProgress value={60} color='#f6ac69'>
+                                  <CircularProgressLabel>60%</CircularProgressLabel>
+                                </CircularProgress>
+                              </Box>
+                              <Box>
+                                <Stack>
+                                  <Text class='statTitle'>Sodium</Text>
+                                  <Text class='statValue'>956/1230 mg</Text>
+                                </Stack>
+                              </Box>
+                              <Box>
+                                <CircularProgress value={45} color='#ff6972'>
+                                  <CircularProgressLabel>45%</CircularProgressLabel>
+                                </CircularProgress>
+                              </Box>
+                              <Box>
+                                <Stack>
+                                  <Text class='statTitle'>Sugar</Text>
+                                  <Text class='statValue'>15/100 g</Text>
+                                </Stack>
+                              </Box>
+                              <Box>
+                                <CircularProgress value={30} color='#9f7dad'>
+                                  <CircularProgressLabel>30%</CircularProgressLabel>
+                                </CircularProgress>
+                              </Box>
+                            </SimpleGrid>
+                          </AccordionPanel>
+                        </AccordionItem>
+                      </Accordion>
                     </Box>
                   )}
                 </Box>

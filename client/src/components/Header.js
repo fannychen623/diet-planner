@@ -70,7 +70,7 @@ function Header() {
                   <IconButton variant='link' px='1vw' aria-label='Tracker' icon={<RiLineChartLine />} />
                 </Tooltip>
               </Link>
-              <Link to='/'>
+              <Link to='/profile'>
                 <Tooltip label='Profile' bg='var(--shade6)' color='white'>
                   <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiAccountCircleLine />} />
                 </Tooltip>

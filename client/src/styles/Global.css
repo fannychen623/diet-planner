@@ -21,6 +21,7 @@ background-size: 100% 100%;
 min-height: 100vh;
 height: fit-content;
 font-family: var(--font);
+font-size: 100%;
 }
 
 /* global modal styles (create/edit posts, create routine, and add profile */

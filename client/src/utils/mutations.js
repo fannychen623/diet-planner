@@ -26,41 +26,37 @@ export const LOGIN_USER = gql`
 `;
 
 export const ADD_PROFILE = gql`
-  mutation addProfile($age: Int!, $sex: String!, $height: Int!, $weight: Int!, $goalWeight: Int!, $activityLevel: Float!, $calories: Int!, $carbs: Int!, $fat: Int!, $protein: Int!, $sodium: Int!, $sugar: Int!) {
-    addProfile(age: $age, sex: $sex, weight: $weight, height: $height, goalWeight: $goalweight, activityLevel: $activityLevel, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
+  mutation addProfile($age: Int!, $sex: String!, $height: Float!, $weight: Float!, $activityLevel: String!, $goal: String!, $calories: Int!, $carbs: Int!, $fat: Int!, $protein: Int!) {
+    addProfile(age: $age, sex: $sex, weight: $weight, height: $height, activityLevel: $activityLevel, goal: $goal, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein) {
         _id
         age
         sex
         height
         weight
-        goalWeight
         activityLevel
+        goal
         calories
         carbs
         fat
         protein
-        sodium
-        sugar
     }
 }
 `;
 
 export const UPDATE_PROFILE = gql`
-  mutation updateProfile($profileId: ID!, $age: Int, $sex: String, $height: Int, $weight: Int, $goalWeight: Int, $activityLevel: Float, $calories: Int, $carbs: Int, $fat: Int, $protein: Int, $sodium: Int, $sugar: Int) {
-    updateProfile(profileId: $profileId, age: $age, sex: $sex, height: $height, weight: $weight, goalWeight: $goalWeight, activityLevel: $activityLevel, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
+  mutation updateProfile($profileId: ID!, $age: Int!, $sex: String!, $height: Float!, $weight: Float!, $activityLevel: String!, $goal: String!, $calories: Int!, $carbs: Int!, $fat: Int!, $protein: Int!) {
+    updateProfile(profileId: $profileId, age: $age, sex: $sex, height: $height, weight: $weight, activityLevel: $activityLevel, goal: $goal, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein) {
       _id
       age
       sex
       height
       weight
-      goalWeight
       activityLevel
+      goal
       calories
       carbs
       fat
       protein
-      sodium
-      sugar
     } 
   }
 `;

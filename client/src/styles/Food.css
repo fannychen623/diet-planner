@@ -1,35 +1,43 @@
 /* styling for the Routine page */
 .food-page {
+    font-family: var(--font);
     min-height: 100vh;
     height: fit-content;
-    padding: 3vw;
-    font-family: var(--font);
+    padding: 2rem;
 }
 
 /* page title */
-.food-page .css-1jkx6l7 {
-    color: var(--shade5);
-    font-family: var(--font);
-}
-
-/* no food message */
 .food-page .css-1dklj6k {
-    color: var(--shade4);
     font-family: var(--font);
+    font-size: 2.75rem;
+    color: var(--shade5);
+    padding-top: 1rem;
 }
 
 /* add food button */
 .food-page .css-ez23ye {
-    font-size: 1.5vw;
-    padding: 3vh 1.5vw 3vh 1.5vw;
-    margin-bottom: 1vh;
+    font-size: 1.5rem;
+    padding: 2rem 1.5rem 2rem 1.5rem;
+    margin-bottom: 2rem;
     background-color: var(--shade5);
     color: white;
 }
 
 /* add food button */
 .food-page .css-ez23ye:hover {
-    background-color: var(--shade6);
+    background-color: var(--shade3);
+    color: var(--shade5);
+}
+
+/* table container */
+.food-page .css-zipzvv {
+    width: 100rem;
+    margin-bottom: 2rem;
+}
+
+/* table */
+.food-page .css-5605sr {
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 /* table headers */
@@ -37,32 +45,25 @@
     text-align: center;
     color: white;
     background-color: var(--shade5);
+    padding: 1% 0%;
 }
 
 /* table content */
 .food-page .css-xumdn4, .food-page .css-xumdn4[data-is-numeric=true] {
     text-align: center;
+    border-color: var(--shade4);
 }
 
-/* food card headers */
-.food-page .css-1jb3vzl {
-    color: var(--shade5);
-    font-family: var(--font);
-}
 
 /* food edit and delete button */
 .food-page .css-fx3q01 {
     background-color: var(--trans);
+    margin: 0.25em -1em 0.25em -1em;
 }
 
 /* food edit and delete button */
 .food-page .css-fx3q01:hover {
     background-color: var(--shade2);
-}
-
-/* food table */
-.food-page .css-5605sr {
-    background-color: rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 768px) {

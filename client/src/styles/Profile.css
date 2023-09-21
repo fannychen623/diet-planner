@@ -1,0 +1,103 @@
+/* styling for profile page and profile modal */
+.profile-page {
+  font-family: var(--font);
+  min-height: 100vh;
+  height: fit-content;
+  padding: 2rem;
+}
+
+/* profile and metabolic statistics header */
+.profile-page .css-xrxou1 {
+  font-family: var(--font);
+  color: var(--shade5)
+}
+
+/* create profile text */
+.profile-page .createProfileText {
+  font-size: 1.5em;
+  color: var(--shade4);
+  margin-bottom: 1em;
+}
+
+/* male female radio */
+.profile-page .css-1cqh9jq {
+  margin-left: 1em;
+}
+
+/* profile sex input */
+.profile-page .css-164hj3a {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+/* profile inputLeftAddon */
+.profile-page .profile .css-127xmqf {
+  background-color: var(--shade3);
+}
+
+/* profile units inputRightAddon */
+.profile-page .profile .css-1r6jmxn {
+  border-radius: 0;
+  background-color: var(--shade1);
+}
+
+/* profile inputs */
+.profile-page .profile .css-1y0e7gb {
+  margin-bottom: 1em;
+}
+
+/* add/update profile button */
+.profile-page .css-ez23ye {
+  font-size: 1.5em;
+  padding: 1em 1em;
+  margin: auto;
+  background-color: var(--shade4);
+  color: white;
+}
+
+/* add/update profile button */
+.profile-page .css-ez23ye:hover {
+  background-color: var(--shade5);
+  color: white;
+}
+
+/* profile card bodies */
+.profile-page .profile .css-1idwstw {
+  padding: 0em 2em;
+}
+
+/* profile card footer */
+.profile-page .css-1a7q9t8 {
+  padding-top: 0;
+}
+
+/* stats card bodies */
+.profile-page .metabolicStats .css-1idwstw {
+  padding: 1em 2em 0.85em 2em;
+}
+
+/* stats titles */
+.profile-page .css-1dklj6k {
+  font-family: var(--font);
+  font-size: 1.75em;
+  margin-bottom: 1em;
+  margin-right: 1em;
+  color: var(--shade4)
+}
+
+/* stats values */
+.profile-page .metabolicStats .statsValue {
+  font-family: var(--font);
+  font-size: 2em;
+  font-weight: bolder;
+  margin-top: -0.25em;
+  color: var(--shade5)
+}
+
+/* stats units */
+.profile-page .metabolicStats span {
+  font-family: var(--font);
+  font-size: 0.65em;
+  margin-left: 1em;
+  color: var(--shade4);
+}

@@ -1,34 +1,55 @@
 /* styling for the Routine page */
 .meal-page, .new-meal-page {
+    font-family: var(--font);
     min-height: 100vh;
     height: fit-content;
-    padding: 3vw;
-    font-family: var(--font);
+    padding: 2rem;
 }
 
 /* page title */
-.meal-page .css-1jkx6l7, .new-meal-page .css-1mxx7z2 {
-    color: var(--shade5);
+.meal-page .css-1dklj6k, .new-meal-page .css-1mxx7z2 {
     font-family: var(--font);
+    font-size: 2.75rem;
+    color: var(--shade5);
+    padding-top: 1rem;
 }
 
-/* no food message */
-.meal-page .css-1dklj6k {
-    color: var(--shade4);
-    font-family: var(--font);
+/* new meal button */
+.meal-page .css-ez23ye {
+    font-size: 1.5rem;
+    padding: 2rem 1.5rem 2rem 1.5rem;
+    margin-bottom: 2rem;
+    background-color: var(--shade5);
+    color: white;
+}
+
+/* new meal button */
+.meal-page .css-ez23ye:hover {
+    background-color: var(--shade3);
+    color: var(--shade5);
 }
 
 /* accordian component */
 .meal-page .accordian {
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: #ffffff80;
 }
 
+.meal-page .css-17mg6aq {
+    border-color: var(--shade4);
+    border-top-width: 0px;
+    border-bottom-width: 1em;
+}
+/* accordian titles */
+.meal-page .css-1eziwv {
+    font-size: 1.5em;
+    padding: 0.5em 0em 0.5em 0.5em;
+}
 
 /* meal edit and delete button */
 .meal-page .css-22xpxh {
     background-color: var(--trans);
     color: var(--shade6);
-    margin-right: 0.5vw;
+    margin-right: 0.5em;
 }
 
 /* meal edit and delete button */
@@ -37,36 +58,25 @@
     color: white;
 }
 
+/* table headers */
+.meal-page .css-15wjwcp {
+    text-align: center;
+    background-color: var(--shade6);
+    color: white;
+    padding: 1% 0%;
+}
+
+/* table content */
+.meal-page .css-1vmvwla {
+    text-align: center;
+}
+
 /* number input field */
 .new-meal-page .css-1dqab6m {
     outline: none;
     border-color: var(--shade5);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-}
-
-/* add meal button */
-.meal-page .css-ez23ye {
-    font-size: 1.5vw;
-    padding: 3vh 1.5vw 3vh 1.5vw;
-    margin-bottom: 1vh;
-    background-color: var(--shade4);
-    color: white;
-}
-
-/* add meal button */
-.meal-page .css-ez23ye:hover  {
-    background-color: var(--shade5);
-}
-
-/* table headers */
-.meal-page .css-15wjwcp {
-    text-align: center;
-    color: var(--shade6);
-}
-
-.meal-page .css-1vmvwla {
-    text-align: center;
 }
 
 /* table headers */

@@ -37,7 +37,7 @@ const MealContent = ({ contents, foods }) => {
         }
 
         return (
-            <Tr bg='var(--shade5)' color='white'>
+            <Tr bg='var(--shade5)' color='white' fontWeight='bold'>
                 <Td>Total</Td>
                 <Td></Td>
                 <Td></Td>

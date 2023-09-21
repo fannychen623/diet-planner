@@ -81,12 +81,12 @@ const resolvers = {
     },
     addProfile: async (
       parent,
-      { age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar },
+      { age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein },
       context
     ) => {
       if (context.user) {
         const profile = await Profile.create(
-          { age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar });
+          { age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein });
         await User.updateOne(
           { _id: context.user._id },
           { profile: profile._id }
@@ -97,13 +97,13 @@ const resolvers = {
     },
     updateProfile: async (
       parent,
-      { profileId, age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar },
+      { profileId, age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein },
       context
     ) => {
       if (context.user) {
         return await Profile.findOneAndUpdate(
           { _id: profileId },
-          { age, sex, height, weight, goalWeight, activityLevel, calories, carbs, fat, protein, sodium, sugar },
+          { age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein },
           { new: true }
         );
       }

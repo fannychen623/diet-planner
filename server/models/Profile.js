@@ -19,13 +19,13 @@ const profileSchema = new Schema(
         type: Number,
         required: true,
     },
-    goalWeight: {
-        type: Number, 
+    activityLevel: {
+        type: String, 
         required: true,
     },
-    activityLevel: {
-        type: Number, 
-        required: true,
+    goal: {
+        type: String,
+        required: true
     },
     calories: {
         type: Number,
@@ -43,14 +43,6 @@ const profileSchema = new Schema(
         type: Number,
         required: true
     },
-    sodium: {
-        type: Number,
-        required: true
-    },
-    sugar: {
-        type: Number,
-        required: true
-    }
 }
 );
 
