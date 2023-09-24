@@ -143,12 +143,12 @@ const EditMeal = () => {
     }
 
     setTotal({
-      calories: newTotal.calories,
-      carbs: newTotal.carbs,
-      fat: newTotal.fat,
-      protein: newTotal.protein,
-      sodium: newTotal.sodium,
-      sugar: newTotal.sugar
+      calories: +parseFloat(newTotal.calories).toFixed(2),
+      carbs: +parseFloat(newTotal.carbs).toFixed(2),
+      fat: +parseFloat(newTotal.fat).toFixed(2),
+      protein: +parseFloat(newTotal.protein).toFixed(2),
+      sodium: +parseFloat(newTotal.sodium).toFixed(2),
+      sugar: +parseFloat(newTotal.sugar).toFixed(2)
     })
   }, [foodAdded, foodsList, foods]);
 
@@ -218,7 +218,7 @@ const EditMeal = () => {
     if (value) {
       for (let i = 0; i < foodAdded.length; i++) {
         if (foodAdded[i].id === id) {
-          foodAdded[i].servings = parseInt(value);
+          foodAdded[i].servings = parseFloat(value);
           foodAdded[i].calories = foods[foods.findIndex(food => food._id === id)].calories * value;
           foodAdded[i].carbs = foods[foods.findIndex(food => food._id === id)].carbs * value;
           foodAdded[i].fat = foods[foods.findIndex(food => food._id === id)].fat * value;
@@ -239,12 +239,12 @@ const EditMeal = () => {
       }
 
       setTotal({
-        calories: newTotal.calories,
-        carbs: newTotal.carbs,
-        fat: newTotal.fat,
-        protein: newTotal.protein,
-        sodium: newTotal.sodium,
-        sugar: newTotal.sugar
+        calories: +parseFloat(newTotal.calories).toFixed(2),
+        carbs: +parseFloat(newTotal.carbs).toFixed(2),
+        fat: +parseFloat(newTotal.fat).toFixed(2),
+        protein: +parseFloat(newTotal.protein).toFixed(2),
+        sodium: +parseFloat(newTotal.sodium).toFixed(2),
+        sugar: +parseFloat(newTotal.sugar).toFixed(2)
       })
 
     }
@@ -279,7 +279,7 @@ const EditMeal = () => {
       try {
         // add routine with variables routineNanem and routine
         const { mealData } = await updateMeal({
-          variables: { mealId, ...mealDetails, content: [] },
+          variables: { mealId, title: mealDetails.title, numberOfServing: parseFloat(mealDetails.numberOfServing), content: [] },
 
           onCompleted(mealData) {
             handleUpdateMealFood()
@@ -296,7 +296,7 @@ const EditMeal = () => {
 
   const handleUpdateMealFood = async () => {
     for (let i = 0; i < foodAdded.length; i++) {
-      let servings = parseInt(foodAdded[i].servings)
+      let servings = parseFloat(foodAdded[i].servings)
       let food = foodAdded[i].id
 
       try {
@@ -393,12 +393,12 @@ const EditMeal = () => {
                     />
                   </Td>
                   <Td>{addFood.servingSizeUnit}</Td>
-                  <Td isNumeric>{addFood.calories}</Td>
-                  <Td isNumeric>{addFood.carbs}</Td>
-                  <Td isNumeric>{addFood.fat}</Td>
-                  <Td isNumeric>{addFood.protein}</Td>
-                  <Td isNumeric>{addFood.sodium}</Td>
-                  <Td isNumeric>{addFood.sugar}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.calories).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.carbs).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.fat).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.protein).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.sodium).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.sugar).toFixed(2)}</Td>
                 </Tr>
               ))}
               <Tr>
@@ -408,7 +408,7 @@ const EditMeal = () => {
                     bg='var(--shade1)'
                     color='var(--shade5)'
                     _hover={{ bg: 'var(--shade6)', color: 'var(--shade2)' }}
-                    icon={<FiPlusSquare />}
+                    icon={<FiPlusSquare p='100%' />}
                     onClick={onOpen}
                   />
                 </Td>
@@ -471,7 +471,7 @@ const EditMeal = () => {
                         bg='var(--shade2)'
                         color='var(--shade6)'
                         _hover={{ bg: 'var(--shade4)' }}
-                        icon={<FiInfo />}
+                        icon={<FiInfo p='100%' />}
                       />
                     </PopoverTrigger>
                     <PopoverContent width='fit-content' border='none'>

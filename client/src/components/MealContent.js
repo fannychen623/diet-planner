@@ -41,12 +41,12 @@ const MealContent = ({ contents, foods }) => {
                 <Td>Total</Td>
                 <Td></Td>
                 <Td></Td>
-                <Td isNumeric>{calories}</Td>
-                <Td isNumeric>{carbs}</Td>
-                <Td isNumeric>{fat}</Td>
-                <Td isNumeric>{protein}</Td>
-                <Td isNumeric>{sodium}</Td>
-                <Td isNumeric>{sugar}</Td>
+                <Td isNumeric>{+parseFloat(calories).toFixed(2)}</Td>
+                <Td isNumeric>{+parseFloat(carbs).toFixed(2)}</Td>
+                <Td isNumeric>{+parseFloat(fat).toFixed(2)}</Td>
+                <Td isNumeric>{+parseFloat(protein).toFixed(2)}</Td>
+                <Td isNumeric>{+parseFloat(sodium).toFixed(2)}</Td>
+                <Td isNumeric>{+parseFloat(sugar).toFixed(2)}</Td>
             </Tr>
         )
     }
@@ -62,27 +62,27 @@ const MealContent = ({ contents, foods }) => {
     }
     const foodCalories = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].calories * servings
+        return +parseFloat(foods[foodIndex].calories * servings).toFixed(2)
     }
     const foodCarbs = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].carbs * servings
+        return +parseFloat(foods[foodIndex].carbs * servings).toFixed(2)
     }
     const foodFat = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].fat * servings
+        return +parseFloat(foods[foodIndex].fat * servings).toFixed(2)
     }
     const foodProtein = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].protein * servings
+        return +parseFloat(foods[foodIndex].protein * servings).toFixed(2)
     }
     const foodSodium = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].sodium * servings
+        return +parseFloat(foods[foodIndex].sodium * servings).toFixed(2)
     }
     const foodSugar = (id, servings) => {
         let foodIndex = foods.findIndex(food => food._id === id)
-        return foods[foodIndex].sugar * servings
+        return +parseFloat(foods[foodIndex].sugar * servings).toFixed(2)
     }
 
     // if not comment exist for post

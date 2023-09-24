@@ -1,0 +1,47 @@
+/* styling for the Routine page */
+.progress-page {
+    font-family: var(--font);
+    min-height: 100vh;
+    height: fit-content;
+    padding: 2rem;
+}
+
+/* option fields container */
+.progress-page .css-69i1ev {
+    margin-bottom: 2.5em;
+}
+
+/* date range and graph selector */
+.progress-page .css-42b2qy {
+    border-color: var(--shade5);
+    width: 20em;
+}
+
+/* date range selector */
+.progress-page .css-161pkch:hover {
+    border-color: var(--shade4);
+}
+
+/* date inputlefftaddon */
+.progress-page .css-127xmqf {
+    border-color: var(--shade5);
+    background-color: var(--shade6);
+    color: white;
+    margin-left: 0.5em;
+}
+
+/* date input field */
+.progress-page .css-10wjqo2 {
+    border-color: var(--shade5);
+    width: fit-content;
+}
+
+/* date input field */
+.progress-page .css-10wjqo2:hover {
+    border-color: var(--shade4);
+}
+
+.progress-page .apexcharts-canvas {
+    background-color: var(--shade1);
+    margin: auto;
+}

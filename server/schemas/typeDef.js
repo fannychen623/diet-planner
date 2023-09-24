@@ -35,25 +35,25 @@ const typeDef = gql`
   type Food {
     _id: ID!
     title: String!
-    servingSize: Int!
+    servingSize: Float!
     servingUnit: String!
-    calories: Int!
-    carbs: Int!
-    fat: Int!
-    protein: Int!
-    sodium: Int!
-    sugar: Int!
+    calories: Float!
+    carbs: Float!
+    fat: Float!
+    protein: Float!
+    sodium: Float!
+    sugar: Float!
   }
   
   type Meal {
     _id: ID
     title: String!
-    numberOfServing: Int!
+    numberOfServing: Float!
     content: [Content]
   }
 
   type Content {
-    servings: Int!
+    servings: Float!
     food: [Food]
   }
   
@@ -61,13 +61,13 @@ const typeDef = gql`
     _id: ID!
     date: String!
     diet: [Diet]
-    weight: Int
+    weight: Float
   }
 
   type Diet {
     _id: ID!
     title: String!
-    numberOfServing: Int!
+    numberOfServing: Float!
     content: [Content]
   }
 
@@ -125,27 +125,27 @@ const typeDef = gql`
 
     addFood(
       title: String!, 
-      servingSize: Int!, 
+      servingSize: Float!, 
       servingUnit: String!, 
-      calories: Int!, 
-      carbs: Int!, 
-      fat: Int!, 
-      protein: Int!, 
-      sodium: Int!, 
-      sugar: Int!
+      calories: Float!, 
+      carbs: Float!, 
+      fat: Float!, 
+      protein: Float!, 
+      sodium: Float!, 
+      sugar: Float!
     ): Food
 
     updateFood(
       foodId: ID!, 
       title: String!, 
-      servingSize: Int!, 
+      servingSize: Float!, 
       servingUnit: String!, 
-      calories: Int!, 
-      carbs: Int!, 
-      fat: Int!, 
-      protein: Int!, 
-      sodium: Int!, 
-      sugar: Int!
+      calories: Float!, 
+      carbs: Float!, 
+      fat: Float!, 
+      protein: Float!, 
+      sodium: Float!, 
+      sugar: Float!
     ): Food
 
     removeFood(
@@ -154,25 +154,25 @@ const typeDef = gql`
 
     addMeal(
       title: String!, 
-      numberOfServing: Int!
+      numberOfServing: Float!
     ): Meal
 
     addMealFood(
       mealId: ID!, 
-      servings: Int!, 
+      servings: Float!, 
       food: ID!
     ): Meal
 
     updateMeal(
       mealId: ID!, 
       title: String!, 
-      numberOfServing: Int!, 
+      numberOfServing: Float!, 
       content: [[Float]]
     ): Meal
 
     updateMealFood(
       mealId: ID!, 
-      servings: Int!, 
+      servings: Float!, 
       food: ID!
     ): Meal
 
@@ -183,39 +183,46 @@ const typeDef = gql`
     addPlanner(
       date: String!
     ): Planner
+
     removePlanner(
       plannerId: ID!
     ): Planner
+
     addDiet(
       plannerId: ID!, 
       title: String!, 
-      numberOfServing: Int!,
+      numberOfServing: Float!,
     ): Planner
 
     addDietFood(
       dietId: ID!, 
-      servings: Int!, 
+      servings: Float!, 
       food: ID!
     ): Planner
-    removeDietFood(
+
+    updateDiet(
+      dietId: ID!, 
+      title: String!, 
+      numberOfServing: Float!, 
+      content: [[Float]]
+    ): Planner
+
+    updateDietFood(
+      dietId: ID!, 
+      servings: Float!, 
+      food: ID!
+    ): Planner
+
+    removeDiet(
       plannerId: ID!
       dietId: ID!
     ): Planner
 
     addWeight(
       plannerId: ID!, 
-      weight: Int!
+      weight: Float!
     ): Planner
     
-    updateDiet(
-      dietId: ID!, 
-      numberOfServing: Int!, 
-      meal: String!
-    ): Planner
-    removeDiet(
-      plannerId: ID!, 
-      dietId: ID!
-    ): Planner
     
   }
 `;

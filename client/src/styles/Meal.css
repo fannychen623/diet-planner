@@ -32,6 +32,7 @@
 /* accordian component */
 .meal-page .accordian {
     background-color: #ffffff80;
+    margin-bottom: 1em;
 }
 
 .meal-page .css-17mg6aq {
@@ -54,8 +55,7 @@
 
 /* meal edit and delete button */
 .meal-page .css-22xpxh:hover {
-    background-color: var(--shade5);
-    color: white;
+    background-color: var(--shade2);
 }
 
 /* table headers */

@@ -104,7 +104,18 @@ const Food = () => {
       try {
         // update post with variables postId and formstates
         const { updateData } = await updateFood({
-          variables: { foodId: id, ...formState },
+          variables: { 
+            foodId: id, 
+            title: formState.title, 
+            servingSize: parseFloat(formState.servingSize),
+            servingUnit: formState.servingUnit,
+            calories: parseFloat(formState.calories),
+            carbs: parseFloat(formState.carbs),
+            fat: parseFloat(formState.fat),
+            protein: parseFloat(formState.protein),
+            sodium: parseFloat(formState.sodium),
+            sugar: parseFloat(formState.sugar)
+          },
         });
 
         // redirect to posts page
@@ -141,7 +152,7 @@ const Food = () => {
       <Box className='food-page'>
         <Flex>
           <Box>
-            <Heading>You don't have any foods yet. Click 'Add Food' to get started!</Heading>
+            <Heading>No food yet. Click [Add Food] to get started!</Heading>
           </Box>
           <Spacer />
           <Box>
@@ -209,18 +220,18 @@ const Food = () => {
                       setFormState({
                         ...formState,
                         title: (`${food.title}`),
-                        servingSize: parseInt(`${food.servingSize}`),
+                        servingSize: (`${food.servingSize}`),
                         servingUnit: (`${food.servingUnit}`),
-                        calories: parseInt(`${food.calories}`),
-                        carbs: parseInt(`${food.carbs}`),
-                        fat: parseInt(`${food.fat}`),
-                        protein: parseInt(`${food.protein}`),
-                        sodium: parseInt(`${food.sodium}`),
-                        sugar: parseInt(`${food.sugar}`),
+                        calories: (`${food.calories}`),
+                        carbs: (`${food.carbs}`),
+                        fat: (`${food.fat}`),
+                        protein: (`${food.protein}`),
+                        sodium: (`${food.sodium}`),
+                        sugar: (`${food.sugar}`),
                       }); onOpen()
                     }}
-                      size='sm' icon={<FiEdit p='100%' />} /></Td>
-                    <Td><IconButton onClick={() => { handleRemoveFood(`${food._id}`) }} size='sm' icon={<FiTrash2 p='100%' />} /></Td>
+                      size='sm' icon={<FiEdit p='100%'/>} /></Td>
+                    <Td><IconButton onClick={() => { handleRemoveFood(`${food._id}`) }} size='sm' icon={<FiTrash2 p='100%'/>} /></Td>
                   </Tr>
                 ))}
               </Tbody>
@@ -267,7 +278,7 @@ const Food = () => {
                       width='50%'
                       name='servingSize'
                       value={formState.servingSize}
-                      onChange={(e) => { handleChange(e.target.name, parseInt(e.target.value)) }}
+                      onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                     <Input textAlign='end'
                       width='40%'
@@ -286,7 +297,7 @@ const Food = () => {
                     <Input
                       name='calories'
                       value={formState.calories}
-                      onChange={(e) => { handleChange(e.target.name, parseInt(e.target.value)) }}
+                      onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                     <InputRightAddon
                       children='kcal'
@@ -304,8 +315,8 @@ const Food = () => {
                     />
                     <Input
                       name='carbs'
-                      value={parseInt(formState.carbs)}
-                      onChange={(e) => { handleChange(e.target.name, parseInt(e.target.value)) }}
+                      value={formState.carbs}
+                      onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                     <InputRightAddon
                       children='g'
@@ -324,7 +335,7 @@ const Food = () => {
                     <Input
                       name='fat'
                       value={formState.fat}
-                      onChange={(e) => { handleChange(e.target.name, parseInt(e.target.value)) }}
+                      onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                     <InputRightAddon
                       children='g'
@@ -343,7 +354,7 @@ const Food = () => {
                     <Input
                       name='protein'
                       value={formState.protein}
-                      onChange={(e) => { handleChange(e.target.name, parseInt(e.target.value)) }}
+                      onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                     <InputRightAddon
                       children='g'
@@ -362,7 +373,7 @@ const Food = () => {
                     <Input
                       name='sodium'
                       value={formState.sodium}
-                      onChange={(e) => { handleChange(e.target.name, parseInt(e.target.value)) }}
+                      onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                     <InputRightAddon
                       children='mg'
@@ -381,7 +392,7 @@ const Food = () => {
                     <Input
                       name='sugar'
                       value={formState.sugar}
-                      onChange={(e) => { handleChange(e.target.name, parseInt(e.target.value)) }}
+                      onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                     <InputRightAddon
                       children='g'

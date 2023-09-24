@@ -31,7 +31,8 @@
     "use-state-with-callback": "3.0.2",
     "date-fns": "2.30.0",
     "fooddata-central": "0.1.0",
-    "node-fetch": "3.3.2"
+    "node-fetch": "3.3.2",
+    "react-apexcharts": "1.4.1"
   },
   "scripts": {
     "start": "react-dotenv && react-scripts start",

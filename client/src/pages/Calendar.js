@@ -1,13 +1,12 @@
 // import packages
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useStateWithCallbackInstant, useStateWithCallbackLazy } from 'use-state-with-callback';
 import { format } from 'date-fns';
 
 // import queries and mutations
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_ME } from '../utils/queries';
-import { ADD_PLANNER, ADD_DIET, ADD_DIET_FOOD, REMOVE_DIET_FOOD, ADD_WEIGHT } from '../utils/mutations';
+import { ADD_PLANNER, ADD_DIET, ADD_DIET_FOOD, REMOVE_DIET, ADD_WEIGHT } from '../utils/mutations';
 
 // import local components/stylesheet and pacakge components/stylesheet
 // import CalendarList from '../components/CalendarList';
@@ -19,12 +18,13 @@ import '../styles/Calendar.css';
 import {
   Grid, GridItem, Box, Spacer, Stack, Flex,
   IconButton, Spinner, Text, Button, SimpleGrid,
+  InputGroup, InputRightAddon,
   Card, CardHeader, CardBody, Checkbox,
   Input, CircularProgress, CircularProgressLabel,
   Accordion, AccordionItem,
   AccordionButton, AccordionPanel, AccordionIcon,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  Popover, PopoverTrigger, PopoverContent, PopoverBody,
+  Popover, PopoverTrigger, PopoverArrow, PopoverContent, PopoverBody,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
@@ -34,9 +34,15 @@ import {
   FiEdit, FiPlusSquare, FiMinusSquare, FiMinus
 } from 'react-icons/fi';
 
+function divide(a, b) {
+  return ((a / b) * 100).toFixed(0);
+}
 
 // functional component for the calendar page
 const CalendarPage = () => {
+
+  // navigate for the edit post button
+  const navigate = useNavigate();
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -57,6 +63,7 @@ const CalendarPage = () => {
 
   // extract the tracker information from the query data
   const planners = data?.me.planner || [];
+  const profile = data?.me.profile || [];
   const foods = data?.me.foods || [];
   const meals = data?.me.meals || [];
 
@@ -168,6 +175,48 @@ const CalendarPage = () => {
     return mealPreview
   };
 
+  const getMealTotals = (mealFoods) => {
+    let foodContent = mealFoods.content
+    let total = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+    foodContent.forEach((content) => {
+      total.calories += foods[foods.findIndex(item => item._id === content.food)].calories * content.servings
+      total.carbs += foods[foods.findIndex(item => item._id === content.food)].carbs * content.servings
+      total.fat += foods[foods.findIndex(item => item._id === content.food)].fat * content.servings
+      total.protein += foods[foods.findIndex(item => item._id === content.food)].protein * content.servings
+      total.sodium += foods[foods.findIndex(item => item._id === content.food)].sodium * content.servings
+      total.sugar += foods[foods.findIndex(item => item._id === content.food)].sugar * content.servings
+    })
+    total.calories = +parseFloat(total.calories * mealFoods.numberOfServing).toFixed(2)
+    total.carbs = +parseFloat(total.carbs * mealFoods.numberOfServing).toFixed(2)
+    total.fat = +parseFloat(total.fat * mealFoods.numberOfServing).toFixed(2)
+    total.protein = +parseFloat(total.protein * mealFoods.numberOfServing).toFixed(2)
+    total.sodium = +parseFloat(total.sodium * mealFoods.numberOfServing).toFixed(2)
+    total.sugar = +parseFloat(total.sugar * mealFoods.numberOfServing).toFixed(2)
+
+    return total;
+  }
+
+  const getDailyStats = () => {
+    let daily = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+    currentPlanner.forEach((diet) => {
+      daily.calories += getMealTotals(diet).calories
+      daily.carbs += getMealTotals(diet).carbs
+      daily.fat += getMealTotals(diet).fat
+      daily.protein += getMealTotals(diet).protein
+      daily.sodium += getMealTotals(diet).sodium
+      daily.sugar += getMealTotals(diet).sugar
+    })
+
+    daily.calories = +parseFloat(daily.calories).toFixed(0)
+    daily.carbs = +parseFloat(daily.carbs).toFixed(0)
+    daily.fat = +parseFloat(daily.fat).toFixed(0)
+    daily.protein = +parseFloat(daily.protein).toFixed(0)
+    daily.sodium = +parseFloat(daily.sodium).toFixed(0)
+    daily.sugar = +parseFloat(daily.sugar).toFixed(0)
+
+    return daily;
+  }
+
   // mutation to add tracker
   const [addPlanner, { plannerData }] = useMutation(ADD_PLANNER);
 
@@ -256,18 +305,18 @@ const CalendarPage = () => {
     onClose()
   };
 
-  const [removeDietFood, { removeFoodError, removeFoodData }] = useMutation(REMOVE_DIET_FOOD);
+  const [removeDiet, { removeDietError, removeDietData }] = useMutation(REMOVE_DIET);
 
-  const handleRemoveDietFood = async (event) => {
+  const handleRemoveDiet = async (event) => {
     event.preventDefault()
     const { id } = event.target
     if (id !== '') {
       try {
         // add routine with variables routineNanem and routine
-        const { removeFoodData } = await removeDietFood({
+        const { removeDietData } = await removeDiet({
           variables: { plannerId, dietId: id },
 
-          onCompleted(removeFoodData) {
+          onCompleted(removeDietData) {
             refetch();
           }
         });
@@ -292,7 +341,7 @@ const CalendarPage = () => {
       try {
         const { addWeightData } = await addWeight({
           // pass in the selected date to add new tracking data
-          variables: { plannerId: planId, weight: parseInt(weight) },
+          variables: { plannerId: planId, weight: parseFloat(weight) },
 
           onCompleted(weightData) {
             // redirect to posts page
@@ -327,35 +376,38 @@ const CalendarPage = () => {
               <Text>{format(new Date(date), 'MMMM do, yyyy')}</Text>
             </CardHeader>
             <CardBody>
-              <Box display='flex' justifyContent='space-between'>
+              <Box display='flex' justifyContent='spaced-between'>
                 <Box display='flex' alignItems='center'>
                   <IconButton
                     size='md'
-                    icon={<FiPlus />}
+                    icon={<FiPlus p='100%' />}
                     onClick={onOpen}
                   />
                   <Text ml='0.5em'>Add meal</Text>
                 </Box>
                 <Spacer />
-                <Box display='flex' alignItems='center'>
+                <Box display='flex' alignItems='center' justifiyContent='spaced-between'>
+                  <Spacer />
                   <Text mr='0.5em'>Weight:</Text>
-                  <Input defaultValue={weight} onChange={(e) => { setWeight(parseInt(e.target.value)) }} />
+                  <InputGroup>
+                    <Input defaultValue={weight} onChange={(e) => { setWeight(parseFloat(e.target.value)) }} />
+                    <InputRightAddon children='lbs' />
+                  </InputGroup>
                   {weight ? (
                     <IconButton
                       size='md'
                       value={plannerId}
-                      icon={<FiCheck />}
+                      icon={<FiCheck p='100%' />}
                       onClick={(e) => { handleAddWeight(plannerId) }}
                     />
                   ) : (
                     <IconButton
                       size='md'
                       value={plannerId}
-                      icon={<FiPlus />}
+                      icon={<FiPlus p='100%' />}
                       onClick={(e) => { handleAddWeight(plannerId) }}
                     />
                   )}
-
                 </Box>
               </Box>
               {/* if tracked and query is complete */}
@@ -375,7 +427,7 @@ const CalendarPage = () => {
                             <AccordionButton>
                               <Box as="span" flex='1' textAlign='left'>
                                 <IconButton isDisabled size='md' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
-                                <IconButton isDisabled size='md' mr='1em' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                                <IconButton isDisabled size='md' mr='2em' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
                                 Meal
                               </Box>
                               <Box as="span" flex='1' textAlign='right'>
@@ -393,14 +445,15 @@ const CalendarPage = () => {
                                     <Box textAlign='left'>
                                       <IconButton
                                         size='md'
-                                        icon={<FiMinus />}
+                                        icon={<FiMinus p='100%' />}
                                         id={planner.id}
-                                        onClick={handleRemoveDietFood}
+                                        onClick={handleRemoveDiet}
                                       />
                                       <IconButton
                                         mx='1em'
                                         size='md'
-                                        icon={<FiEdit3 />}
+                                        icon={<FiEdit3 p='100%' />}
+                                        onClick={() => { navigate('/calendar/edit/meal', { state: { planner, date } }) }}
                                       />
                                       {planner.title}
                                     </Box>
@@ -415,22 +468,46 @@ const CalendarPage = () => {
                               </AccordionButton>
                             </h2>
                             <AccordionPanel>
-                            <Grid templateColumns='repeat(10, 1fr)' gap='4'>
-                            <GridItem colSpan='7'>
-                              <Text as='b'>Contains: </Text>
-                              {planner.content.map((content) => (
-                                <Text>{content.servings} serving of {foods[foods.findIndex(food => food._id === content.food)].title}</Text>
-                              ))}
-                              </GridItem>
-                              <GridItem colSpan='3' textAlign='right'>
-                              <Text as='b'>Total Nutrition Value: </Text>
-                                <Text>Calories: 45 kcal</Text>
-                                <Text>Carbs: 45 kcal</Text>
-                                <Text>Fat: 45 kcal</Text>
-                                <Text>Protein: 45 kcal</Text>
-                                <Text>Sodium: 45 kcal</Text>
-                                <Text>Sugar: 45 kcal</Text>
-                              </GridItem>
+                              <Grid templateColumns='repeat(10, 1fr)' gap='4'>
+                                <GridItem colSpan='6'>
+                                  <Text as='b'>Contains: </Text>
+                                  {planner.content.map((content) => (
+                                    <Text>{content.servings}{content.servings <= 1 ? (' serving of ') : (' servings of ')}{foods[foods.findIndex(food => food._id === content.food)].title}</Text>
+                                  ))}
+                                </GridItem>
+                                <GridItem colSpan='4'>
+                                  <Text as='b'>Nutrition Value: </Text>
+                                  <Box display='flex'>
+                                    <Text>Calories: </Text>
+                                    <Spacer />
+                                    <Text>{getMealTotals(planner).calories} kcal</Text>
+                                  </Box>
+                                  <Box display='flex'>
+                                    <Text>carbs: </Text>
+                                    <Spacer />
+                                    <Text>{getMealTotals(planner).carbs} g</Text>
+                                  </Box>
+                                  <Box display='flex'>
+                                    <Text>Fat: </Text>
+                                    <Spacer />
+                                    <Text>{getMealTotals(planner).fat} g</Text>
+                                  </Box>
+                                  <Box display='flex'>
+                                    <Text>Protein: </Text>
+                                    <Spacer />
+                                    <Text>{getMealTotals(planner).protein} g</Text>
+                                  </Box>
+                                  <Box display='flex'>
+                                    <Text>Sodium: </Text>
+                                    <Spacer />
+                                    <Text>{getMealTotals(planner).sodium} g</Text>
+                                  </Box>
+                                  <Box display='flex'>
+                                    <Text>Sugar: </Text>
+                                    <Spacer />
+                                    <Text>{getMealTotals(planner).sugar} g</Text>
+                                  </Box>
+                                </GridItem>
                               </Grid>
                             </AccordionPanel>
                           </AccordionItem>
@@ -439,7 +516,7 @@ const CalendarPage = () => {
                       <Accordion allowToggle defaultIndex={[0]}>
                         <AccordionItem>
                           <h2>
-                            <AccordionButton _hover={{ bg:'var(--shade5)'}}>
+                            <AccordionButton _hover={{ bg: 'var(--shade5)' }}>
                               <AccordionIcon />
                               <Box as="span" flex='1' textAlign='center'>
                                 Daily Stats
@@ -452,68 +529,74 @@ const CalendarPage = () => {
                               <Box>
                                 <Stack>
                                   <Text class='statTitle'>Calories</Text>
-                                  <Text class='statValue'>1025/1400 kcal</Text>
+                                  <Text class='statValue'>{getDailyStats().calories}/{profile.calories} kcal</Text>
                                 </Stack>
                               </Box>
                               <Box>
-                                <CircularProgress value={40} color='#a7d489'>
-                                  <CircularProgressLabel>40%</CircularProgressLabel>
+                                <CircularProgress value={divide(getDailyStats().calories, profile.calories)} color='#a7d489'>
+                                  <CircularProgressLabel>{divide(getDailyStats().calories, profile.calories)} %</CircularProgressLabel>
                                 </CircularProgress>
                               </Box>
                               <Box>
                                 <Stack>
                                   <Text class='statTitle'>Carbs</Text>
-                                  <Text class='statValue'>102/140 g</Text>
+                                  <Text class='statValue'>{getDailyStats().carbs}/{profile.carbs} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
-                                <CircularProgress value={20} color='#6baee1'>
-                                  <CircularProgressLabel>20%</CircularProgressLabel>
+                                <CircularProgress value={divide(getDailyStats().carbs, profile.carbs)} color='#6baee1'>
+                                  <CircularProgressLabel>{divide(getDailyStats().carbs, profile.carbs)} %</CircularProgressLabel>
                                 </CircularProgress>
                               </Box>
                               <Box>
                                 <Stack>
                                   <Text class='statTitle'>Fat</Text>
-                                  <Text class='statValue'>125/400 g</Text>
+                                  <Text class='statValue'>{getDailyStats().fat}/{profile.fat} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
-                                <CircularProgress value={73} color='#ffef85'>
-                                  <CircularProgressLabel>73%</CircularProgressLabel>
+                                <CircularProgress value={divide(getDailyStats().fat, profile.fat)} color='#ffef85'>
+                                  <CircularProgressLabel>{divide(getDailyStats().fat, profile.fat)} %</CircularProgressLabel>
                                 </CircularProgress>
                               </Box>
                               <Box>
                                 <Stack>
                                   <Text class='statTitle'>Protein</Text>
-                                  <Text class='statValue'>1067/1460 g</Text>
+                                  <Text class='statValue'>{getDailyStats().protein}/{profile.protein} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
-                                <CircularProgress value={60} color='#f6ac69'>
-                                  <CircularProgressLabel>60%</CircularProgressLabel>
+                                <CircularProgress value={divide(getDailyStats().protein, profile.protein)} color='#f6ac69'>
+                                  <CircularProgressLabel>{divide(getDailyStats().protein, profile.protein)} %</CircularProgressLabel>
                                 </CircularProgress>
                               </Box>
                               <Box>
                                 <Stack>
                                   <Text class='statTitle'>Sodium</Text>
-                                  <Text class='statValue'>956/1230 mg</Text>
+                                  <Text class='statValue'>{getDailyStats().sodium}/2300 mg</Text>
                                 </Stack>
                               </Box>
                               <Box>
-                                <CircularProgress value={45} color='#ff6972'>
-                                  <CircularProgressLabel>45%</CircularProgressLabel>
+                                <CircularProgress value={divide(getDailyStats().sodium, 2300)} color='#ff6972'>
+                                  <CircularProgressLabel>{divide(getDailyStats().sodium, 2300)} %</CircularProgressLabel>
                                 </CircularProgress>
                               </Box>
                               <Box>
                                 <Stack>
                                   <Text class='statTitle'>Sugar</Text>
-                                  <Text class='statValue'>15/100 g</Text>
+                                  <Text class='statValue'>{getDailyStats().sugar}/{profile.sex === 'Male' ? (36) : (24)} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
-                                <CircularProgress value={30} color='#9f7dad'>
-                                  <CircularProgressLabel>30%</CircularProgressLabel>
-                                </CircularProgress>
+                                {profile.sex === 'Male' ? (
+                                  <CircularProgress value={divide(getDailyStats().sugar, 36)} color='#9f7dad'>
+                                    <CircularProgressLabel>{divide(getDailyStats().sugar, 36)} %</CircularProgressLabel>
+                                  </CircularProgress>
+                                ) : (
+                                  <CircularProgress value={divide(getDailyStats().sugar, 24)} color='#9f7dad'>
+                                    <CircularProgressLabel>{divide(getDailyStats().sugar, 24)} %</CircularProgressLabel>
+                                  </CircularProgress>
+                                )}
                               </Box>
                             </SimpleGrid>
                           </AccordionPanel>
@@ -532,7 +615,7 @@ const CalendarPage = () => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader color='var(--shade5)'>My Foods</ModalHeader>
+          <ModalHeader color='var(--shade5)'>My Meals</ModalHeader>
           <ModalCloseButton />
           <ModalBody overflowY='auto' maxHeight='75vh' >
             {meals.map((meal, index) => (
@@ -558,7 +641,7 @@ const CalendarPage = () => {
                         bg='var(--shade2)'
                         color='var(--shade6)'
                         _hover={{ bg: 'var(--shade4)' }}
-                        icon={<FiInfo />}
+                        icon={<FiInfo p='100%' />}
                       />
                     </PopoverTrigger>
                     <PopoverContent width='fit-content' border='none'>

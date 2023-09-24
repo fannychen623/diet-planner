@@ -85,7 +85,7 @@ const Meal = () => {
       <Box className='meal-page'>
         <Flex>
           <Box>
-            <Heading>You don't have any meals yet. Click 'New Meal' to get started!</Heading>
+            <Heading>No meals yet. Click [New Meal] to get started!</Heading>
           </Box>
           <Spacer />
           <Box>
@@ -130,8 +130,8 @@ const Meal = () => {
                   </Box>
                   <Spacer />
                   <Box>
-                  <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit />} />
-                  <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 />} />
+                  <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit p='100%'/>} />
+                  <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 p='100%'/>} />
                   </Box>
                   <AccordionIcon />
                 </AccordionButton>

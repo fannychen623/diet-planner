@@ -15,6 +15,17 @@
     padding: 3% 0% 0% 4%;
 }
 
+/* weight input */
+.calendar-page .css-1y0e7gb {
+    width: 50%;
+    border-color: var(--shade4)
+}
+
+/* weight inputrightaddon */
+.calendar-page .css-1r6jmxn {
+    background-color: var(--shade1);
+}
+
 /* add/edit/remove meal and add weight button */
 .calendar-page .css-22xpxh, .calendar-page .css-x9zq2g {
     background-color: var(--shade5);

@@ -47,36 +47,36 @@ function Header() {
                 </Link> */}
               <Link to='/food'>
                 <Tooltip label='Food' bg='var(--shade6)' color='white'>
-                  <IconButton variant='link' px='1vw' aria-label='Food' icon={<RiFridgeLine />} />
+                  <IconButton variant='link' px='1vw' aria-label='Food' icon={<RiFridgeLine p='100%'/>} />
                 </Tooltip>
               </Link>
               <Link to='/meal'>
                 <Tooltip label='Meals' bg='var(--shade6)' color='white'>
-                  <IconButton variant='link' px='1vw' aria-label='Meals' icon={<RiRestaurantLine />} />
+                  <IconButton variant='link' px='1vw' aria-label='Meals' icon={<RiRestaurantLine p='100%'/>} />
                 </Tooltip>
               </Link>
               <Link to='/search'>
                 <Tooltip label='Search Food' bg='var(--shade6)' color='white'>
-                  <IconButton variant='link' px='1vw' aria-label='Search Food' icon={<RiPhoneFindLine />} />
+                  <IconButton variant='link' px='1vw' aria-label='Search Food' icon={<RiPhoneFindLine p='100%'/>} />
                 </Tooltip>
               </Link>
             </Box>
             <Box width='50vw' textAlign='end' pr='1vw'>
               <Tooltip label='Calendar' bg='var(--shade6)' color='white'>
-                <IconButton variant='link' px='1vw' aria-label='Calendar' icon={<RiCalendarEventLine />} onClick={() => { navigate(`/calendar/${format(new Date(), 'MM_dd_yyyy')}`) }} />
+                <IconButton variant='link' px='1vw' aria-label='Calendar' icon={<RiCalendarEventLine p='100%'/>} onClick={() => { navigate(`/calendar/${format(new Date(), 'MM_dd_yyyy')}`) }} />
               </Tooltip>
-              <Link to='/'>
-                <Tooltip label='Tracker' bg='var(--shade6)' color='white'>
-                  <IconButton variant='link' px='1vw' aria-label='Tracker' icon={<RiLineChartLine />} />
+              <Link to='/progress'>
+                <Tooltip label='Progress' bg='var(--shade6)' color='white'>
+                  <IconButton variant='link' px='1vw' aria-label='Tracker' icon={<RiLineChartLine p='100%'/>} />
                 </Tooltip>
               </Link>
               <Link to='/profile'>
                 <Tooltip label='Profile' bg='var(--shade6)' color='white'>
-                  <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiAccountCircleLine />} />
+                  <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiAccountCircleLine p='100%'/>} />
                 </Tooltip>
               </Link>
               <Tooltip label='Logout' bg='var(--shade6)' color='white'>
-                <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiLogoutBoxLine />} onClick={logout} />
+                <IconButton variant='link' px='1vw' aria-label='Profile' icon={<RiLogoutBoxLine p='100%'/>} onClick={logout} />
               </Tooltip>
             </Box>
           </Flex>
@@ -96,7 +96,7 @@ function Header() {
             <Box width='50vw' textAlign='end' pr='5'>
               <Link to='/loginSignup'>
                 <Tooltip label='Login/Signup' bg='var(--shade6)' color='white'>
-                  <IconButton variant='link' px='1vw' aria-label='Login' icon={<RiLoginBoxLine />} />
+                  <IconButton variant='link' px='1vw' aria-label='Login' icon={<RiLoginBoxLine p='100%'/>} />
                 </Tooltip>
               </Link>
             </Box>

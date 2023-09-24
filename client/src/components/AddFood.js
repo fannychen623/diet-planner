@@ -108,13 +108,13 @@ const AddFood = () => {
                 <Box>
                   <Text as='b' color='var(--shade5)' fontSize='5vw'>Search Database:</Text>
                   <Input type='text' placeholder='i.e. tomato' my='1vh' width='100%' />
-                  <IconButton aria-label='Search database' bg='var(--shade2)' color='var(--shade5)' width='100%' icon={<FiSearch />} />
+                  <IconButton aria-label='Search database' bg='var(--shade2)' color='var(--shade5)' width='100%' icon={<FiSearch p='100%'/>} />
                 </Box>
               ) : (
                 <Box display='flex'>
                   <Text as='b' color='var(--shade5)' my='auto' fontSize='1.75vw'>Search Database:</Text>
                   <Input type='text' placeholder='i.e. tomato' ml='1vw' width='70%' />
-                  <IconButton aria-label='Search database' bg='var(--shade2)' color='var(--shade5)' icon={<FiSearch />} />
+                  <IconButton aria-label='Search database' bg='var(--shade2)' color='var(--shade5)' icon={<FiSearch p='100%'/>} />
                 </Box>
               )}
               <Divider borderWidth='3px' borderColor='var(--shade5)' my='5' />
@@ -138,7 +138,7 @@ const AddFood = () => {
                         bg='var(--shade5)'
                         color='white'
                       />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, servingSize: parseInt(e.target.value) }) }} />
+                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, servingSize: parseFloat(e.target.value) }) }} />
                     </InputGroup>
                   </Box>
                   <Box>
@@ -156,7 +156,7 @@ const AddFood = () => {
                         bg='var(--shade5)'
                         color='white'
                       />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, calories: parseInt(e.target.value) }) }} />
+                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, calories: parseFloat(e.target.value) }) }} />
                       <InputRightAddon
                         children='kcal'
                         width='20%'
@@ -173,7 +173,7 @@ const AddFood = () => {
                         bg='var(--shade5)'
                         color='white'
                       />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, carbs: parseInt(e.target.value) }) }} />
+                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, carbs: parseFloat(e.target.value) }) }} />
                       <InputRightAddon
                         children='g'
                         width='20%'
@@ -190,7 +190,7 @@ const AddFood = () => {
                         bg='var(--shade5)'
                         color='white'
                       />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, fat: parseInt(e.target.value) }) }} />
+                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, fat: parseFloat(e.target.value) }) }} />
                       <InputRightAddon
                         children='g'
                         width='20%'
@@ -207,7 +207,7 @@ const AddFood = () => {
                         bg='var(--shade5)'
                         color='white'
                       />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, protein: parseInt(e.target.value) }) }} />
+                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, protein: parseFloat(e.target.value) }) }} />
                       <InputRightAddon
                         children='g'
                         width='20%'
@@ -224,7 +224,7 @@ const AddFood = () => {
                         bg='var(--shade5)'
                         color='white'
                       />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, sodium: parseInt(e.target.value) }) }} />
+                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, sodium: parseFloat(e.target.value) }) }} />
                       <InputRightAddon
                         children='mg'
                         width='20%'
@@ -241,7 +241,7 @@ const AddFood = () => {
                         bg='var(--shade5)'
                         color='white'
                       />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, sugar: parseInt(e.target.value) }) }} />
+                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, sugar: parseFloat(e.target.value) }) }} />
                       <InputRightAddon
                         children='g'
                         width='20%'

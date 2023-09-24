@@ -16,6 +16,8 @@ import NewMeal from "./pages/NewMeal";
 import EditMeal from "./pages/EditMeal";
 import Search from "./components/Search";
 import Calendar from "./pages/Calendar";
+import EditPlannerMeal from "./pages/EditPlannerMeal";
+import Progress from "./pages/Progress";
 
 // import local global style sheet
 import './styles/Global.css';
@@ -63,6 +65,8 @@ function App() {
               <Route path="/meal/edit/:mealId" element={<EditMeal />} />
               <Route path="/search" element={<Search />} />
               <Route path="/calendar/:fetchDate" element={<Calendar />} />
+              <Route path="/calendar/edit/meal" element={<EditPlannerMeal />} />
+              <Route path="/progress" element={<Progress />} />
             </Routes>
           </div>
         </div>

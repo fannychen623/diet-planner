@@ -1,11 +1,11 @@
 // import package
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useLocation, useParams } from 'react-router-dom'
 
 // importy query
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
-import { UPDATE_MEAL, UPDATE_MEAL_FOOD } from '../utils/mutations';
+import { UPDATE_DIET, UPDATE_DIET_FOOD } from '../utils/mutations';
 
 // // import local component
 // import FoodCards from '../components/FoodCards';
@@ -44,7 +44,7 @@ function toTitleCase(str) {
 }
 
 // functional component for the foods page
-const EditMeal = () => {
+const EditPlannerMeal = () => {
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -61,21 +61,23 @@ const EditMeal = () => {
     enabled: true
   });
 
+  // fetch object parameter from the directed link
+  const { state } = useLocation();
   // define the postId from the url parameter
-  const { mealId } = useParams();
 
   // define add routine mutation
-  const [updateMeal, { mealError, mealData }] = useMutation(UPDATE_MEAL);
-  const [updateMealFood, { mealFoodError, mealFoodData }] = useMutation(UPDATE_MEAL_FOOD);
+  const [updateDiet, { dietError, dietData }] = useMutation(UPDATE_DIET);
+  const [updateDietFood, { dietFoodError, dietFoodData }] = useMutation(UPDATE_DIET_FOOD);
 
   const [errorMessage, setErrorMessage] = useState('')
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  // extract the foods from the query data
+  // extract the foods from the query data 
   const foods = data?.me.foods || [];
-  const meals = data?.me.meals || [];
-  const meal = meals[meals.findIndex(meal => meal._id === mealId)]
+  const planners = data?.me.planner || [];
+  const meal = state.planner
+  const date = state.date
 
   // set state of combined preview text
   const [foodPreview, setFoodPreview] = useState('')
@@ -94,7 +96,7 @@ const EditMeal = () => {
   const getMealFood = () => {
     let mealContent = meal.content
     let mealFoodServings = mealContent.map(thisMeal => thisMeal.servings)
-    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
+    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food)
     let mealFoodAdded = []
     for (let i = 0; i < mealContent.length; i++) {
       let foodIndex = foods.findIndex(food => food._id === mealFoodIds[i])
@@ -118,7 +120,7 @@ const EditMeal = () => {
 
   const getFoodList = () => {
     let mealContent = meal.content
-    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
+    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food)
     let mealFoodAdded = foods
     for (let i = 0; i < mealFoodIds.length; i++) {
       mealFoodAdded = mealFoodAdded.filter((food) => food._id != mealFoodIds[i])
@@ -131,6 +133,7 @@ const EditMeal = () => {
   const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
 
   useEffect(() => {
+    console.log(state)
     let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
 
     for (let i = 0; i < foodAdded.length; i++) {
@@ -143,12 +146,12 @@ const EditMeal = () => {
     }
 
     setTotal({
-      calories: newTotal.calories,
-      carbs: newTotal.carbs,
-      fat: newTotal.fat,
-      protein: newTotal.protein,
-      sodium: newTotal.sodium,
-      sugar: newTotal.sugar
+      calories: +parseFloat(newTotal.calories).toFixed(2),
+      carbs: +parseFloat(newTotal.carbs).toFixed(2),
+      fat: +parseFloat(newTotal.fat).toFixed(2),
+      protein: +parseFloat(newTotal.protein).toFixed(2),
+      sodium: +parseFloat(newTotal.sodium).toFixed(2),
+      sugar: +parseFloat(newTotal.sugar).toFixed(2)
     })
   }, [foodAdded, foodsList, foods]);
 
@@ -218,7 +221,7 @@ const EditMeal = () => {
     if (value) {
       for (let i = 0; i < foodAdded.length; i++) {
         if (foodAdded[i].id === id) {
-          foodAdded[i].servings = parseInt(value);
+          foodAdded[i].servings = parseFloat(value);
           foodAdded[i].calories = foods[foods.findIndex(food => food._id === id)].calories * value;
           foodAdded[i].carbs = foods[foods.findIndex(food => food._id === id)].carbs * value;
           foodAdded[i].fat = foods[foods.findIndex(food => food._id === id)].fat * value;
@@ -239,12 +242,12 @@ const EditMeal = () => {
       }
 
       setTotal({
-        calories: newTotal.calories,
-        carbs: newTotal.carbs,
-        fat: newTotal.fat,
-        protein: newTotal.protein,
-        sodium: newTotal.sodium,
-        sugar: newTotal.sugar
+        calories: +parseFloat(newTotal.calories).toFixed(2),
+        carbs: +parseFloat(newTotal.carbs).toFixed(2),
+        fat: +parseFloat(newTotal.fat).toFixed(2),
+        protein: +parseFloat(newTotal.protein).toFixed(2),
+        sodium: +parseFloat(newTotal.sodium).toFixed(2),
+        sugar: +parseFloat(newTotal.sugar).toFixed(2)
       })
 
     }
@@ -260,7 +263,7 @@ const EditMeal = () => {
     }
   };
 
-  const handleUpdateMeal = async (event) => {
+  const handleUpdateDiet = async (event) => {
     event.preventDefault()
 
     let error = false
@@ -278,11 +281,11 @@ const EditMeal = () => {
     if (!error) {
       try {
         // add routine with variables routineNanem and routine
-        const { mealData } = await updateMeal({
-          variables: { mealId, ...mealDetails, content: [] },
+        const { dietData } = await updateDiet({
+          variables: { dietId: meal.id, title: mealDetails.title, numberOfServing: parseFloat(mealDetails.numberOfServing), content: [] },
 
-          onCompleted(mealData) {
-            handleUpdateMealFood()
+          onCompleted(dietData) {
+            handleUpdateDietFood()
           }
         });
 
@@ -294,15 +297,15 @@ const EditMeal = () => {
     }
   };
 
-  const handleUpdateMealFood = async () => {
+  const handleUpdateDietFood = async () => {
     for (let i = 0; i < foodAdded.length; i++) {
-      let servings = parseInt(foodAdded[i].servings)
+      let servings = parseFloat(foodAdded[i].servings)
       let food = foodAdded[i].id
 
       try {
         // add routine with variables routineNanem and routine
-        const { mealFoodData } = await updateMealFood({
-          variables: { mealId, servings, food },
+        const { dietFoodData } = await updateDietFood({
+          variables: { dietId: meal.id, servings, food },
         });
 
       } catch (e) {
@@ -310,12 +313,12 @@ const EditMeal = () => {
       }
     }
     // redirect back to the routines page
-    window.location.assign('/meal');
+    window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
   };
 
   return (
     <Box className='new-meal-page'>
-      <Heading size='2xl' mb='5vh'>Modify Meal</Heading>
+      <Heading size='2xl' mb='5vh'>Modify Meal for {date}</Heading>
       <Flex mb='5'>
         <Box>
           <InputGroup size='lg' width='65vw' borderWidth='2px' borderColor='var(--shade5)' borderRadius='10'>
@@ -393,12 +396,12 @@ const EditMeal = () => {
                     />
                   </Td>
                   <Td>{addFood.servingSizeUnit}</Td>
-                  <Td isNumeric>{addFood.calories}</Td>
-                  <Td isNumeric>{addFood.carbs}</Td>
-                  <Td isNumeric>{addFood.fat}</Td>
-                  <Td isNumeric>{addFood.protein}</Td>
-                  <Td isNumeric>{addFood.sodium}</Td>
-                  <Td isNumeric>{addFood.sugar}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.calories).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.carbs).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.fat).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.protein).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.sodium).toFixed(2)}</Td>
+                  <Td isNumeric>{+parseFloat(addFood.sugar).toFixed(2)}</Td>
                 </Tr>
               ))}
               <Tr>
@@ -408,7 +411,7 @@ const EditMeal = () => {
                     bg='var(--shade1)'
                     color='var(--shade5)'
                     _hover={{ bg: 'var(--shade6)', color: 'var(--shade2)' }}
-                    icon={<FiPlusSquare />}
+                    icon={<FiPlusSquare p='100%' />}
                     onClick={onOpen}
                   />
                 </Td>
@@ -440,7 +443,7 @@ const EditMeal = () => {
         <Text textAlign='center' mt='2vh' fontSize='2vw'>{errorMessage}</Text>
       </Box>
       <Box textAlign='center' my='3vh'>
-        <Button variant='solid' onClick={handleUpdateMeal}>Update Meal</Button>
+        <Button variant='solid' onClick={handleUpdateDiet}>Update Meal</Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -471,7 +474,7 @@ const EditMeal = () => {
                         bg='var(--shade2)'
                         color='var(--shade6)'
                         _hover={{ bg: 'var(--shade4)' }}
-                        icon={<FiInfo />}
+                        icon={<FiInfo p='100%' />}
                       />
                     </PopoverTrigger>
                     <PopoverContent width='fit-content' border='none'>
@@ -502,4 +505,4 @@ const EditMeal = () => {
   );
 }
 
-export default EditMeal;
+export default EditPlannerMeal;
