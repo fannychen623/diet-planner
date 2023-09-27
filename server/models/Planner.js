@@ -37,6 +37,40 @@ const plannerSchema = new Schema({
       ],
     },
   ],
+  customDiet : [
+    {
+      title: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    calories: {
+        type: Number, 
+        required: true,
+    },
+    carbs: {
+        type: Number,
+        required: false,
+    },
+    fat: {
+        type: Number, 
+        required: false,
+    },
+    protein: {
+        type: Number,
+        required: false,
+    },
+    sodium: {
+        type: Number, 
+        required: false,
+    },
+    sugar: {
+        type: Number,
+        required: false,
+    },
+    }
+
+  ],
   weight: {
     type: Number,
     required: false,

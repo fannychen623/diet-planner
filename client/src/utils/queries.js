@@ -56,6 +56,16 @@ export const QUERY_USER = gql`
             }
           }
         }
+        customDiet {
+          _id
+          title
+          calories
+          carbs
+          fat
+          protein
+          sodium
+          sugar
+        }
         weight
       }
     }
@@ -117,6 +127,16 @@ export const QUERY_ME = gql`
               _id
             }
           }
+        }
+        customDiet {
+          _id
+          title
+          calories
+          carbs
+          fat
+          protein
+          sodium
+          sugar
         }
         weight
       }

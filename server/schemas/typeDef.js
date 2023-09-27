@@ -61,6 +61,7 @@ const typeDef = gql`
     _id: ID!
     date: String!
     diet: [Diet]
+    customDiet: [customDiet]
     weight: Float
   }
 
@@ -69,6 +70,17 @@ const typeDef = gql`
     title: String!
     numberOfServing: Float!
     content: [Content]
+  }
+
+  type customDiet {
+    _id: ID!
+    title: String!
+    calories: Float!
+    carbs: Float
+    fat: Float
+    protein: Float
+    sodium: Float
+    sugar: Float
   }
 
   type Query {
@@ -214,15 +226,41 @@ const typeDef = gql`
     ): Planner
 
     removeDiet(
-      plannerId: ID!
+      plannerId: ID!,
       dietId: ID!
+    ): Planner
+
+    addCustomDiet(
+      plannerId: ID!
+      title: String!
+      calories: Float
+      carbs: Float
+      fat: Float,
+      protein: Float,
+      sodium: Float,
+      sugar: Float
+    ): Planner
+
+    updateCustomDiet(
+      customDietId: ID!
+      title: String!
+      calories: Float
+      carbs: Float
+      fat: Float,
+      protein: Float,
+      sodium: Float,
+      sugar: Float
+    ): Planner
+
+    removeCustomDiet(
+      plannerId: ID!,
+      customDietId: ID!
     ): Planner
 
     addWeight(
       plannerId: ID!, 
       weight: Float!
     ): Planner
-    
     
   }
 `;

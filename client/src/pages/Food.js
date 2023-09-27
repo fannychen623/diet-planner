@@ -1,5 +1,5 @@
 // import packages
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 
@@ -15,16 +15,14 @@ import { UPDATE_FOOD, REMOVE_FOOD } from '../utils/mutations';
 import {
   Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  Input, InputGroup, InputLeftAddon, InputRightAddon,
+  Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon,
   Drawer, DrawerBody, DrawerFooter, DrawerHeader,
   DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure,
 } from '@chakra-ui/react'
 
 // import icons
 import {
-  FiCheck, FiX, FiEdit, FiTrash2,
-  FiPlusSquare, FiMinusSquare,
-  FiExternalLink, FiEye, FiEdit3
+  FiChevronUp, FiChevronDown, FiSearch, FiEdit, FiTrash2,
 } from 'react-icons/fi';
 
 // import local style sheet
@@ -52,14 +50,82 @@ const Food = () => {
     enabled: true
   });
 
-  const [editIndex, setEditIndex] = useState(0);
-
   // extract the routines from the query data
   const foods = data?.me.foods || [];
 
+  const [foodList, setFoodList] = useState([...foods])
+  const [sortState, setSortState] = useState({
+    field: 'title',
+    title: true,
+    servingSize: true,
+    calories: true,
+    carbs: true,
+    fat: true,
+    protein: true,
+    sodium: true,
+    sugar: true
+  })
+
+  const [displayState, setDisplayState] = useState(Array(foodList.length).fill(true))
+  const [searchValue, setSearchValue] = useState('')
+
+  useEffect(() => {
+    setFoodList(foods)
+    let sortFood = [...foods]
+    if (sortState.field === 'title' && sortState.title) {
+      sortFood.sort((a, b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0))
+    } else if (sortState.field === 'title' && !sortState.title) {
+      sortFood.sort((a, b) => (a.title < b.title) ? 1 : ((b.title < a.title) ? -1 : 0))
+    } else if (sortState.field === 'servingSize' && sortState.servingSize) {
+      sortFood.sort((a, b) => parseFloat(a.servingSize) - parseFloat(b.servingSize));
+    } else if (sortState.field === 'servingSize' && !sortState.servingSize) {
+      sortFood.sort((a, b) => parseFloat(b.servingSize) - parseFloat(a.servingSize));
+    } else if (sortState.field === 'calories' && sortState.calories) {
+      sortFood.sort((a, b) => parseFloat(a.calories) - parseFloat(b.calories));
+    } else if (sortState.field === 'calories' && !sortState.calories) {
+      sortFood.sort((a, b) => parseFloat(b.calories) - parseFloat(a.calories));
+    } else if (sortState.field === 'carbs' && sortState.carbs) {
+      sortFood.sort((a, b) => parseFloat(a.carbs) - parseFloat(b.carbs));
+    } else if (sortState.field === 'carbs' && !sortState.carbs) {
+      sortFood.sort((a, b) => parseFloat(b.carbs) - parseFloat(a.carbs));
+    } else if (sortState.field === 'fat' && sortState.fat) {
+      sortFood.sort((a, b) => parseFloat(a.fat) - parseFloat(b.fat));
+    } else if (sortState.field === 'fat' && !sortState.fat) {
+      sortFood.sort((a, b) => parseFloat(b.fat) - parseFloat(a.fat));
+    } else if (sortState.field === 'protein' && sortState.protein) {
+      sortFood.sort((a, b) => parseFloat(a.protein) - parseFloat(b.protein));
+    } else if (sortState.field === 'protein' && !sortState.protein) {
+      sortFood.sort((a, b) => parseFloat(b.protein) - parseFloat(a.protein));
+    } else if (sortState.field === 'sodium' && sortState.sodium) {
+      sortFood.sort((a, b) => parseFloat(a.sodium) - parseFloat(b.sodium));
+    } else if (sortState.field === 'sodium' && !sortState.sodium) {
+      sortFood.sort((a, b) => parseFloat(b.sodium) - parseFloat(a.sodium));
+    } else if (sortState.field === 'sugar' && sortState.sugar) {
+      sortFood.sort((a, b) => parseFloat(a.sugar) - parseFloat(b.sugar));
+    } else if (sortState.field === 'sugar' && !sortState.sugar) {
+      sortFood.sort((a, b) => parseFloat(b.sugar) - parseFloat(a.sugar));
+    }
+
+    setFoodList(sortFood)
+    setDisplayState(Array(foodList.length).fill(true))
+    for (let i = 0; i < sortFood.length; i++) {
+      if (sortFood[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+        displayState[i] = true
+      } else {
+        displayState[i] = false
+      }
+    }
+
+    setDisplayState({...displayState})
+
+    refetch();
+  }, [foods, searchValue, sortState])
+
+  const [editIndex, setEditIndex] = useState(0);
+
   // set the form state, default empty
   const [formState, setFormState] = useState({
-    name: '',
+    title: '',
     servingSize: '',
     servingUnit: '',
     calories: '',
@@ -104,9 +170,9 @@ const Food = () => {
       try {
         // update post with variables postId and formstates
         const { updateData } = await updateFood({
-          variables: { 
-            foodId: id, 
-            title: formState.title, 
+          variables: {
+            foodId: id,
+            title: formState.title,
             servingSize: parseFloat(formState.servingSize),
             servingUnit: formState.servingUnit,
             calories: parseFloat(formState.calories),
@@ -186,26 +252,115 @@ const Food = () => {
       ) : (
         // populate with food data once loaded
         <Box>
+          <Box>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <FiSearch color='var(--shade5)' />
+              </InputLeftElement>
+              <Input onChange={(e) => { setSearchValue(e.target.value) }} />
+            </InputGroup>
+          </Box>
           <TableContainer>
             <Table variant='simple'>
               <Thead>
                 <Tr>
-                  <Th text>Name</Th>
-                  <Th isNumeric>Serving Size</Th>
-                  <Th>Unit</Th>
-                  <Th isNumeric>Calories (kcal)</Th>
-                  <Th isNumeric>Carbs (g)</Th>
-                  <Th isNumeric>Fat (g)</Th>
-                  <Th isNumeric>Protein (g)</Th>
-                  <Th isNumeric>Sodium (mg)</Th>
-                  <Th isNumeric>Sugar (g)</Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='title'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, title: !sortState.title }) }}
+                    >
+                      Name&nbsp;&nbsp;{sortState.title ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='servingSize'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, servingSize: !sortState.servingSize }) }}
+                    >
+                      Serving Size&nbsp;&nbsp;{sortState.servingSize ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                    >
+                      Unit
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='calories'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, calories: !sortState.calories }) }}
+                    >
+                      Calories (kcal)&nbsp;&nbsp;{sortState.calories ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='carbs'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, carbs: !sortState.carbs }) }}
+                    >
+                      Carbs (g)&nbsp;&nbsp;{sortState.carbs ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='fat'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, fat: !sortState.fat }) }}
+                    >
+                      Fat (g)&nbsp;&nbsp;{sortState.fat ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='protein'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, protein: !sortState.protein }) }}
+                    >
+                      Protein (g)&nbsp;&nbsp;{sortState.protein ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='sodium'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, sodium: !sortState.sodium }) }}
+                    >
+                      Sodium (mg)&nbsp;&nbsp;{sortState.sodium ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
+                  <Th>
+                    <Button
+                      display='flex'
+                      alignItems='center'
+                      id='sugar'
+                      onClick={(e) => { setSortState({ ...sortState, field: e.target.id, sugar: !sortState.sugar }) }}
+                    >
+                      Sugar (g)&nbsp;&nbsp;{sortState.sugar ? (<FiChevronDown stroke-width='4' />) : (<FiChevronUp stroke-width='4' />)}
+                    </Button>
+                  </Th>
                   <Th></Th>
                   <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {foods.map((food, index) => (
-                  <Tr key={index} _hover={{ bg: 'var(--shade4)' }}>
+                {foodList.map((food, index) => (
+                  <>
+                  {displayState[`${index}`] ? (
+                    <Tr key={index} _hover={{ bg: 'var(--shade4)' }}>
                     <Td>{food.title}</Td>
                     <Td isNumeric>{food.servingSize}</Td>
                     <Td>{food.servingUnit}</Td>
@@ -230,9 +385,13 @@ const Food = () => {
                         sugar: (`${food.sugar}`),
                       }); onOpen()
                     }}
-                      size='sm' icon={<FiEdit p='100%'/>} /></Td>
-                    <Td><IconButton onClick={() => { handleRemoveFood(`${food._id}`) }} size='sm' icon={<FiTrash2 p='100%'/>} /></Td>
+                      size='sm' icon={<FiEdit p='100%' />} /></Td>
+                    <Td><IconButton onClick={() => { handleRemoveFood(`${food._id}`) }} size='sm' icon={<FiTrash2 p='100%' />} /></Td>
                   </Tr>
+                  ):(
+                    <></>
+                  )}
+                  </>
                 ))}
               </Tbody>
             </Table>
@@ -403,7 +562,6 @@ const Food = () => {
                   </InputGroup>
                 </Box>
               </DrawerBody>
-
               <DrawerFooter borderTopWidth='1px' justifyContent='space-between'>
                 <Button variant='outline' mr={3} onClick={onClose}>
                   Cancel

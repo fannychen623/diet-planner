@@ -395,7 +395,7 @@ const Profile = () => {
                   </Box>
                   <Box display='flex'>
                     <Heading>Calories</Heading>
-                    <Text className='statsValue'>{formState.calories} <span>g/day</span></Text>
+                    <Text className='statsValue'>{formState.calories} <span>kcal/day</span></Text>
                   </Box>
                   <Box display='flex'>
                     <Heading>Carbohydrates</Heading>

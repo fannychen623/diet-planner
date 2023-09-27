@@ -6,7 +6,11 @@ import { format } from 'date-fns';
 // import queries and mutations
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_ME } from '../utils/queries';
-import { ADD_PLANNER, ADD_DIET, ADD_DIET_FOOD, REMOVE_DIET, ADD_WEIGHT } from '../utils/mutations';
+import {
+  ADD_PLANNER, ADD_DIET, ADD_DIET_FOOD,
+  REMOVE_DIET, ADD_CUSTOM_DIET, UPDATE_CUSTOM_DIET,
+  REMOVE_CUSTOM_DIET, ADD_WEIGHT
+} from '../utils/mutations';
 
 // import local components/stylesheet and pacakge components/stylesheet
 // import CalendarList from '../components/CalendarList';
@@ -18,13 +22,15 @@ import '../styles/Calendar.css';
 import {
   Grid, GridItem, Box, Spacer, Stack, Flex,
   IconButton, Spinner, Text, Button, SimpleGrid,
-  InputGroup, InputRightAddon,
+  InputGroup, InputLeftAddon, InputRightAddon,
   Card, CardHeader, CardBody, Checkbox,
   Input, CircularProgress, CircularProgressLabel,
   Accordion, AccordionItem,
   AccordionButton, AccordionPanel, AccordionIcon,
+  Tabs, TabList, TabPanels, Tab, TabPanel,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  Popover, PopoverTrigger, PopoverArrow, PopoverContent, PopoverBody,
+  Popover, PopoverTrigger, PopoverArrow, PopoverContent,
+  PopoverCloseButton, PopoverHeader, PopoverBody, PopoverFooter,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
@@ -78,12 +84,35 @@ const CalendarPage = () => {
     return new Date(dobj.toISOString())
   }
 
-  // const [plannerDates, setPlannerDates] = useState (planners.map(planner => planner.date))
   const [plannerId, setPlannerId] = useState('n/a')
 
-  const [currentPlanner, setCurrentPlanner] = useState([])
+  const [currentPlannerDiet, setCurrentPlannerDiet] = useState([])
+
+  const [currentPlannerCustomDiet, setCurrentPlannerCustomDiet] = useState([])
 
   const [weight, setWeight] = useState('')
+
+  const [tabIndex, setTabIndex] = useState(0)
+
+  const [editCustom, setEditCustom] = useState('')
+
+  const [customDiet, setCustomDiet] = useState({
+    name: '',
+    calories: '',
+    carbs: '',
+    fat: '',
+    protein: '',
+    sodium: '',
+    sugar: '',
+  });
+
+  const handleChange = (name, value) => {
+    // set the form state to the new values
+    setCustomDiet({
+      ...customDiet,
+      [name]: value,
+    });
+  };
 
   useEffect(() => {
     if (!data) {
@@ -103,16 +132,28 @@ const CalendarPage = () => {
         setPlannerId('n/a')
       }
       let dietInfo = []
+      let customDietInfo = []
       let plannerInfo = planners[plannerDates.findIndex(plannerDate => plannerDate === date)]
       if (plannerInfo) {
         for (let i = 0; i < plannerInfo.diet.length; i++) {
           let dietContent = plannerInfo.diet[i].content.map(content => ({ servings: content.servings, food: content.food[0]._id }))
-          // console.log(dietContent)
           dietInfo.push({
             id: plannerInfo.diet[i]._id,
             title: plannerInfo.diet[i].title,
             numberOfServing: plannerInfo.diet[i].numberOfServing,
             content: dietContent
+          })
+        }
+        for (let i = 0; i < plannerInfo.customDiet.length; i++) {
+          customDietInfo.push({
+            id: plannerInfo.customDiet[i]._id,
+            title: plannerInfo.customDiet[i].title,
+            calories: plannerInfo.customDiet[i].calories,
+            carbs: plannerInfo.customDiet[i].carbs,
+            fat: plannerInfo.customDiet[i].fat,
+            protein: plannerInfo.customDiet[i].protein,
+            sodium: plannerInfo.customDiet[i].sodium,
+            sugar: plannerInfo.customDiet[i].sugar
           })
         }
         if (plannerInfo.weight) {
@@ -121,29 +162,42 @@ const CalendarPage = () => {
       } else {
         setWeight('')
       }
-      setCurrentPlanner(dietInfo)
+      setCurrentPlannerDiet(dietInfo)
+      setCurrentPlannerCustomDiet(customDietInfo)
       // console.log(dietInfo)
+      console.log(plannerInfo)
+      console.log(currentPlannerCustomDiet)
     }
 
 
   }, [data, date, planners, plannerId]);
 
-  const [checkedState, setCheckedState] = useState(Array(meals.length).fill(false))
+  const [mealCheckedState, setMealCheckedState] = useState(Array(meals.length).fill(false))
+  const [foodCheckedState, setFoodCheckedState] = useState(Array(foods.length).fill(false))
 
   const handleChangeState = (event) => {
     event.preventDefault()
     const { value } = event.target
 
-    let checkboxStates = []
+    let mealCheckboxStates = []
     for (var i = 0; i < meals.length; i++) {
       if (meals[i].title === value) {
-        checkboxStates.push(!checkedState[i])
+        mealCheckboxStates.push(!mealCheckedState[i])
       } else {
-        checkboxStates.push(checkedState[i])
+        mealCheckboxStates.push(mealCheckedState[i])
       }
     };
+    setMealCheckedState(mealCheckboxStates)
 
-    setCheckedState(checkboxStates)
+    let foodCheckboxStates = []
+    for (var j = 0; j < foods.length; j++) {
+      if (foods[j].title === value) {
+        foodCheckboxStates.push(!foodCheckedState[j])
+      } else {
+        foodCheckboxStates.push(foodCheckedState[j])
+      }
+    };
+    setFoodCheckedState(foodCheckboxStates)
   }
 
   // set state of combined preview text
@@ -175,6 +229,24 @@ const CalendarPage = () => {
     return mealPreview
   };
 
+  const [foodPreview, setFoodPreview] = useState('')
+
+  // function to add workout to combined routine text
+  const getFoodPreview = (id) => {
+    let index = foods.findIndex(food => food._id === id)
+
+    setFoodPreview(
+      'Serving Size: ' + foods[index].servingSize + ' ' + foods[index].servingUnit + '\n' +
+      'Calories (kcal): ' + foods[index].calories + '\n' +
+      'Carbs (g): ' + foods[index].carbs + '\n' +
+      'Fat (g): ' + foods[index].fat + '\n' +
+      'Protein (g): ' + foods[index].protein + '\n' +
+      'Sodium (mg): ' + foods[index].sodium + '\n' +
+      'Sugar (g): ' + foods[index].sugar
+    )
+    return foodPreview
+  };
+
   const getMealTotals = (mealFoods) => {
     let foodContent = mealFoods.content
     let total = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
@@ -198,13 +270,21 @@ const CalendarPage = () => {
 
   const getDailyStats = () => {
     let daily = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
-    currentPlanner.forEach((diet) => {
+    currentPlannerDiet.forEach((diet) => {
       daily.calories += getMealTotals(diet).calories
       daily.carbs += getMealTotals(diet).carbs
       daily.fat += getMealTotals(diet).fat
       daily.protein += getMealTotals(diet).protein
       daily.sodium += getMealTotals(diet).sodium
       daily.sugar += getMealTotals(diet).sugar
+    })
+    currentPlannerCustomDiet.forEach((diet) => {
+      daily.calories += diet.calories
+      daily.carbs += diet.carbs
+      daily.fat += diet.fat
+      daily.protein += diet.protein
+      daily.sodium += diet.sodium
+      daily.sugar += diet.sugar
     })
 
     daily.calories = +parseFloat(daily.calories).toFixed(0)
@@ -221,7 +301,6 @@ const CalendarPage = () => {
   const [addPlanner, { plannerData }] = useMutation(ADD_PLANNER);
 
   const handleAddPlanner = async (type) => {
-
     try {
       const { plannerData } = await addPlanner({
         // pass in the selected date to add new tracking data
@@ -233,6 +312,8 @@ const CalendarPage = () => {
             handleAddDiet(plannerData.addPlanner._id)
           } else if (type === 'weight') {
             handleAddWeight(plannerData.addPlanner._id)
+          } else if (type === 'customDiet') {
+            handleAddCustomDiet(plannerData.addPlanner._id)
           }
         }
       });
@@ -252,12 +333,14 @@ const CalendarPage = () => {
     } else {
       let dietId = ''
       let dietMeals = []
+      let dietType = ''
       const setDietData = (a, b) => {
         dietId = a
         dietMeals = b
       }
-      for (let i = 0; i < checkedState.length; i++) {
-        if (checkedState[i]) {
+      for (let i = 0; i < mealCheckedState.length; i++) {
+        if (mealCheckedState[i]) {
+          dietType = 'Meals'
           try {
             const { dietData } = await addDiet({
               // pass in the selected date to add new tracking data
@@ -270,36 +353,74 @@ const CalendarPage = () => {
           } catch (e) {
             console.error(e);
           }
-          checkedState[i] = false
+          mealCheckedState[i] = false
         }
       }
-      handleAddDietContent(dietMeals, dietId)
+      handleAddDietContent(dietMeals, dietId, dietType)
+
+      for (let j = 0; j < foodCheckedState.length; j++) {
+        if (foodCheckedState[j]) {
+          dietType = 'Foods'
+          try {
+            const { dietData } = await addDiet({
+              // pass in the selected date to add new tracking data
+              variables: { plannerId: planId, title: foods[j].title, numberOfServing: 1, content: [] },
+
+              onCompleted(dietData) {
+                setDietData(dietData.addDiet._id, dietData.addDiet.diet)
+              }
+            });
+          } catch (e) {
+            console.error(e);
+          }
+          foodCheckedState[j] = false
+        }
+      }
+
+      handleAddDietContent(dietMeals, dietId, dietType)
     }
   };
 
   const [addDietFood, { dietFoodError, dietFoodData }] = useMutation(ADD_DIET_FOOD);
 
-  const handleAddDietContent = (dietMeals, planId) => {
-    dietMeals.forEach((meal) => {
-      let dietId = meal._id
-      let title = meal.title
-      let mealItem = meals[meals.findIndex(meal => meal.title === title)].content
-      console.log(mealItem)
-      mealItem.forEach((food) => {
-        let servings = food.servings
-        let id = food.food[0]._id
-        console.log(foods[foods.findIndex(food => food._id === id)].title)
-        try {
-          // add routine with variables routineNanem and routine
-          const { dietFoodData } = addDietFood({
-            variables: { dietId, servings, food: id },
-          });
+  const handleAddDietContent = (dietMeals, planId, dietType) => {
+    if (dietType === 'Meals') {
+      dietMeals.forEach((meal) => {
+        let dietId = meal._id
+        let title = meal.title
+        let mealItem = meals[meals.findIndex(meal => meal.title === title)].content
+        mealItem.forEach((food) => {
+          let servings = food.servings
+          let id = food.food[0]._id
+          try {
+            // add routine with variables routineNanem and routine
+            const { dietFoodData } = addDietFood({
+              variables: { dietId, servings, food: id },
+            });
 
-        } catch (e) {
-          console.error(e)
+          } catch (e) {
+            console.error(e)
+          }
+        });
+      });
+    } else if (dietType === 'Foods') {
+      dietMeals.forEach((meal) => {
+        if (meal.content.length === 0) {
+          let dietId = meal._id
+          let id = foods[foods.findIndex(item => item.title === meal.title)]._id
+          let servings = 1
+          try {
+            // add routine with variables routineNanem and routine
+            const { dietFoodData } = addDietFood({
+              variables: { dietId, servings, food: id },
+            });
+
+          } catch (e) {
+            console.error(e)
+          }
         }
       });
-    });
+    }
 
     refetch();
     onClose()
@@ -325,8 +446,107 @@ const CalendarPage = () => {
         console.error(e)
       }
     }
+  };
 
+  const [addCustomDiet, { customDietError, customDietData }] = useMutation(ADD_CUSTOM_DIET);
+
+  const handleAddCustomDiet = async (id) => {
+    const planId = id
+
+    mealCheckedState.forEach((state, index, array) => array[index] = false)
+    foodCheckedState.forEach((state, index, array) => array[index] = false)
+    if (planId === 'n/a') {
+      let type = 'customDiet'
+      handleAddPlanner(type)
+    } else {
+      try {
+        const { customDietData } = await addCustomDiet({
+          // pass in the selected date to add new tracking data
+          variables: {
+            plannerId: planId,
+            title: customDiet.title,
+            calories: parseFloat(customDiet.calories),
+            carbs: parseFloat(customDiet.carbs) || 0,
+            fat: parseFloat(customDiet.fat) || 0,
+            protein: parseFloat(customDiet.protein) || 0,
+            sodium: parseFloat(customDiet.sodium) || 0,
+            sugar: parseFloat(customDiet.sugar) || 0,
+          },
+
+          onCompleted(customDietData) {
+            // redirect to posts page
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    refetch()
     onClose()
+  };
+
+  const [updateCustomDiet, { updateCustomDietError, updateCustomDietData }] = useMutation(UPDATE_CUSTOM_DIET);
+
+  const handleUpdateCustomDiet = async (id) => {
+
+    if (id !== '') {
+      try {
+        const { updateCustomDietData } = await updateCustomDiet({
+          // pass in the selected date to add new tracking data
+          variables: {
+            customDietId: id,
+            title: customDiet.title,
+            calories: parseFloat(customDiet.calories),
+            carbs: parseFloat(customDiet.carbs) || 0,
+            fat: parseFloat(customDiet.fat) || 0,
+            protein: parseFloat(customDiet.protein) || 0,
+            sodium: parseFloat(customDiet.sodium) || 0,
+            sugar: parseFloat(customDiet.sugar) || 0,
+          },
+
+          onCompleted(customDietData) {
+            setEditCustom('');
+            setCustomDiet({
+              ...customDiet,
+              name: '',
+              calories: '',
+              carbs: '',
+              fat: '',
+              protein: '',
+              sodium: '',
+              sugar: '',
+            })
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+
+      refetch()
+    };
+  };
+
+  const [removeCustomDiet, { removeCustomDietError, removeCustomDietData }] = useMutation(REMOVE_CUSTOM_DIET);
+
+  const handleRemoveCustomDiet = async (event) => {
+    event.preventDefault()
+    const { id } = event.target
+    if (id !== '') {
+      try {
+        // add routine with variables routineNanem and routine
+        const { removeCustomDietData } = await removeCustomDiet({
+          variables: { plannerId, customDietId: id },
+
+          onCompleted(removeCustomDietData) {
+            refetch();
+          }
+        });
+
+      } catch (e) {
+        console.error(e)
+      }
+    }
   };
 
   const [addWeight, { addWeightError, addWeightData }] = useMutation(ADD_WEIGHT);
@@ -383,7 +603,7 @@ const CalendarPage = () => {
                     icon={<FiPlus p='100%' />}
                     onClick={onOpen}
                   />
-                  <Text ml='0.5em'>Add meal</Text>
+                  <Text ml='0.5em'>Add Item(s)</Text>
                 </Box>
                 <Spacer />
                 <Box display='flex' alignItems='center' justifiyContent='spaced-between'>
@@ -412,12 +632,12 @@ const CalendarPage = () => {
               </Box>
               {/* if tracked and query is complete */}
               {loading ? (
-                <Box display='flex' alignItems='center'>
-                  <Spinner /><Text>Loading...</Text>
+                <Box display='flex' alignItems='center' mt='1em'>
+                  <Spinner mr='1em' /><Text>Loading...</Text>
                 </Box>
               ) : (
                 <Box>
-                  {currentPlanner.length <= 0 ? (
+                  {currentPlannerDiet.length <= 0 ? (
                     <Box></Box>
                   ) : (
                     <Box>
@@ -436,7 +656,7 @@ const CalendarPage = () => {
                             </AccordionButton>
                           </h2>
                         </AccordionItem>
-                        {currentPlanner.map((planner) => (
+                        {currentPlannerDiet.map((planner) => (
                           <AccordionItem>
                             <h2>
                               <AccordionButton _hover={{ bg: 'var(--shade2)' }} _expanded={{ bg: 'var(--shade2)', fontWeight: 'bold' }}>
@@ -483,7 +703,7 @@ const CalendarPage = () => {
                                     <Text>{getMealTotals(planner).calories} kcal</Text>
                                   </Box>
                                   <Box display='flex'>
-                                    <Text>carbs: </Text>
+                                    <Text>Carbs: </Text>
                                     <Spacer />
                                     <Text>{getMealTotals(planner).carbs} g</Text>
                                   </Box>
@@ -510,6 +730,150 @@ const CalendarPage = () => {
                                 </GridItem>
                               </Grid>
                             </AccordionPanel>
+                          </AccordionItem>
+                        ))}
+                        {currentPlannerCustomDiet.map((planner) => (
+                          <AccordionItem>
+                            {({ isExpanded }) => (
+                              <>
+                                <h2>
+                                  <AccordionButton _hover={{ bg: 'var(--shade2)' }} _expanded={{ bg: 'var(--shade2)', fontWeight: 'bold' }}>
+                                    <Grid templateColumns='repeat(10, 1fr)' gap='4'>
+                                      <GridItem colSpan='9' alignItems='center'>
+                                        <Box textAlign='left'>
+                                          <IconButton
+                                            size='md'
+                                            icon={<FiMinus p='100%' />}
+                                            id={planner.id}
+                                            onClick={handleRemoveCustomDiet}
+                                          />
+                                          {editCustom === planner.id ? (
+                                            <IconButton
+                                              mx='1em'
+                                              size='md'
+                                              icon={<FiCheck p='100%' />}
+                                              onClick={() => { handleUpdateCustomDiet(planner.id) }}
+                                            />
+                                          ) : (
+                                            <IconButton
+                                              mx='1em'
+                                              size='md'
+                                              icon={<FiEdit3 p='100%' />}
+                                              isDisabled={isExpanded ? (true) : (false)}
+                                              onClick={() => {
+                                                setEditCustom(planner.id);
+                                                setCustomDiet({ ...customDiet, title: planner.title, calories: planner.calories, carbs: planner.carbs, fat: planner.fat, protein: planner.protein, sodium: planner.sodium, sugar: planner.sugar })
+                                              }}
+                                            />
+                                          )}
+                                          {planner.title}
+                                        </Box>
+                                      </GridItem>
+                                      <GridItem colSpan='1' display='flex' alignItems='center'>
+                                        <Box textAlign='right'>1</Box>
+                                        <AccordionIcon />
+                                      </GridItem>
+                                    </Grid>
+                                  </AccordionButton>
+                                </h2>
+                                <AccordionPanel>
+                                  {editCustom === planner.id ? (
+                                    <Box>
+                                      <InputGroup alignItems='center' mb='0.5em'>
+                                        <Text mr='1em' width='25%'>Name: </Text>
+                                        <Input
+                                          name='title'
+                                          value={customDiet.title}
+                                          onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                                        />
+                                      </InputGroup>
+                                      <InputGroup alignItems='center' mb='0.5em'>
+                                        <Text mr='1em' width='25%'>Calories (kcal) : </Text>
+                                        <Input
+                                          name='calories'
+                                          value={customDiet.calories}
+                                          onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                                        />
+                                      </InputGroup>
+                                      <InputGroup alignItems='center' mb='0.5em'>
+                                        <Text mr='1em' width='25%'>Carbs (g) : </Text>
+                                        <Input
+                                          name='carbs'
+                                          value={customDiet.carbs}
+                                          onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                                        />
+                                      </InputGroup>
+                                      <InputGroup alignItems='center' mb='0.5em'>
+                                        <Text mr='1em' width='25%'>Fat (g) : </Text>
+                                        <Input
+                                          name='fat'
+                                          value={customDiet.fat}
+                                          onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                                        />
+                                      </InputGroup>
+                                      <InputGroup alignItems='center' mb='0.5em'>
+                                        <Text mr='1em' width='25%'>Protein (g) : </Text>
+                                        <Input
+                                          name='protein'
+                                          value={customDiet.protein}
+                                          onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                                        />
+                                      </InputGroup>
+                                      <InputGroup alignItems='center' mb='0.5em'>
+                                        <Text mr='1em' width='25%'>Sodium (mg) : </Text>
+                                        <Input
+                                          name='sodium'
+                                          value={customDiet.sodium}
+                                          onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                                        />
+                                      </InputGroup>
+                                      <InputGroup alignItems='center'>
+                                        <Text mr='1em' width='25%'>Sugar (g) : </Text>
+                                        <Input
+                                          name='sugar'
+                                          value={customDiet.sugar}
+                                          onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                                        />
+                                      </InputGroup>
+                                    </Box>
+                                  ) : (
+                                    <Box>
+                                      <Text as='b'>Nutrition Value: </Text>
+                                      <Box display='flex'>
+                                        <Text>Calories: </Text>
+                                        <Spacer />
+                                        <Text>{planner.calories} kcal</Text>
+                                      </Box>
+                                      <Box display='flex'>
+                                        <Text>Carbs: </Text>
+                                        <Spacer />
+                                        <Text>{planner.carbs} g</Text>
+                                      </Box>
+                                      <Box display='flex'>
+                                        <Text>Fat: </Text>
+                                        <Spacer />
+                                        <Text>{planner.fat} g</Text>
+                                      </Box>
+                                      <Box display='flex'>
+                                        <Text>Protein: </Text>
+                                        <Spacer />
+                                        <Text>{planner.protein} g</Text>
+                                      </Box>
+                                      <Box display='flex'>
+                                        <Text>Sodium: </Text>
+                                        <Spacer />
+                                        <Text>{planner.sodium} g</Text>
+                                      </Box>
+                                      <Box display='flex'>
+                                        <Text>Sugar: </Text>
+                                        <Spacer />
+                                        <Text>{planner.sugar} g</Text>
+                                      </Box>
+                                    </Box>
+                                  )}
+                                </AccordionPanel>
+                              </>
+                            )}
                           </AccordionItem>
                         ))}
                       </Accordion>
@@ -612,60 +976,237 @@ const CalendarPage = () => {
           <Box></Box>
         </GridItem>
       </Grid>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={() => { onClose(); setTabIndex(0) }}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader color='var(--shade5)'>My Meals</ModalHeader>
+          <ModalHeader>Add Item(s)</ModalHeader>
           <ModalCloseButton />
-          <ModalBody overflowY='auto' maxHeight='75vh' >
-            {meals.map((meal, index) => (
-              <Flex key={meal._id}
-                justifyContent='space-between'
-                alignItems='center'
-                my='3'
-              >
-                <Box>
-                  <Checkbox
-                    value={meal.title}
-                    isChecked={checkedState[index]}
-                    onChange={handleChangeState}
-                  >
-                    {meal.title}
-                  </Checkbox>
-                </Box>
-                <Box>
-                  <Popover onOpen={() => { getMealPreview(meal._id) }}>
-                    <PopoverTrigger>
-                      <IconButton
-                        aria-label={meal.title}
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                        _hover={{ bg: 'var(--shade4)' }}
-                        icon={<FiInfo p='100%' />}
+          <ModalBody overflowY='auto' maxHeight='50vh' >
+            <Tabs isFitted variant='line' onChange={(index) => setTabIndex(index)}>
+              <TabList>
+                <Tab _selected={{ color: 'white', bg: 'var(--shade5)' }}>Meals</Tab>
+                <Tab _selected={{ color: 'white', bg: 'var(--shade5)' }}>Food</Tab>
+                <Tab _selected={{ color: 'white', bg: 'var(--shade5)' }}>Custom</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  {meals.map((meal, index) => (
+                    <Flex key={meal._id}
+                      justifyContent='space-between'
+                      alignItems='center'
+                      my='3'
+                    >
+                      <Box>
+                        <Checkbox
+                          value={meal.title}
+                          isChecked={mealCheckedState[index]}
+                          onChange={handleChangeState}
+                        >
+                          {meal.title}
+                        </Checkbox>
+                      </Box>
+                      <Box>
+                        <Popover onOpen={() => { getMealPreview(meal._id) }}>
+                          <PopoverTrigger>
+                            <IconButton
+                              aria-label={meal.title}
+                              bg='var(--shade2)'
+                              color='var(--shade6)'
+                              _hover={{ bg: 'var(--shade4)' }}
+                              icon={<FiInfo p='100%' />}
+                            />
+                          </PopoverTrigger>
+                          <PopoverContent width='fit-content' border='none'>
+                            <PopoverBody whiteSpace='pre-line' p='1vw' bg='var(--shade3)' color='var(--shade6)'>{mealPreview}</PopoverBody>
+                          </PopoverContent>
+                        </Popover>
+                      </Box>
+                    </Flex>
+                  ))}
+                </TabPanel>
+                <TabPanel>
+                  {foods.map((food, index) => (
+                    <Flex key={food._id}
+                      justifyContent='space-between'
+                      alignItems='center'
+                      my='3'
+                    >
+                      <Box>
+                        <Checkbox
+                          value={food.title}
+                          isChecked={foodCheckedState[index]}
+                          onChange={handleChangeState}
+                        >
+                          {food.title}
+                        </Checkbox>
+                      </Box>
+                      <Box>
+                        <Popover onOpen={() => { getFoodPreview(food._id) }}>
+                          <PopoverTrigger>
+                            <IconButton
+                              aria-label={food.title}
+                              bg='var(--shade2)'
+                              color='var(--shade6)'
+                              _hover={{ bg: 'var(--shade4)' }}
+                              icon={<FiInfo p='100%' />}
+                            />
+                          </PopoverTrigger>
+                          <PopoverContent width='fit-content' border='none'>
+                            <PopoverBody whiteSpace='pre-line' p='1vw' bg='var(--shade3)' color='var(--shade6)'>{mealPreview}</PopoverBody>
+                          </PopoverContent>
+                        </Popover>
+                      </Box>
+                    </Flex>
+                  ))}
+                </TabPanel>
+                <TabPanel>
+                  <Box>
+                    <Text mb='1em'><b>Required: </b>Meal Name and Calories</Text>
+                    <Text mb='1em'>Enter by Serving Size of <b>1</b></Text>
+                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                      <InputLeftAddon
+                        children='Name'
+                        width='25%'
+                        bg='var(--shade3)'
                       />
-                    </PopoverTrigger>
-                    <PopoverContent width='fit-content' border='none'>
-                      <PopoverBody whiteSpace='pre-line' p='1vw' bg='var(--shade3)' color='var(--shade6)'>{mealPreview}</PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                </Box>
-              </Flex>
-            ))}
+                      <Input
+                        name='title'
+                        value={customDiet.title}
+                        onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                      />
+                    </InputGroup>
+                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                      <InputLeftAddon
+                        children='Calories'
+                        width='25%'
+                        bg='var(--shade3)'
+                      />
+                      <Input
+                        name='calories'
+                        value={customDiet.calories}
+                        onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                      />
+                      <InputRightAddon
+                        children='kcal'
+                        width='20%'
+                        bg='var(--shade3)'
+                      />
+                    </InputGroup>
+                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                      <InputLeftAddon
+                        children='Carbs'
+                        width='25%'
+                        bg='var(--shade2)'
+                      />
+                      <Input
+                        name='carbs'
+                        value={customDiet.carbs}
+                        onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                      />
+                      <InputRightAddon
+                        children='g'
+                        width='20%'
+                        bg='var(--shade2)'
+                      />
+                    </InputGroup>
+                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                      <InputLeftAddon
+                        children='Fat'
+                        width='25%'
+                        bg='var(--shade2)'
+                      />
+                      <Input
+                        name='fat'
+                        value={customDiet.fat}
+                        onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                      />
+                      <InputRightAddon
+                        children='g'
+                        width='20%'
+                        bg='var(--shade2)'
+                      />
+                    </InputGroup>
+                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                      <InputLeftAddon
+                        children='Protein'
+                        width='25%'
+                        bg='var(--shade2)'
+                      />
+                      <Input
+                        name='protein'
+                        value={customDiet.protein}
+                        onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                      />
+                      <InputRightAddon
+                        children='g'
+                        width='20%'
+                        bg='var(--shade2)'
+                      />
+                    </InputGroup>
+                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                      <InputLeftAddon
+                        children='Sodium'
+                        width='25%'
+                        bg='var(--shade2)'
+                      />
+                      <Input
+                        name='sodium'
+                        value={customDiet.sodium}
+                        onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                      />
+                      <InputRightAddon
+                        children='mg'
+                        width='20%'
+                        bg='var(--shade2)'
+                      />
+                    </InputGroup>
+                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                      <InputLeftAddon
+                        children='Sugar'
+                        width='25%'
+                        bg='var(--shade2)'
+                      />
+                      <Input
+                        name='sugar'
+                        value={customDiet.sugar}
+                        onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                      />
+                      <InputRightAddon
+                        children='g'
+                        width='20%'
+                        bg='var(--shade2)'
+                      />
+                    </InputGroup>
+                    <Text mt='1em'>Empty values will default to 0</Text>
+                  </Box>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </ModalBody>
-
           <ModalFooter justifyContent='spaced-between'>
             <Button mr={3} onClick={onClose}>
               Close
             </Button>
             <Spacer />
-            <Button bg='var(--shade5)'
-              color='var(--shade1)'
-              _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-              value={plannerId}
-              onClick={(e) => { handleAddDiet(e.target.value) }}
-            >
-              Add Meal(s)
-            </Button>
+            {tabIndex === 2 ? (
+              <Button bg='var(--shade5)'
+                color='var(--shade1)'
+                _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+                value={plannerId}
+                onClick={(e) => { handleAddCustomDiet(e.target.value) }}
+              >
+                Add Custom Meal
+              </Button>
+            ) : (
+              <Button bg='var(--shade5)'
+                color='var(--shade1)'
+                _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+                value={plannerId}
+                onClick={(e) => { handleAddDiet(e.target.value) }}
+              >
+                Add Items(s)
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

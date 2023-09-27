@@ -72,6 +72,29 @@
     border-bottom: 1px solid var(--shade4)
 }
 
+/* custom meal popover */
+.calendar-page .css-sjj62m {
+    border-color: var(--shade5);
+    --popper-arrow-bg: var(--shade3);
+    --popper-arrow-shadow-color: var(--shade5);
+}
+
+/* custom meal popover header and footer */
+.calendar-page .css-1t6b1jw, .calendar-page .css-1uyazt3 {
+    background-color: var(--shade3);
+}
+
+/* custom meal popover save button */
+.calendar-page .css-ez23ye {
+    background-color: var(--shade2);
+}
+
+/* custom meal popover save button */
+.calendar-page .css-ez23ye:hover {
+    background-color: var(--shade4);
+    color: white;
+}
+
 /* daily stats accordian header */
 .calendar-page .css-iqe3ys {
     font-size: 1.5em;
@@ -99,6 +122,7 @@
     height: 2.5em;
 }
 
+/* daily stats circle inner text value */
 .calendar-page .css-f1j64i {
     font-size: 0.5em;
     color: var(--shade6);

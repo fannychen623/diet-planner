@@ -29,6 +29,19 @@
     color: var(--shade5);
 }
 
+/* search bar */
+.food-page .css-qluo93 {
+    border-color: var(--shade5);
+    border-width: 0.15em;
+    margin-bottom: 1em;
+}
+
+/* search bar */
+.food-page .css-qluo93:hover {
+    border-color: var(--shade5);
+    border-width: 0.25em;
+}
+
 /* table container */
 .food-page .css-zipzvv {
     width: 100rem;
@@ -42,10 +55,24 @@
 
 /* table headers */
 .food-page .css-1zts0j {
-    text-align: center;
     color: white;
     background-color: var(--shade5);
-    padding: 1% 0%;
+    padding: 0;
+}
+
+/* table header buttons */
+.food-page .css-1f0rfxj {
+    margin: auto;
+    width: 100%;
+    padding: 1.5em 0.5em;
+    border-radius: 0;
+    background-color: var(--shade5);
+    color: white;
+}
+
+/* table header buttons */
+.food-page .css-1f0rfxj:hover {
+    background-color: var(--shade4);
 }
 
 /* table content */

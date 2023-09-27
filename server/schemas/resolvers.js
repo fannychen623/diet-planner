@@ -259,6 +259,34 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in to update routine!");
     },
+    addCustomDiet: async (parent, { plannerId, title, calories, carbs, fat, protein, sodium, sugar }, context) => {
+      if (context.user) {
+        return Planner.findOneAndUpdate(
+          { _id: plannerId },
+          { $addToSet: { customDiet: { title, calories, carbs, fat, protein, sodium, sugar }, }, },
+          { new: true, runValidators: true }
+        );
+      }
+      throw new AuthenticationError("You need to be logged in to update routine!");
+    },
+    updateCustomDiet: async (parent, { customDietId, title, calories, carbs, fat, protein, sodium, sugar }, context) => {
+      if (context.user) {
+        return Planner.findOneAndUpdate(
+          { "customDiet._id": customDietId },
+          { "customDiet.$": { _id: customDietId, title, calories, carbs, fat, protein, sodium, sugar } },
+          { new: true },
+        );
+      }
+    },
+    removeCustomDiet: async (parent, { plannerId, customDietId }, context) => {
+      if (context.user) {
+        return Planner.findOneAndUpdate(
+          { _id: plannerId },
+          { $pull: { customDiet: { _id: customDietId, }, }, }
+        );
+      }
+      throw new AuthenticationError("You need to be logged in to update routine!");
+    },
     addWeight: async (parent, { plannerId, weight }, context) => {
       if (context.user) {
         return Planner.findOneAndUpdate(

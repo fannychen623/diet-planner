@@ -191,6 +191,16 @@ export const ADD_PLANNER = gql`
           }
         }
       }
+      customDiet {
+        _id
+        title
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
+      }
       weight
     }
   }
@@ -211,6 +221,16 @@ export const ADD_DIET = gql`
             _id
           }
         }
+      }
+      customDiet {
+        _id
+        title
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
       }
       weight
     }
@@ -233,6 +253,16 @@ export const ADD_DIET_FOOD = gql`
           }
         }
       }
+      customDiet {
+        _id
+        title
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
+      }
       weight
     }
   }
@@ -253,6 +283,16 @@ export const UPDATE_DIET = gql`
             _id
           }
         }
+      }
+      customDiet {
+        _id
+        title
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
       }
       weight
     }
@@ -275,6 +315,16 @@ export const UPDATE_DIET_FOOD = gql`
           }
         }
       }
+      customDiet {
+        _id
+        title
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
+      }
       weight
     }
   }
@@ -283,6 +333,76 @@ export const UPDATE_DIET_FOOD = gql`
 export const REMOVE_DIET = gql`
     mutation removeDiet($plannerId: ID!, $dietId: ID!) {
       removeDiet(plannerId: $plannerId, dietId: $dietId) {
+        _id
+      }
+    }
+`;
+
+export const ADD_CUSTOM_DIET = gql`
+  mutation addCustomDiet($plannerId: ID!, $title: String!, $calories: Float!, $carbs: Float, $fat: Float, $protein: Float, $sodium: Float, $sugar: Float) {
+    addCustomDiet(plannerId: $plannerId, title: $title, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
+      _id
+      date
+      diet {
+        _id
+        title
+        numberOfServing
+        content {
+          servings
+          food {
+            _id
+          }
+        }
+      }
+      customDiet {
+        _id
+        title
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
+      }
+      weight
+    }
+  }
+`;
+
+export const UPDATE_CUSTOM_DIET = gql`
+  mutation updateCustomDiet($customDietId: ID!, $title: String!, $calories: Float!, $carbs: Float, $fat: Float, $protein: Float, $sodium: Float, $sugar: Float) {
+    updateCustomDiet(customDietId: $customDietId, title: $title, calories: $calories, carbs: $carbs, fat: $fat, protein: $protein, sodium: $sodium, sugar: $sugar) {
+      _id
+      date
+      diet {
+        _id
+        title
+        numberOfServing
+        content {
+          servings
+          food {
+            _id
+          }
+        }
+      }
+      customDiet {
+        _id
+        title
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
+      }
+      weight
+    }
+  }
+`;
+
+export const REMOVE_CUSTOM_DIET = gql`
+    mutation removeCustomDiet($plannerId: ID!, $customDietId: ID!) {
+      removeCustomDiet(plannerId: $plannerId, customDietId: $customDietId) {
         _id
       }
     }
@@ -304,149 +424,17 @@ export const ADD_WEIGHT = gql`
           }
         }
       }
-      weight
-    }
-  }
-`;
-
-export const ADD_POST = gql`
-    mutation addPost($title: String!, $text: String!){
-        addPost(title: $title, text: $text){
-            _id
-            title
-            text
-            author
-            createdAt
-        }
-    }
-`
-
-export const UPDATE_POST = gql`
-    mutation updatePost($postId: ID!, $title: String!, $text: String!){
-      updatePost(postId: $postId, title: $title, text: $text){
+      customDiet {
         _id
         title
-        text
-      }
-    }
-`
-export const REMOVE_POST = gql`
-    mutation removePost($postId: ID!){
-      removePost(postId: $postId){
-        _id
-      }
-    }
-`;
-
-export const ADD_COMMENT = gql`
-    mutation addComment($postId: ID!, $commentText: String!){
-        addComment(postId: $postId, commentText: $commentText){
-            _id
-            title
-            text
-            comments {
-                _id
-                commentText
-                commentAuthor
-                commentCreatedAt
-            }
-        }
-    }
-`
-
-export const REMOVE_COMMENT = gql`
-    mutation removeComment($postId: ID!, $commentId: ID!){
-      removeComment(postId: $postId, commentId: $commentId){
-        _id
-      }
-    }
-`
-
-export const ADD_LIKE = gql`
-    mutation addLike($postId: ID!){
-      addLike(postId: $postId){
-        _id
-        likes{
-          _id
-        }
-      }
-    }
-`
-export const REMOVE_LIKE = gql`
-    mutation removeLike($postId: ID!){
-      removeLike(postId: $postId){
-        _id
-      }
-    }
-`;
-
-export const ADD_TRACKER = gql`
-  mutation addTracker($date: String!) {
-    addTracker(date: $date) {
-      _id
-      date
-      scheduledRoutines {
-        _id
-        routineName
-        complete
+        calories
+        carbs
+        fat
+        protein
+        sodium
+        sugar
       }
       weight
-      calorie
-    }
-  }
-`;
-
-export const UPDATE_TRACKER = gql`
-  mutation updateTracker($trackerId: ID!, $weight: Int, $calorie: Int) {
-    updateTracker(trackerId: $trackerId, weight: $weight, calorie: $calorie) {
-      _id
-      weight
-      calorie
-    }
-  }
-`;
-
-export const REMOVE_TRACKER = gql`
-  mutation removeTracker($trackerId: ID!) {
-    removeTracker(trackerId: $trackerId) {
-      _id
-    }
-  }
-`;
-
-export const ADD_SCHEDULED_ROUTINES = gql`
-  mutation addScheduledRoutines($trackerId: ID!, $routineName: String!) {
-    addScheduledRoutines(trackerId: $trackerId, routineName: $routineName) {
-      _id
-      date
-      scheduledRoutines {
-        _id
-        routineName
-        complete
-      }
-      weight
-      calorie
-    }
-  }
-`;
-
-export const UPDATE_SCHEDULED_ROUTINES = gql`
-  mutation updateScheduledRoutines($scheduledRoutinesId: ID!, $complete: Boolean!) {
-    updateScheduledRoutines(scheduledRoutinesId: $scheduledRoutinesId, complete: $complete) {
-      _id
-      scheduledRoutines {
-        _id
-        routineName
-        complete
-      }
-    }
-  }
-`;
-
-export const REMOVE_SCHEDULED_ROUTINES = gql`
-  mutation removeScheduledRoutines($trackerId: ID!, $scheduledRoutinesId: ID!) {
-    removeScheduledRoutines(trackerId: $trackerId, scheduledRoutinesId: $scheduledRoutinesId) {
-      _id
     }
   }
 `;
