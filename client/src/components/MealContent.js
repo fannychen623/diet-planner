@@ -1,18 +1,10 @@
 // import package
 import React, { useState } from 'react';
 
-// import query and mutation
-import { useQuery, useMutation } from '@apollo/client';
-import { QUERY_POST } from '../utils/queries';
-import { REMOVE_COMMENT } from '../utils/mutations';
-
 // import package components and icon
 import {
-    Box, Flex, Spacer, IconButton, Text,
-    Table, Thead, Tbody, Tr, Th, Td, TableContainer,
+    Box, Table, Thead, Tbody, Tr, Th, Td, TableContainer,
 } from '@chakra-ui/react'
-
-import { FiMinusSquare } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/Meal.css';
@@ -87,7 +79,6 @@ const MealContent = ({ contents, foods }) => {
 
     // if not comment exist for post
     if (!contents.length) {
-        console.log(contents[0].food[0]._id)
         return;
     };
 

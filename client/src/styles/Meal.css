@@ -7,11 +7,22 @@
 }
 
 /* page title */
-.meal-page .css-1dklj6k, .new-meal-page .css-1mxx7z2 {
+.meal-page .css-1dklj6k {
     font-family: var(--font);
     font-size: 2.75rem;
     color: var(--shade5);
-    padding-top: 1rem;
+    padding-top: 0.5rem;
+}
+
+/* loading container */
+.meal-page .css-xi606m {
+    margin-top: 2em;
+    font-size: 2em;
+}
+
+/* loading spinner */
+.meal-page .css-nkpswe {
+    margin-right: 0.5em;
 }
 
 /* new meal button */
@@ -29,17 +40,32 @@
     color: var(--shade5);
 }
 
-/* accordian component */
-.meal-page .accordian {
-    background-color: #ffffff80;
+/* search bar */
+.meal-page .css-qluo93 {
+    border-color: var(--shade5);
+    border-width: 0.15em;
     margin-bottom: 1em;
 }
 
+/* search bar */
+.meal-page .css-qluo93:hover {
+    border-color: var(--shade5);
+    border-width: 0.25em;
+}
+
+/* accordian component */
+.meal-page .accordian {
+    background-color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 1em;
+}
+
+/* accordian button */
 .meal-page .css-17mg6aq {
     border-color: var(--shade4);
     border-top-width: 0px;
     border-bottom-width: 1em;
 }
+
 /* accordian titles */
 .meal-page .css-1eziwv {
     font-size: 1.5em;
@@ -71,47 +97,6 @@
     text-align: center;
 }
 
-/* number input field */
-.new-meal-page .css-1dqab6m {
-    outline: none;
-    border-color: var(--shade5);
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-/* table headers */
-.new-meal-page .css-1zts0j {
-    text-align: center;
-    color: var(--shade6);
-}
-
-/* table content */
-.new-meal-page .css-xumdn4, 
-.new-meal-page .css-xumdn4[data-is-numeric=true] {
-    text-align: center;
-}
-
-/* add meal button */
-.new-meal-page .css-ez23ye {
-    font-size: 2.5vw;
-    padding: 4.5vh 2vw 4.5vh 2vw;
-    background-color: var(--shade1);
-    color: var(--shade5);
-}
-
-/* add meal button */
-.new-meal-page .css-ez23ye:hover  {
-    background-color: var(--shade3);
-}
-
 @media (max-width: 768px) {
-    .meal-page {
-        padding: 5vw;
-    }
-    /* new food button */
-    .meal-page .css-ez23ye {
-        font-size: 3vw;
-        padding: 1vh 3vw 1vh 3vw;
-        margin-bottom: 1vh;
-    }
+
 }

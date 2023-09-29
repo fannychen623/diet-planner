@@ -13,7 +13,7 @@ import { UPDATE_MEAL, UPDATE_MEAL_FOOD } from '../utils/mutations';
 // import package components
 import {
   chakra, Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
-  Input, InputGroup, InputLeftAddon, InputRightAddon, Text, Tooltip,
+  Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon, Text, Tooltip,
   Checkbox, useCheckbox, useCheckboxGroup,
   Popover, PopoverTrigger, PopoverContent, PopoverHeader,
   PopoverBody, PopoverFooter, PopoverArrow,
@@ -26,13 +26,11 @@ import {
 
 // import icons
 import {
-  FiCheck, FiX, FiEdit, FiTrash2,
-  FiPlusSquare, FiMinusSquare, FiInfo,
-  FiExternalLink, FiEye, FiEdit3
+  FiSearch, FiPlusSquare, FiMinusSquare, FiInfo,
 } from 'react-icons/fi';
 
 // import local style sheet
-import '../styles/Meal.css';
+import '../styles/NewEditMeal.css';
 
 function toTitleCase(str) {
   return str.replace(
@@ -127,10 +125,24 @@ const EditMeal = () => {
   }
 
   const [foodsList, setFoodList] = useState(getFoodList())
+  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
+  const [searchValue, setSearchValue] = useState('')
 
   const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
 
   useEffect(() => {
+
+    setDisplayState(Array(foodsList.length).fill(true))
+    for (let i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+        displayState[i] = true
+      } else {
+        displayState[i] = false
+      }
+    }
+
+    setDisplayState({ ...displayState })
+
     let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
 
     for (let i = 0; i < foodAdded.length; i++) {
@@ -150,7 +162,7 @@ const EditMeal = () => {
       sodium: +parseFloat(newTotal.sodium).toFixed(2),
       sugar: +parseFloat(newTotal.sugar).toFixed(2)
     })
-  }, [foodAdded, foodsList, foods]);
+  }, [foodAdded, foodsList, foods, searchValue]);
 
   const handleChangeState = (event) => {
     event.preventDefault()
@@ -314,12 +326,12 @@ const EditMeal = () => {
   };
 
   return (
-    <Box className='new-meal-page'>
-      <Heading size='2xl' mb='5vh'>Modify Meal</Heading>
-      <Flex mb='5'>
+    <Box className='edit-meal-page'>
+      <Heading>Modify Meal</Heading>
+      <Flex>
         <Box>
-          <InputGroup size='lg' width='65vw' borderWidth='2px' borderColor='var(--shade5)' borderRadius='10'>
-            <InputLeftAddon children='Meal Name' bg='var(--shade3)' />
+          <InputGroup>
+            <InputLeftAddon children='Meal Name' />
             <Input
               type='text'
               name='title'
@@ -331,8 +343,8 @@ const EditMeal = () => {
         </Box>
         <Spacer />
         <Box>
-          <InputGroup size='lg' width='25vw' borderWidth='2px' borderColor='var(--shade5)' borderRadius='10'>
-            <InputLeftAddon children='Number of Serving' bg='var(--shade3)' />
+          <InputGroup>
+            <InputLeftAddon children='Number of Serving' />
             <NumberInput
               defaultValue={mealDetails.numberOfServing}
               min={0.25}
@@ -350,9 +362,9 @@ const EditMeal = () => {
           </InputGroup>
         </Box>
       </Flex>
-      <Box mt='5vh'>
+      <Box>
         <TableContainer width='fit-content' m='auto'>
-          <Table variant='simple' size='md'>
+          <Table variant='simple'>
             <Thead>
               <Tr>
                 <Th></Th>
@@ -367,15 +379,12 @@ const EditMeal = () => {
                 <Th isNumeric>Sugar (g)</Th>
               </Tr>
             </Thead>
-            <Tbody fontSize='1.75vw'>
+            <Tbody>
               {foodAdded.map((addFood, index) => (
                 <Tr>
                   <Td>
                     <IconButton
                       size='md'
-                      bg='var(--shade1)'
-                      color='var(--shade5)'
-                      _hover={{ bg: 'var(--shade6)', color: 'var(--shade2)' }}
                       icon={<FiMinusSquare p='100%' />}
                       id={addFood.id}
                       onClick={handleRemoveFood}
@@ -384,7 +393,6 @@ const EditMeal = () => {
                   <Td>{addFood.title}</Td>
                   <Td isNumeric>
                     <Input
-                      htmlSize={4}
                       width='auto'
                       textAlign='center'
                       defaultValue={addFood.servings}
@@ -405,9 +413,6 @@ const EditMeal = () => {
                 <Td>
                   <IconButton
                     size='md'
-                    bg='var(--shade1)'
-                    color='var(--shade5)'
-                    _hover={{ bg: 'var(--shade6)', color: 'var(--shade2)' }}
                     icon={<FiPlusSquare p='100%' />}
                     onClick={onOpen}
                   />
@@ -422,7 +427,7 @@ const EditMeal = () => {
                 <Td></Td>
                 <Td></Td>
               </Tr>
-              <Tr bg='var(--shade6)' color='white'>
+              <Tr className='meal-total'>
                 <Td></Td>
                 <Td>Total</Td>
                 <Td></Td>
@@ -437,22 +442,33 @@ const EditMeal = () => {
             </Tbody>
           </Table>
         </TableContainer>
-        <Text textAlign='center' mt='2vh' fontSize='2vw'>{errorMessage}</Text>
+        <Text textAlign='center'>{errorMessage}</Text>
       </Box>
-      <Box textAlign='center' my='3vh'>
+      <Box textAlign='center'>
         <Button variant='solid' onClick={handleUpdateMeal}>Update Meal</Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader color='var(--shade5)'>My Foods</ModalHeader>
+        <ModalContent className='meal-modal'>
+          <ModalHeader>
+            My Foods
+            <Box>
+              <InputGroup>
+                <InputLeftElement pointerEvents='none'>
+                  <FiSearch color='var(--shade5)' />
+                </InputLeftElement>
+                {/* <Input onChange={(e) => { setSearchValue(e.target.value) }} /> */}
+              </InputGroup>
+            </Box>
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody overflowY='auto' maxHeight='75vh' >
+          <ModalBody overflowY='auto' maxHeight='50vh' >
             {foodsList.map((food, index) => (
+              <>
+              {displayState[`${index}`] ? (
               <Flex key={food._id}
                 justifyContent='space-between'
                 alignItems='center'
-                my='3'
               >
                 <Box>
                   <Checkbox
@@ -468,29 +484,27 @@ const EditMeal = () => {
                     <PopoverTrigger>
                       <IconButton
                         aria-label={food.title}
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                        _hover={{ bg: 'var(--shade4)' }}
                         icon={<FiInfo p='100%' />}
                       />
                     </PopoverTrigger>
                     <PopoverContent width='fit-content' border='none'>
-                      <PopoverBody whiteSpace='pre-line' p='1vw' bg='var(--shade3)' color='var(--shade6)'>{foodPreview}</PopoverBody>
+                      <PopoverBody>{foodPreview}</PopoverBody>
                     </PopoverContent>
                   </Popover>
                 </Box>
               </Flex>
+              ):(
+                <></>
+              )}
+              </>
             ))}
           </ModalBody>
-
           <ModalFooter justifyContent='spaced-between'>
-            <Button mr={3} onClick={onClose}>
+            <Button onClick={onClose}>
               Close
             </Button>
             <Spacer />
-            <Button bg='var(--shade5)'
-              color='var(--shade1)'
-              _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+            <Button
               onClick={handleAddFoods}
             >
               Add Food(s)

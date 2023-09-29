@@ -12,7 +12,7 @@ import { ADD_MEAL, ADD_MEAL_FOOD } from '../utils/mutations';
 // import package components
 import {
   chakra, Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
-  Input, InputGroup, InputLeftAddon, Text, Checkbox,
+  Input, InputGroup, InputLeftElement, InputLeftAddon, Text, Checkbox,
   Popover, PopoverTrigger, PopoverContent, PopoverBody,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   NumberInput, NumberInputField,
@@ -23,11 +23,11 @@ import {
 
 // import icons
 import {
-  FiPlusSquare, FiMinusSquare, FiInfo,
+  FiPlusSquare, FiMinusSquare, FiSearch, FiInfo,
 } from 'react-icons/fi';
 
 // import local style sheet
-import '../styles/Meal.css';
+import '../styles/NewEditMeal.css';
 
 function toTitleCase(str) {
   return str.replace(
@@ -67,7 +67,9 @@ const NewMeal = () => {
   // extract the foods from the query data
   const foods = data?.me.foods || [];
 
-  const [foodsList, setFoodList] = useState(foods)
+  const [foodsList, setFoodsList] = useState(foods)
+  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
+  const [searchValue, setSearchValue] = useState('')
 
   // set state of combined preview text
   const [foodPreview, setFoodPreview] = useState('')
@@ -89,6 +91,17 @@ const NewMeal = () => {
 
   useEffect(() => {
 
+    setDisplayState(Array(foodsList.length).fill(true))
+    for (let i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+        displayState[i] = true
+      } else {
+        displayState[i] = false
+      }
+    }
+
+    setDisplayState({ ...displayState })
+
     let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
 
     for (let i = 0; i < foodAdded.length; i++) {
@@ -109,7 +122,7 @@ const NewMeal = () => {
       sugar: +parseFloat(newTotal.sugar).toFixed(2)
     })
 
-  }, [foodAdded, foodsList, foods]);
+  }, [foodAdded, foodsList, foods, searchValue]);
 
   const handleChangeState = (event) => {
     event.preventDefault()
@@ -131,12 +144,12 @@ const NewMeal = () => {
   const getFoodPreview = (index) => {
     setFoodPreview(
       'Serving Size: ' + foods[index].servingSize + ' ' + foods[index].servingUnit + '\n' +
-      'Calories (kcal): ' + foods[index].calories + '\n' +
-      'Carbs (g): ' + foods[index].carbs + '\n' +
-      'Fat (g): ' + foods[index].fat + '\n' +
-      'Protein (g): ' + foods[index].protein + '\n' +
-      'Sodium (mg): ' + foods[index].sodium + '\n' +
-      'Sugar (g): ' + foods[index].sugar
+      'Calories: ' + foods[index].calories + ' kcal \n' +
+      'Carbs: ' + foods[index].carbs + ' g \n' +
+      'Fat: ' + foods[index].fat + ' g \n' +
+      'Protein: ' + foods[index].protein + ' g \n' +
+      'Sodium: ' + foods[index].sodium + ' mg \n' +
+      'Sugar: ' + foods[index].sugar + ' g'
     )
     return foodPreview
   };
@@ -163,7 +176,7 @@ const NewMeal = () => {
           })
         }
         checkedState[i] = false
-        setFoodList(foods => foods.filter((food) => food.title != foodsList[i].title))
+        setFoodsList(foods => foods.filter((food) => food.title != foodsList[i].title))
       }
     }
 
@@ -272,11 +285,11 @@ const NewMeal = () => {
 
   return (
     <Box className='new-meal-page'>
-      <Heading size='2xl' mb='5vh'>Create a New Meal</Heading>
-      <Flex mb='5'>
+      <Heading>Create a New Meal</Heading>
+      <Flex>
         <Box>
-          <InputGroup size='lg' width='65vw' borderWidth='2px' borderColor='var(--shade5)' borderRadius='10'>
-            <InputLeftAddon children='Meal Name' bg='var(--shade3)' />
+          <InputGroup>
+            <InputLeftAddon children='Meal Name' />
             <Input
               type='text'
               name='title'
@@ -287,8 +300,8 @@ const NewMeal = () => {
         </Box>
         <Spacer />
         <Box>
-          <InputGroup size='lg' width='25vw' borderWidth='2px' borderColor='var(--shade5)' borderRadius='10'>
-            <InputLeftAddon children='Number of Serving' bg='var(--shade3)' />
+          <InputGroup>
+            <InputLeftAddon children='Number of Serving' />
             <NumberInput
               defaultValue={1}
               min={0.25}
@@ -306,9 +319,9 @@ const NewMeal = () => {
           </InputGroup>
         </Box>
       </Flex>
-      <Box mt='5vh'>
+      <Box>
         <TableContainer width='fit-content' m='auto'>
-          <Table variant='simple' size='md'>
+          <Table variant='simple'>
             <Thead>
               <Tr>
                 <Th></Th>
@@ -323,15 +336,12 @@ const NewMeal = () => {
                 <Th isNumeric>Sugar (g)</Th>
               </Tr>
             </Thead>
-            <Tbody fontSize='1.75vw'>
+            <Tbody>
               {foodAdded.map((addFood, index) => (
                 <Tr>
                   <Td>
                     <IconButton
                       size='md'
-                      bg='var(--shade1)'
-                      color='var(--shade5)'
-                      _hover={{ bg: 'var(--shade6)', color: 'var(--shade2)' }}
                       icon={<FiMinusSquare p='100%' />}
                       id={addFood.id}
                       onClick={handleRemoveFood}
@@ -340,7 +350,6 @@ const NewMeal = () => {
                   <Td>{addFood.title}</Td>
                   <Td isNumeric>
                     <Input
-                      htmlSize={4}
                       width='auto'
                       textAlign='center'
                       defaultValue={1}
@@ -361,9 +370,6 @@ const NewMeal = () => {
                 <Td>
                   <IconButton
                     size='md'
-                    bg='var(--shade1)'
-                    color='var(--shade5)'
-                    _hover={{ bg: 'var(--shade6)', color: 'var(--shade2)' }}
                     icon={<FiPlusSquare p='100%' />}
                     onClick={onOpen}
                   />
@@ -378,7 +384,7 @@ const NewMeal = () => {
                 <Td></Td>
                 <Td></Td>
               </Tr>
-              <Tr bg='var(--shade6)' color='white'>
+              <Tr className='meal-total'>
                 <Td></Td>
                 <Td>Total</Td>
                 <Td></Td>
@@ -393,22 +399,33 @@ const NewMeal = () => {
             </Tbody>
           </Table>
         </TableContainer>
-        <Text textAlign='center' mt='2vh' fontSize='2vw'>{errorMessage}</Text>
+        <Text textAlign='center'>{errorMessage}</Text>
       </Box>
-      <Box textAlign='center' my='3vh'>
+      <Box textAlign='center'>
         <Button variant='solid' onClick={handleAddMeal}>Add Meal</Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader color='var(--shade5)'>My Foods</ModalHeader>
+        <ModalContent className='meal-modal'>
+          <ModalHeader>
+            My Foods
+            <Box>
+              <InputGroup>
+                <InputLeftElement pointerEvents='none'>
+                  <FiSearch color='var(--shade5)' />
+                </InputLeftElement>
+                <Input onChange={(e) => { setSearchValue(e.target.value) }} />
+              </InputGroup>
+            </Box>
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody overflowY='auto' maxHeight='75vh' >
+          <ModalBody overflowY='auto' maxHeight='50vh' >
             {foodsList.map((food, index) => (
+              <>
+              {displayState[`${index}`] ? (
               <Flex key={food._id}
                 justifyContent='space-between'
                 alignItems='center'
-                my='3'
               >
                 <Box>
                   <Checkbox
@@ -424,29 +441,27 @@ const NewMeal = () => {
                     <PopoverTrigger>
                       <IconButton
                         aria-label={food.title}
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                        _hover={{ bg: 'var(--shade4)' }}
                         icon={<FiInfo p='100%' />}
                       />
                     </PopoverTrigger>
                     <PopoverContent width='fit-content' border='none'>
-                      <PopoverBody whiteSpace='pre-line' p='1vw' bg='var(--shade3)' color='var(--shade6)'>{foodPreview}</PopoverBody>
+                      <PopoverBody>{foodPreview}</PopoverBody>
                     </PopoverContent>
                   </Popover>
                 </Box>
               </Flex>
+              ):(
+                <></>
+              )}
+              </>
             ))}
           </ModalBody>
-
           <ModalFooter justifyContent='spaced-between'>
-            <Button mr={3} onClick={onClose}>
+            <Button onClick={onClose}>
               Close
             </Button>
             <Spacer />
-            <Button bg='var(--shade5)'
-              color='var(--shade1)'
-              _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+            <Button
               onClick={handleAddFoods}
             >
               Add Food(s)

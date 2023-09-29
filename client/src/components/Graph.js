@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
 
 // functional component for the line graphs on the tracker page
-const LineGraph = ({ data, date, graphType }) => {
+const Graph = ({ data, date, graphType }) => {
 
 	const [dateRange, setDateRange] = useState({ start: new Date(date.start).getTime(), end: new Date(date.end).getTime() })
 
@@ -56,7 +56,6 @@ const LineGraph = ({ data, date, graphType }) => {
 		if (!isNaN(dateRange.start) && !isNaN(dateRange.end) && graphType !== '') {
 			setWeightData(filterData().weight)
 			setNutritionData(filterData().nutrition)
-			setGraphDetails({ ...graphDetails, subtitle: date.start + ' to ' + date.end })
 			if (new Date(dateRange.end - dateRange.start).getDate() > 60) {
 				setGraphDetails({ ...graphDetails, format: 'M/d/yy' })
 			} else if (new Date(dateRange.end - dateRange.start).getDate() > 30) {
@@ -68,6 +67,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Weight Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: weightSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Weight (lbs)'
@@ -76,6 +76,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Calorie Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: calorieSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Calorie (kcal)'
@@ -84,6 +85,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Carbohydrate Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: carbsSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Carbohydrate (g)'
@@ -92,6 +94,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Fat Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: fatSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Fat (g)'
@@ -100,6 +103,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Protein Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: proteinSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Protein (g)'
@@ -108,6 +112,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Sodium Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: sodiumSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Sodium (mg)'
@@ -116,6 +121,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Sugar Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: sugarSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Sugar (g)'
@@ -124,6 +130,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Weight & Calorie Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: weightCalorieSeries,
 					yAxis: yAxis2,
 					yAxisLabel1: 'Weight (lbs)',
@@ -133,6 +140,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Weight & Nutrition Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: weightMacronutrientsSeries,
 					yAxis: yAxis2,
 					yAxisLabel1: 'Weight (lbs)',
@@ -142,6 +150,7 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Calorie & Nutrition Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: calorieMacronutrientsSeries,
 					yAxis: yAxis2,
 					yAxisLabel1: 'Calorie (kcal)',
@@ -151,12 +160,14 @@ const LineGraph = ({ data, date, graphType }) => {
 				setGraphDetails({
 					...graphDetails,
 					title: 'Nutrition (Carbs, Fat, Protein) Trend',
+					subtitle: date.start + ' to ' + date.end,
 					series: macronutrientsSeries,
 					yAxis: yAxis1,
 					yAxisLabel1: 'Nutrient (g)'
 				})
-			}
+			} 
 		}
+		console.log(data)
 	}, [data, date, graphType])
 
 	const blankSeries = [{
@@ -462,11 +473,11 @@ const LineGraph = ({ data, date, graphType }) => {
 	return (
 		<Chart
 			options={options}
-			series={graphDetails.series}
+			series={graphType ? (graphDetails.series):([])}
 			width='90%'
 			height='80%'
 		/>
 	);
 };
 
-export default LineGraph;
+export default Graph;

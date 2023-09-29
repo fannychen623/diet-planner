@@ -9,7 +9,7 @@ import { useQuery } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries'
 
 // import local component
-import LineGraph from '../components/LineGraph';
+import Graph from '../components/Graph';
 
 // import package components
 import {
@@ -71,8 +71,8 @@ const Progress = () => {
       if (plan.weight) {
         weight.push({ date: plan.date, weight: plan.weight })
       }
+      let mealTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
       if (plan.diet.length !== 0) {
-        let mealTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
         let diet = plan.diet
         diet.forEach((meal) => {
           let content = meal.content
@@ -85,6 +85,19 @@ const Progress = () => {
             mealTotal.sugar += foods[foods.findIndex(food => food._id === item.food[0]._id)].sugar * item.servings * meal.numberOfServing
           })
         })
+      }
+      if (plan.customDiet.length !== 0) {
+        let diet = plan.customDiet
+        diet.forEach((meal) => {
+          mealTotal.calories += diet.calories
+          mealTotal.carbs += diet.carbs
+          mealTotal.fat += diet.fat
+          mealTotal.protein += diet.protein
+          mealTotal.sodium += diet.sodium
+          mealTotal.sugar += diet.sugar
+        })
+      }
+      if (plan.diet.length !== 0 || plan.customDiet.length !== 0) {
         nutrition.push({
           date: plan.date,
           calories: +parseFloat(mealTotal.calories).toFixed(2),
@@ -132,7 +145,6 @@ const Progress = () => {
       return;
     } else {
       setPlannerRange({ ...plannerRange, start: plannerDates[0], end: plannerDates[plannerDates.length - 1] })
-      console.log(date)
     }
   }, [data, date, rangeType, graphType])
 
@@ -144,6 +156,7 @@ const Progress = () => {
         <Box>
           <Select
             placeholder='Select Date Range'
+            borderColor={rangeType ? ('var(--shade5)') : ('red')}
             value={rangeType}
             onChange={(e) => { setQuickDateRange(e.target.value); setRangeType(e.target.value) }}>
             <option value='All Time'>All Time</option>
@@ -179,6 +192,7 @@ const Progress = () => {
         <Box>
           <Select
             placeholder='Select Graph'
+            borderColor={graphType ? ('var(--shade5)') : ('red')}
             value={graphType}
             onChange={(e) => { setGraphType(e.target.value) }}>
             <option value='Weight'>Weight</option>
@@ -195,7 +209,7 @@ const Progress = () => {
           </Select>
         </Box>
       </Box>
-      <LineGraph data={getProgressRecords()} date={date} graphType={graphType}/>
+      <Graph data={getProgressRecords()} date={date} graphType={graphType} />
     </Box>
   );
 }

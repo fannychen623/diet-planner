@@ -1,5 +1,5 @@
 // import packages
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
@@ -16,16 +16,12 @@ import {
   Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
   Accordion, AccordionItem,
   AccordionButton, AccordionPanel, AccordionIcon,
-  Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  NumberInput, NumberInputField,
-  NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
+  InputGroup, InputLeftElement, Input,
 } from '@chakra-ui/react'
 
 // import icons
 import {
-  FiCheck, FiX, FiEdit, FiTrash2,
-  FiPlusSquare, FiMinusSquare,
-  FiExternalLink, FiEye, FiEdit3
+  FiSearch, FiEdit, FiTrash2,
 } from 'react-icons/fi';
 
 // import local style sheet
@@ -52,8 +48,32 @@ const Meal = () => {
   });
 
   // extract the routines from the query data
-  const meals = data?.me.meals || [];
   const foods = data?.me.foods || [];
+  const meals = data?.me.meals || [];
+
+  const [mealList, setMealList] = useState([...meals])
+
+  const [displayState, setDisplayState] = useState(Array(mealList.length).fill(true))
+  const [searchValue, setSearchValue] = useState('')
+
+  useEffect(() => {
+    if (mealList.length === 0) {
+      setMealList(meals)
+    } 
+
+    setDisplayState(Array(mealList.length).fill(true))
+    for (let i = 0; i < mealList.length; i++) {
+      if (mealList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+        displayState[i] = true
+      } else {
+        displayState[i] = false
+      }
+    }
+
+    setDisplayState({ ...displayState })
+
+    refetch();
+  }, [foods, meals, mealList, searchValue])
 
   // define add routine mutation
   const [removeMeal, { removeError, removeData }] = useMutation(REMOVE_MEAL);
@@ -113,33 +133,47 @@ const Meal = () => {
       </Flex>
       {/* populate page only once data loads */}
       {loading ? (
-        <Box m='auto' mb='10'>
-          <Link to='/'><Spinner /> Loading...</Link>
+        <Box textAlign='center'>
+          <Spinner /> Loading...
         </Box>
       ) : (
         <Box>
-          {meals.map((meal, index) => (
-            <Accordion allowMultiple className='accordian'>
-              <AccordionItem>
-                <AccordionButton 
-                _hover={{ bg: 'var(--shade4)'}}
-                _expanded={{ bg: 'var(--shade4)'}}
-                >
-                  <Box as="span" flex='1' textAlign='left'>
-                    {meal.title}
-                  </Box>
-                  <Spacer />
-                  <Box>
-                  <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit p='100%'/>} />
-                  <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 p='100%'/>} />
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-                <AccordionPanel pb='4'>
-                <MealContent contents={meal.content} foods={foods} />
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
+          <Box>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <FiSearch color='var(--shade5)' />
+              </InputLeftElement>
+              <Input onChange={(e) => { setSearchValue(e.target.value) }} />
+            </InputGroup>
+          </Box>
+          {mealList.map((meal, index) => (
+            <>
+              {displayState[`${index}`] ? (
+                <Accordion allowMultiple className='accordian'>
+                  <AccordionItem>
+                    <AccordionButton
+                      _hover={{ bg: 'var(--shade4)' }}
+                      _expanded={{ bg: 'var(--shade4)' }}
+                    >
+                      <Box as="span" flex='1' textAlign='left'>
+                        {meal.title}
+                      </Box>
+                      <Spacer />
+                      <Box>
+                        <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit p='100%' />} />
+                        <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 p='100%' />} />
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel>
+                      <MealContent contents={meal.content} foods={foods} />
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              ) : (
+                <></>
+              )}
+            </>
           ))}
         </Box>
       )}

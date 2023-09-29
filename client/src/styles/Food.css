@@ -11,7 +11,18 @@
     font-family: var(--font);
     font-size: 2.75rem;
     color: var(--shade5);
-    padding-top: 1rem;
+    padding-top: 0.5rem;
+}
+
+/* loading container */
+.food-page .css-xi606m {
+    margin-top: 2em;
+    font-size: 2em;
+}
+
+/* loading spinner */
+.food-page .css-nkpswe {
+    margin-right: 0.5em;
 }
 
 /* add food button */
@@ -62,6 +73,7 @@
 
 /* table header buttons */
 .food-page .css-1f0rfxj {
+    font-size: 1.25em;
     margin: auto;
     width: 100%;
     padding: 1.5em 0.5em;
@@ -81,11 +93,15 @@
     border-color: var(--shade4);
 }
 
+/* table items */
+.food-page .css-crlss9 {
+    font-size: 1em;
+}
 
 /* food edit and delete button */
 .food-page .css-fx3q01 {
     background-color: var(--trans);
-    margin: 0.25em -1em 0.25em -1em;
+    margin: 0em -1em 0em -1em;
 }
 
 /* food edit and delete button */
@@ -93,14 +109,61 @@
     background-color: var(--shade2);
 }
 
+/* edit food span */
+.edit-food span {
+    margin-left: 0.5em;
+    color: var(--shade5);
+}
+
+/* edit food inputgroup container */
+.edit-food .css-1y0e7gb {
+    margin: 1em 0em;
+}
+
+/* edit food inputleftaddon */
+.edit-food .css-127xmqf {
+    width: 30%;
+    background-color: var(--shade5);
+    color: var(--shade2);
+    border-color: var(--shade5)
+}
+
+/* edit food name and serving size input */
+.edit-food .css-10wjqo2, .edit-food .css-10wjqo2:hover {
+    border-color: var(--shade5);
+}
+
+/* edit food serving size input */
+.edit-food .css-13l1v4l, .edit-food .css-13l1v4l:hover {
+    border-color: var(--shade5);
+}
+
+/* edit food macro inputs */
+.edit-food .css-uhk8uw, .edit-food .css-uhk8uw:hover {
+    border-color: var(--shade5);
+}
+
+/* edit food inputrightaddon */
+.edit-food .css-1r6jmxn {
+    width: 20%;
+    background-color: var(--shade2);
+    border-color: var(--shade5);
+}
+
+/* edit food drawer footer */
+.edit-food .css-k0waxj {
+    justify-content: space-between;
+}
+/* edit food submit button */
+.edit-food .css-ez23ye {
+    background-color: var(--shade3);
+}
+
+/* edit food submit button */
+.edit-food .css-ez23ye:hover {
+    background-color: var(--shade4);
+}
+
 @media (max-width: 768px) {
-    .food-page {
-        padding: 5vw;
-    }
-    /* new food button */
-    .food-page .css-ez23ye {
-        font-size: 3vw;
-        padding: 1vh 3vw 1vh 3vw;
-        margin-bottom: 1vh;
-    }
+
 }

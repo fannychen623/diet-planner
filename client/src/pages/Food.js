@@ -194,7 +194,6 @@ const Food = () => {
 
   // on click to remove food (delete button)
   const handleRemoveFood = async (id) => {
-    console.log(id)
 
     // if id is not blank
     if (id !== '') {
@@ -246,8 +245,8 @@ const Food = () => {
       </Flex>
       {/* populate page only once data loads */}
       {loading ? (
-        <Box m='auto' mb='10'>
-          <Link to='/'><Spinner /> Loading...</Link>
+        <Box textAlign='center'>
+          <Spinner /> Loading...
         </Box>
       ) : (
         // populate with food data once loaded
@@ -403,22 +402,19 @@ const Food = () => {
             size={isMobile ? 'xs' : 'md'}
           >
             <DrawerOverlay />
-            <DrawerContent overflowX='auto'>
+            <DrawerContent className='edit-food' overflowX='auto'>
               <DrawerCloseButton />
-              <DrawerHeader borderBottomWidth='1vh' mb='2vh'>
+              <DrawerHeader>
                 Edit
-                <span style={{ color: 'var(--shade4)', marginLeft: '1.5%' }}>
+                <span>
                   {foods[editIndex].title}
                 </span>
               </DrawerHeader>
               <DrawerBody>
                 <Box>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Name'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
                       name='title'
@@ -426,32 +422,26 @@ const Food = () => {
                       onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                   </InputGroup>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Serving Size'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
-                      width='50%'
+                      borderTopRightRadius='0'
+                      borderBottomRightRadius='0'
                       name='servingSize'
                       value={formState.servingSize}
                       onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
-                    <Input textAlign='end'
-                      width='40%'
+                    <Input
                       name='servingUnit'
                       value={formState.servingUnit}
                       onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                     />
                   </InputGroup>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Calories'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
                       name='calories'
@@ -460,17 +450,11 @@ const Food = () => {
                     />
                     <InputRightAddon
                       children='kcal'
-                      width='20%'
-                      bg='var(--shade2)'
-                      color='var(--shade6)'
                     />
                   </InputGroup>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Carbs'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
                       name='carbs'
@@ -479,17 +463,11 @@ const Food = () => {
                     />
                     <InputRightAddon
                       children='g'
-                      width='20%'
-                      bg='var(--shade2)'
-                      color='var(--shade6)'
                     />
                   </InputGroup>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Fat'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
                       name='fat'
@@ -498,17 +476,11 @@ const Food = () => {
                     />
                     <InputRightAddon
                       children='g'
-                      width='20%'
-                      bg='var(--shade2)'
-                      color='var(--shade6)'
                     />
                   </InputGroup>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Protein'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
                       name='protein'
@@ -517,17 +489,11 @@ const Food = () => {
                     />
                     <InputRightAddon
                       children='g'
-                      width='20%'
-                      bg='var(--shade2)'
-                      color='var(--shade6)'
                     />
                   </InputGroup>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Sodium'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
                       name='sodium'
@@ -536,17 +502,11 @@ const Food = () => {
                     />
                     <InputRightAddon
                       children='mg'
-                      width='20%'
-                      bg='var(--shade2)'
-                      color='var(--shade6)'
                     />
                   </InputGroup>
-                  <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
+                  <InputGroup>
                     <InputLeftAddon
                       children='Sugar'
-                      width='40%'
-                      bg='var(--shade5)'
-                      color='white'
                     />
                     <Input
                       name='sugar'
@@ -555,23 +515,17 @@ const Food = () => {
                     />
                     <InputRightAddon
                       children='g'
-                      width='20%'
-                      bg='var(--shade2)'
-                      color='var(--shade6)'
                     />
                   </InputGroup>
                 </Box>
               </DrawerBody>
-              <DrawerFooter borderTopWidth='1px' justifyContent='space-between'>
-                <Button variant='outline' mr={3} onClick={onClose}>
+              <DrawerFooter>
+                <Button variant='outline' onClick={onClose}>
                   Cancel
                 </Button>
                 <Button
                   id={foods[editIndex]._id}
                   onClick={handleUpdateFood}
-                  bg='var(--shade5)'
-                  color='var(--shade1)'
-                  _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
                 >
                   Submit
                 </Button>

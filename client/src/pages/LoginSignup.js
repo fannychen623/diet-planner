@@ -31,37 +31,24 @@ const LoginSignup = () => {
   const returnToHome = () => navigate('/');
 
   return (
-    <Box className='loginSignup-modal'>
+    <Box>
       {/* link modal open status to respective functions */}
       <Modal isOpen={isOpen} onClose={returnToHome}>
         <ModalOverlay />
-        <ModalContent maxW={isMobile ? '75vw' : '35vw'}>
+        <ModalContent className='login-signup-modal'>
           {/* tabs fill entire modal width and default tab to the first tab */}
           <Tabs isFitted variant='enclosed' defaultIndex={0}>
             <ModalHeader>
-              <TabList mr='10'>
+              <TabList>
                 {/* style the tab when selected */}
-                <Tab
-                  _selected={{
-                    color: 'var(--shade6)',
-                    bg: 'var(--shade2)',
-                    fontWeight: 'bold',
-                  }}
-                >
+                <Tab>
                   Login
                 </Tab>
-                <Tab
-                  _selected={{
-                    color: 'var(--shade6)',
-                    bg: 'var(--shade2)',
-                    fontWeight: 'bold',
-                  }}
-                >
+                <Tab>
                   Signup
                 </Tab>
               </TabList>
             </ModalHeader>
-            <ModalCloseButton />
             <TabPanels>
               {/* first tab populated with the login component */}
               <TabPanel>

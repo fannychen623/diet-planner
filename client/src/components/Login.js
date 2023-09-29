@@ -10,7 +10,7 @@ import { LOGIN_USER } from '../utils/mutations';
 
 // import package components and icon
 import {
-  Box, Button, FormControl, Spinner,
+  Box, Button, FormControl, Spinner, Input,
   InputGroup, InputLeftAddon, InputRightElement,
   ModalFooter, ModalBody,
 } from '@chakra-ui/react'
@@ -70,109 +70,81 @@ const Login = () => {
   const [show, setShow] = useState(false)
 
   return (
-    <Box>
+    <Box className='login-modal'>
       {data ? (
-        <Box my='10' textAlign='center'>
-          <Link to='/'><Spinner /> Logging...</Link>
+        <Box textAlign='center'>
+          <Spinner /> Logging in...
         </Box>
       ) : (
-        <form onSubmit={handleFormSubmit}>
+        <Box>
           <ModalBody>
             <FormControl isRequired>
               {isMobile ? (
                 <Box>
-                  <InputGroup mb='5' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                    <InputLeftAddon
-                      width='30%'
-                      bg='var(--shade5)'
-                      color='white'
-                    >
-                      <span style={{ color: 'red', marginRight: '0.5rem' }}>*</span>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <span style={{ color: 'red' }}>*</span>
                       <FiMail />
                     </InputLeftAddon>
-                    <input
+                    <Input
                       type='email'
                       name='email'
                       placeholder='email'
                       value={formState.email}
                       onChange={handleChange}
-                      style={{ paddingLeft: '1rem', width: '60%' }}
                     />
                   </InputGroup>
-                  <InputGroup borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                    <InputLeftAddon
-                      width='30%'
-                      bg='var(--shade5)'
-                      color='white'
-                    >
+                  <InputGroup>
+                    <InputLeftAddon>
                       <span style={{ color: 'red'}}>*</span>
                       <Button
                         variant='ghost'
                         color='white'
-                        h='1.75rem'
-                        size='sm'
-                        p='0'
-                        _hover={{ bg: 'var(--shade2)' }}
                         onClick={() => setShow(!show)}
                       >
                         {show ? <FiUnlock /> : <FiLock />}
                       </Button>
                     </InputLeftAddon>
-                    <input
+                    <Input
                       type={show ? 'text' : 'password'}
                       name='password'
                       placeholder='password'
                       value={formState.password}
                       onChange={handleChange}
-                      style={{ paddingLeft: '1rem', width: '60%' }}
                     />
                   </InputGroup>
                 </Box>
               ) : (
                 <Box>
-                  <InputGroup mb='5' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                    <InputLeftAddon
-                      width='35%'
-                      bg='var(--shade5)'
-                      color='white'
-                    >
-                      <span style={{ color: 'red', marginRight: '0.5rem' }}>*</span>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <span style={{ color: 'red' }}>*</span>
                       Email
                     </InputLeftAddon>
-                    <input
+                    <Input
                       type='email'
                       name='email'
                       value={formState.email}
                       onChange={handleChange}
-                      style={{ paddingLeft: '1rem' }}
                     />
                     <InputRightElement>
                       <FiMail />
                     </InputRightElement>
                   </InputGroup>
-                  <InputGroup borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                    <InputLeftAddon
-                      width='35%'
-                      bg='var(--shade5)'
-                      color='white'
-                    >
-                      <span style={{ color: 'red', marginRight: '0.5rem' }}>*</span>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <span style={{ color: 'red' }}>*</span>
                       Password
                     </InputLeftAddon>
-                    <input
+                    <Input
                       type={show ? 'text' : 'password'}
                       name='password'
                       value={formState.password}
                       onChange={handleChange}
-                      style={{ paddingLeft: '1rem' }}
                     />
-                    <InputRightElement pr='1'>
+                    <InputRightElement>
                       <Button
                         variant='ghost'
-                        h='1.75rem'
-                        size='sm'
-                        p='0'
-                        _hover={{ bg: 'var(--shade2)' }}
                         onClick={() => setShow(!show)}
                       >
                         {show ? <FiEye /> : <FiEyeOff />}
@@ -183,34 +155,18 @@ const Login = () => {
               )}
             </FormControl>
           </ModalBody>
-          <ModalFooter
-            mt='5'
-            pt='7'
-            justifyContent='space-between'
-            borderTop='1px'
-            borderColor='var(--shade2)'
-          >
-            <Button mr={3} onClick={returnToHome}
-              bg='var(--shade1)'
-              color='var(--shade5)'
-              _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-            >
+          <ModalFooter>
+            <Button onClick={returnToHome} >
               Close
             </Button>
-            <Button
-              type='submit'
-              bg='var(--shade5)'
-              color='var(--shade1)'
-              _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-            >
+            <Button type='submit' onClick={handleFormSubmit}>
               Login
             </Button>
           </ModalFooter>
-        </form>
+          </Box>
       )}
-
       {error && (
-        <Box m='5' p='3'>
+        <Box>
           {error.message}
         </Box>
       )}

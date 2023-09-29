@@ -1,0 +1,52 @@
+/* popover container */
+.converter .css-sjj62m {
+    border-color: var(--shade5);
+    border-radius: var(--shade5);
+    --popper-arrow-bg: var(--shade2);
+    --popper-arrow-shadow-color: var(--shade5);
+}
+
+/* popover header */
+.converter .css-1t6b1jw {
+    color: var(--shade5);
+    font-weight: bold;
+    background-color: var(--shade2);
+    margin-bottom: 0.5em;
+}
+
+/* select type container */
+.converter .css-1a5ho4p {
+    margin-bottom: 1em;
+}
+
+/* value and unit container */
+.converter .css-k008qs {
+    margin: 0.5em 0em;
+}
+
+/* value inputs */
+.converter .css-1cjy4zv {
+    border-color: var(--shade5);
+    width: 75%;
+}
+
+/* value inputs */
+.converter .css-1cjy4zv:hover {
+    border-color: var(--shade4);
+}
+
+.converter .css-1cjy4zv:disabled, .converter .css-1cjy4zv[disabled], 
+.converter .css-1cjy4zv[aria-disabled=true], .converter .css-1cjy4zv[data-disabled] {
+    opacity: 0.75
+}
+
+/* popover footer */
+.converter .css-1ntzpg2 {
+    text-align: end;
+    background-color: var(--shade2);
+    color: var(--shade5)
+}
+
+@media (max-width: 768px) {
+
+}

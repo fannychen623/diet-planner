@@ -423,6 +423,7 @@ const Profile = () => {
               )}
             </CardBody>
           </Card>
+          <Text textAlign='right'>BMR Calculations based on Mifflin St Jeor's Equation <a href='https://www.calculator.net/macro-calculator.html'>[Reference]</a></Text>
         </GridItem>
       </Grid>
     </Box>

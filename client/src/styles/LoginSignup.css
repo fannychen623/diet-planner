@@ -1,13 +1,93 @@
 /* styling for the Routine page */
-.login-modal, .signup-modal {
+.login-signup-modal {
     font-family: var(--font);
 }
 
-.css-133nkbt {
-    display: block;
+/* loading text container */
+.login-modal .css-xi606m, .signup-modal .css-xi606m {
+    margin: 2em 0em;
 }
 
-/* input styling */
-.login-modal input, .signup-modal input {
-    border-color: var(--shade1);
+/* loading spinner */
+.login-modal .css-nkpswe, .signup-modal .css-nkpswe {
+    margin-right: 0.5em;
+}
+
+/* login signup tab unselected */
+.login-signup-modal .css-edw2yw[aria-selected=false] {
+    border-color: var(--shade5);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+/* login signup tab selected */
+.login-signup-modal .css-edw2yw[aria-selected=true], .login-signup-modal .css-edw2yw[data-selected] {
+    border-color: var(--shade5);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background-color: var(--shade2);
+    color: var(--shade6);
+    font-weight: bold;
+}
+
+/* login signup modal container */
+.login-signup-modal .css-a5mhaz {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* login signup modal header */
+.login-signup-modal .css-9fgtzh {
+    padding-bottom: 0;
+}
+
+/* login signup modal footer */
+.login-signup-modal .css-k0waxj {
+    padding-top: 0;
+    justify-content: space-between;
+}
+
+/* login signup footer buttons */
+.login-signup-modal .css-ez23ye {
+    background-color: var(--shade3);
+}
+
+/* login signup footer buttons */
+.login-signup-modal .css-ez23ye:hover {
+    background-color: var(--shade4);
+}
+
+
+/* email and password inputs containers */
+.login-modal .css-1y0e7gb, .signup-modal .css-1y0e7gb {
+    margin: 2em 0em;
+}
+
+/* inputleftaddon */
+.login-modal .css-127xmqf, .signup-modal .css-127xmqf{
+    background-color: var(--shade5);
+    color: var(--shade2);
+    border-color: var(--shade5);
+    font-weight: bold;
+    width: 35%;
+}
+
+/* inputleftaddon * span */
+.login-modal span, .signup-modal span {
+    margin-right: 0.5em;
+}
+
+/* input */
+.login-modal .css-jn9it7, .login-modal .css-jn9it7:hover,
+.signup-modal .css-jn9it7, .signup-modal .css-jn9it7:hover {
+    border-color: var(--shade5);
+}
+
+/* view password button */
+.login-modal .css-wubf5g, .login-modal .css-wubf5g:hover,
+.signup-modal .css-wubf5g, .signup-modal .css-wubf5g:hover {
+    min-width: unset;
+    background-color: var(--trans);
 }

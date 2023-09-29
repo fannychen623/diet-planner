@@ -1,27 +1,20 @@
 /* styling for the header/navigation bar */
-.navBar {
+.nav-bar {
     background-color: var(--shade1);
     height: fit-content;
     font-family: var(--font);
-    padding: 1vw 1vw;
-    border-bottom: 0.75vw solid var(--shade6)
+    padding: 1em 1em;
+    border-bottom: 0.75em solid var(--shade5)
 }
 
-/* link/icon color */
-.navBar a, .navBar button {
-    color: var(--shade6);
-    font-size: 2vw;
+/* nav bar icons */
+.nav-bar .css-1m3sc6v {
+    vertical-align: middle;
+    color: var(--shade5);
+    font-size: 1.75em;
+    padding: 0em 0.75em;
 }
 
 @media (max-width: 768px) {
-    /* styling for the header/navigation bar */
-    .navBar {
-        padding: 3vw 2vw;
-        border-bottom: 2vw solid var(--shade6)
-    }
-    /* link/icon color */
-    .navBar a, .navBar button {
-        color: var(--shade6);
-        font-size: 5vw;
-    }
+
 }

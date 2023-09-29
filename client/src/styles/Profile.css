@@ -101,3 +101,14 @@
   margin-left: 1em;
   color: var(--shade4);
 }
+
+/* reference note */
+.profile-page .css-s2uf1z {
+  margin-top: 0.5em;
+  margin-right: 0.5em;
+}
+
+.profile-page a {
+  font-style: italic;
+  color: darkblue
+}
