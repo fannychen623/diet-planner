@@ -88,7 +88,8 @@
 }
 
 /* table content */
-.food-page .css-xumdn4, .food-page .css-xumdn4[data-is-numeric=true] {
+.food-page .css-xumdn4,
+.food-page .css-xumdn4[data-is-numeric=true] {
     text-align: center;
     border-color: var(--shade4);
 }
@@ -129,17 +130,21 @@
 }
 
 /* edit food name and serving size input */
-.edit-food .css-10wjqo2, .edit-food .css-10wjqo2:hover {
+.edit-food .css-10wjqo2,
+.edit-food .css-10wjqo2:hover {
     border-color: var(--shade5);
 }
 
 /* edit food serving size input */
-.edit-food .css-13l1v4l, .edit-food .css-13l1v4l:hover {
+.edit-food .css-13l1v4l,
+.edit-food .css-13l1v4l:hover {
     border-color: var(--shade5);
+    border-right: none;
 }
 
 /* edit food macro inputs */
-.edit-food .css-uhk8uw, .edit-food .css-uhk8uw:hover {
+.edit-food .css-uhk8uw,
+.edit-food .css-uhk8uw:hover {
     border-color: var(--shade5);
 }
 
@@ -154,6 +159,7 @@
 .edit-food .css-k0waxj {
     justify-content: space-between;
 }
+
 /* edit food submit button */
 .edit-food .css-ez23ye {
     background-color: var(--shade3);
@@ -164,6 +170,141 @@
     background-color: var(--shade4);
 }
 
-@media (max-width: 768px) {
+/* add food modal container */
+.add-food {
+    min-width: 50rem;
+}
+
+/* add food modal header */
+.add-food .css-9fgtzh {
+    font-size: 1.75em;
+    color: var(--shade5);
+}
+
+/* add food input containers */
+.add-food .css-1y0e7gb {
+    margin-bottom: 0.75em;
+}
+
+/* add food inputleftaddon */
+.add-food .css-127xmqf {
+    width: 8em;
+    background-color: var(--shade5);
+    color: var(--shade1);
+    border-color: var(--shade5);
+}
+
+/* add food inputrightaddon */
+.add-food .css-1r6jmxn {
+    width: 5em;
+    background-color: var(--shade2);
+    border-color: var(--shade5);
+    border-left: none;
+}
+
+/* add food input fields */
+.add-food .css-10wjqo2,
+.add-food .css-1cjy4zv,
+.add-food .css-uhk8uw,
+.add-food .css-10wjqo2:hover,
+.add-food .css-1cjy4zv:hover,
+.add-food .css-uhk8uw:hover {
+    border-color: var(--shade5);
+}
+
+/* add food modal buttons */
+.add-food .css-ez23ye {
+    background-color: var(--shade3);
+}
+
+/* add food modal buttons */
+.add-food .css-ez23ye:hover {
+    background-color: var(--shade4);
+}
+
+@media (max-width: 480px) {
+
+    /* table header */
+    .food-page .css-1zts0j {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75em 0.5em 0.75em 2em;
+    }
+
+    /* add food icon button */
+    .food-page .css-22xpxh,
+    .food-page .css-22xpxh:hover {
+        background-color: var(--trans);
+        color: var(--shade1);
+    }
+
+    /* table content */
+    .food-page .css-xumdn4 {
+        text-align: left;
+    }
+
+    /* food alert header */
+    .food-alert .css-1x2vgm7 {
+        text-align: center;
+        color: var(--shade5);
+        padding-bottom: 0;
+    }
+
+    /* food alert footer */
+    .food-alert .css-k0waxj {
+        justify-content: space-between;
+    }
+
+    /* food alert buttons */
+    .food-alert .css-ez23ye,
+    .food-alert .css-ez23ye:hover {
+        background-color: var(--shade3);
+    }
+
+    /* food alert icons */
+    .food-alert svg {
+        margin-right: 0.5em;
+    }
+
+    /* edit food modal header food title */
+    .edit-food .css-9fgtzh {
+        padding-bottom: 0.25em;
+        font-size: 1.25em;
+        color: var(--shade5);
+    }
+
+    /* edit food name and serving size text heading */
+    .edit-food .css-xi606m, .edit-food .css-d3ozfg {
+        border-top-left-radius: 0.375rem;
+        border-top-right-radius: 0.375rem;
+        background-color: var(--shade5);
+        color: var(--shade1);
+    }
+
+    /* edit food name and serving size inputs */
+    .edit-food .css-4uav1b, .edit-food .css-1qbkrx6, .edit-food .css-r84t6h {
+        border-color: var(--shade5);
+    }
+
+    /* edit food input container */
+    .edit-food .css-1y0e7gb {
+        margin: 0.75em 0em;
+    }
+
+/* edit food inputleftaddon */
+.edit-food .css-127xmqf {
+    width: 40%;
+}
+
+/* edit food inputrightaddon */
+.edit-food .css-1r6jmxn {
+    width: 30%;
+}
+
+/* edit food footer */
+.edit-food .css-k0waxj {
+    padding-top: 0;
+}
 
 }

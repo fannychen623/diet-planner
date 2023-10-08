@@ -24,7 +24,7 @@ const LoginSignup = () => {
   // opens on navigation to path withoutevent listener (button click)
   const { isOpen } = useDisclosure({ defaultIsOpen: true })
 
-  const isMobile = useMediaQuery({ query: `(max-width: 768px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   //  function to navigate to different paths, set to navigate back to home
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const LoginSignup = () => {
   return (
     <Box>
       {/* link modal open status to respective functions */}
-      <Modal isOpen={isOpen} onClose={returnToHome}>
+      <Modal isOpen={isOpen} onClose={returnToHome} size={isMobile ? 'xs':'md'}>
         <ModalOverlay />
         <ModalContent className='login-signup-modal'>
           {/* tabs fill entire modal width and default tab to the first tab */}

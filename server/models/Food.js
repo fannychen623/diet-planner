@@ -5,7 +5,10 @@ const foodSchema = new Schema(
     title: {
         type: String,
         required: true,
+        minlength: 1,
+        maxlength: 300,
         trim: true,
+        unique: true,
     },
     servingSize: {
         type: Number,

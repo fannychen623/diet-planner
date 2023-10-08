@@ -1,51 +1,64 @@
 // import packages
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
-import { useMediaQuery } from 'react-responsive';
+import React, { useEffect, useState } from 'react';
 
-// import mutation
-import { useMutation } from '@apollo/client';
+// importy query and mutation
+import { useQuery, useMutation } from '@apollo/client';
+import { QUERY_ME } from '../utils/queries';
 import { ADD_FOOD } from '../utils/mutations';
 
 // import package components
 import {
-  SimpleGrid, Stack, Box, Divider, Text, Button,
-  Card, CardHeader, CardBody, CardFooter,
-  Tabs, TabList, TabPanels, Tab, TabPanel,
+  Box, SimpleGrid, Text, Button,
   Input, InputGroup, InputLeftAddon, InputRightAddon,
-  Radio, RadioGroup, Checkbox, Select, IconButton,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  NumberInput, NumberInputField,
-  NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
   Modal, ModalOverlay, ModalContent, ModalHeader,
-  ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
+  ModalFooter, ModalBody, ModalCloseButton,
+  AlertDialog, AlertDialogBody, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay,
+  AlertDialogCloseButton, useDisclosure,
 } from '@chakra-ui/react'
-
-// import icons
-import { FiSearch } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/Food.css';
 
+// function to transform text to proper case
 function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
-    function(txt) {
+    function (txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     }
   );
 }
 
-// functional component to create routines modal
-const AddFood = () => {
+// functional component/modal to add food
+// pass in food information from search page if applicable and state of modal
+const AddFood = ({ addDetails, addOpenState }) => {
 
-  // set modal to open on default
-  const { isOpen } = useDisclosure({ defaultIsOpen: true })
-  // set the form state, default empty
-  const [formState, setFormState] = useState({
+  // emulates a fetch (useQuery expects a Promise)
+  // used to re-query data and re-render page on event listener/change
+  const emulateFetch = _ => {
+    return new Promise(resolve => {
+      resolve([{ data: 'ok' }]);
+    });
+  };
+
+  // query all data associated with the signed in user
+  const { loading, data, refetch } = useQuery(QUERY_ME, emulateFetch, {
+    refetchOnWindowFocus: false,
+    // enabled set to true allows query to run on page initialization
+    enabled: true
+  });
+
+  // extract the foods from the query data
+  const foods = data?.me.foods || []
+  // map through data to get array of food titles
+  const foodTitles = foods.map(food => food.title)
+
+  // set modal open state, default false
+  const [modalState, setModalState] = useState(false)
+
+  // set the state of the food information to be added, default empty
+  const [addState, setAddState] = useState({
     title: '',
     servingSize: '',
     servingUnit: '',
@@ -57,217 +70,186 @@ const AddFood = () => {
     sugar: '',
   });
 
+  // call on render and defined state changes
+  useEffect(() => {
+    // if modal openState passed into component is true, set the modal state as true
+    if (addOpenState) {
+      setModalState(true)
+      // if details are passed, set the food information state
+      if (addDetails.length !== 0) {
+        setAddState(
+          {
+            ...addState,
+            title: addDetails.title,
+            servingSize: addDetails.servingSize,
+            servingUnit: addDetails.servingUnit,
+            calories: addDetails.calories,
+            carbs: addDetails.carbs,
+            fat: addDetails.fat,
+            protein: addDetails.protein,
+            sodium: addDetails.sodium,
+            sugar: addDetails.sugar,
+          }
+        )
+      }
+    }
+    // call function on change of passed state and details
+  }, [addOpenState, addDetails])
+
+
+  // functions to toggle the alert dialog
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  // define add food mutation and error message, default blank
+  const [addFood, { addFoodError, addFoodData }] = useMutation(ADD_FOOD);
   const [errorMessage, setErrorMessage] = useState('')
 
-  const isMobile = useMediaQuery({ query: `(max-width: 768px)` });
-
-  // navigate back to routines on close
-  const navigate = useNavigate();
-  const redirectFood = () => navigate('/food');
-
-  // define add routine mutation
-  const [addFood, { error, data }] = useMutation(ADD_FOOD);
-
-  // on click to add routine
-  const handleFormSubmit = async (event) => {
+  // function to add food
+  const handleAddFood = async (event) => {
     event.preventDefault();
 
-    let formComplete = !Object.values(formState).some(item => item === 0 || item.length === 0);
-      try {
-        // add routine with variables routineNanem and routine
-        const { data } = await addFood({
-          variables: { ...formState },
-        });
+    // check if all values have inputs
+    let formComplete = !Object.values(addState).some(item => item === 0 || item.length === 0);
+    // call to add food to database
+    try {
+      const { addFoodData } = await addFood({
+        variables: {
+          title: addState.title,
+          servingSize: +parseFloat(addState.servingSize).toFixed(2),
+          servingUnit: addState.servingUnit,
+          calories: +parseFloat(addState.calories).toFixed(2),
+          carbs: +parseFloat(addState.carbs).toFixed(2),
+          fat: +parseFloat(addState.fat).toFixed(2),
+          protein: +parseFloat(addState.protein).toFixed(2),
+          sodium: +parseFloat(addState.sodium).toFixed(2),
+          sugar: +parseFloat(addState.sugar).toFixed(2),
+        },
+      });
 
-        // redirect back to the routines page
-        window.location.assign('/food');
-      } catch (e) {
-        console.error(e);
-        if (!formComplete) { setErrorMessage('Error: Missing fields') }
-        if (isNaN(formState.servingSize)) { setErrorMessage('Error: Invalid serving size input') }
-        if (/\d/.test(formState.servingUnit)) { setErrorMessage('Error: Invalid serving unit input') }
-        if (isNaN(formState.calories)) { setErrorMessage('Error: Invalid calories input') }
-        if (isNaN(formState.carbs)) { setErrorMessage('Error: Invalid carbs input') }
-        if (isNaN(formState.fat)) { setErrorMessage('Error: Invalid fat input') }
-        if (isNaN(formState.protein)) { setErrorMessage('Error: Invalid protein input') }
-        if (isNaN(formState.sodium)) { setErrorMessage('Error: Invalid sodium input') }
-        if (isNaN(formState.sugar)) { setErrorMessage('Error: Invalid sugar input') }
+      // set modal state to false to close the modal
+      setModalState(false)
+      // determine the pathname to either open the alert dialog or reload the page
+      if (window.location.pathname === '/search') {
+        onOpen()
+      } else if (window.location.pathname === '/food') {
+        window.location.reload();
       }
+      // on error, based on the error, set the error message
+    } catch (e) {
+      console.error(e);
+      if (!formComplete) { setErrorMessage('Error: Missing fields') }
+      if (isNaN(addState.servingSize)) { setErrorMessage('Error: Invalid serving size input') }
+      if (/\d/.test(addState.servingUnit)) { setErrorMessage('Error: Invalid serving unit input') }
+      if (isNaN(addState.calories)) { setErrorMessage('Error: Invalid calories input') }
+      if (isNaN(addState.carbs)) { setErrorMessage('Error: Invalid carbs input') }
+      if (isNaN(addState.fat)) { setErrorMessage('Error: Invalid fat input') }
+      if (isNaN(addState.protein)) { setErrorMessage('Error: Invalid protein input') }
+      if (isNaN(addState.sodium)) { setErrorMessage('Error: Invalid sodium input') }
+      if (isNaN(addState.sugar)) { setErrorMessage('Error: Invalid sugar input') }
+      if (foodTitles.includes(addState.title)) { setErrorMessage('Error: Duplicate food name') }
+    }
   };
 
   return (
-    <Box className='food-modal'>
-      <Modal isOpen={isOpen} onClose={redirectFood} isCentered >
+    <Box>
+      <Modal size='xl' isOpen={modalState} onClose={() => { setModalState(false) }} isCentered >
         <ModalOverlay />
-        <ModalContent mt={isMobile ? '25%' : 'auto'} maxW={isMobile ? '75vw' : '50vw'} maxH={isMobile ? '80vh' : 'fit-content'} overflowY='auto' >
-          <ModalHeader fontSize='3xl' color='var(--shade6)'>New Food</ModalHeader>
+        <ModalContent className='add-food' overflowY='auto' >
+          <ModalHeader>New Food</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box>
-              {isMobile ? (
+              <InputGroup>
+                <InputLeftAddon children='Name' />
+                <Input value={addState.title} onChange={(e) => { setAddState({ ...addState, title: toTitleCase(e.target.value) }) }} />
+              </InputGroup>
+              <SimpleGrid columns='2' spacingX='5'>
                 <Box>
-                  <Text as='b' color='var(--shade5)' fontSize='5vw'>Search Database:</Text>
-                  <Input type='text' placeholder='i.e. tomato' my='1vh' width='100%' />
-                  <IconButton aria-label='Search database' bg='var(--shade2)' color='var(--shade5)' width='100%' icon={<FiSearch p='100%'/>} />
+                  <InputGroup>
+                    <InputLeftAddon children='Serving Size' />
+                    <Input value={addState.servingSize} onChange={(e) => { setAddState({ ...addState, servingSize: e.target.value }) }} />
+                  </InputGroup>
                 </Box>
-              ) : (
-                <Box display='flex'>
-                  <Text as='b' color='var(--shade5)' my='auto' fontSize='1.75vw'>Search Database:</Text>
-                  <Input type='text' placeholder='i.e. tomato' ml='1vw' width='70%' />
-                  <IconButton aria-label='Search database' bg='var(--shade2)' color='var(--shade5)' icon={<FiSearch p='100%'/>} />
+                <Box>
+                  <Input placeholder='Unit' value={addState.servingUnit} onChange={(e) => { setAddState({ ...addState, servingUnit: e.target.value.toLowerCase() }) }} />
                 </Box>
-              )}
-              <Divider borderWidth='3px' borderColor='var(--shade5)' my='5' />
-              <Text as='b' color='var(--shade5)' fontSize={isMobile ? '5vw' : '1.75vw'}>Customize:</Text>
-              <FormControl isRequired>
-                <InputGroup size='md' my='5' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                  <InputLeftAddon
-                    children='Name'
-                    width={isMobile ? '40%' : '20%'}
-                    bg='var(--shade5)'
-                    color='white'
-                  />
-                  <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, title: toTitleCase(e.target.value) }) }} />
-                </InputGroup>
-                <SimpleGrid columns={isMobile ? '1' : '2'} spacing={3}>
-                  <Box>
-                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                      <InputLeftAddon
-                        children='Serving Size'
-                        width='40%'
-                        bg='var(--shade5)'
-                        color='white'
-                      />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, servingSize: parseFloat(e.target.value) }) }} />
-                    </InputGroup>
-                  </Box>
-                  <Box>
-                    <Input placeholder='serving unit'
-                      borderWidth='2px'
-                      borderColor='var(--shade5)'
-                      borderRadius='10'
-                      onChange={(e) => { setFormState({ ...formState, servingUnit: e.target.value.toLowerCase() }) }} />
-                  </Box>
-                  <Box>
-                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                      <InputLeftAddon
-                        children='Calories'
-                        width='40%'
-                        bg='var(--shade5)'
-                        color='white'
-                      />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, calories: parseFloat(e.target.value) }) }} />
-                      <InputRightAddon
-                        children='kcal'
-                        width='20%'
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                      />
-                    </InputGroup>
-                  </Box>
-                  <Box>
-                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                      <InputLeftAddon
-                        children='Carbs'
-                        width='40%'
-                        bg='var(--shade5)'
-                        color='white'
-                      />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, carbs: parseFloat(e.target.value) }) }} />
-                      <InputRightAddon
-                        children='g'
-                        width='20%'
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                      />
-                    </InputGroup>
-                  </Box>
-                  <Box>
-                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                      <InputLeftAddon
-                        children='Fat'
-                        width='40%'
-                        bg='var(--shade5)'
-                        color='white'
-                      />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, fat: parseFloat(e.target.value) }) }} />
-                      <InputRightAddon
-                        children='g'
-                        width='20%'
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                      />
-                    </InputGroup>
-                  </Box>
-                  <Box>
-                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                      <InputLeftAddon
-                        children='Protein'
-                        width='40%'
-                        bg='var(--shade5)'
-                        color='white'
-                      />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, protein: parseFloat(e.target.value) }) }} />
-                      <InputRightAddon
-                        children='g'
-                        width='20%'
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                      />
-                    </InputGroup>
-                  </Box>
-                  <Box>
-                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                      <InputLeftAddon
-                        children='Sodium'
-                        width='40%'
-                        bg='var(--shade5)'
-                        color='white'
-                      />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, sodium: parseFloat(e.target.value) }) }} />
-                      <InputRightAddon
-                        children='mg'
-                        width='20%'
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                      />
-                    </InputGroup>
-                  </Box>
-                  <Box>
-                    <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
-                      <InputLeftAddon
-                        children='Sugar'
-                        width='40%'
-                        bg='var(--shade5)'
-                        color='white'
-                      />
-                      <Input placeholder='--' onChange={(e) => { setFormState({ ...formState, sugar: parseFloat(e.target.value) }) }} />
-                      <InputRightAddon
-                        children='g'
-                        width='20%'
-                        bg='var(--shade2)'
-                        color='var(--shade6)'
-                      />
-                    </InputGroup>
-                  </Box>
-                </SimpleGrid>
-              </FormControl>
-              <Text textAlign='center' mt='2vh'>{errorMessage}</Text>
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon children='Calories' />
+                    <Input value={addState.calories} onChange={(e) => { setAddState({ ...addState, calories: e.target.value }) }} />
+                    <InputRightAddon children='kcal' />
+                  </InputGroup>
+                </Box>
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon children='Carbs' />
+                    <Input value={addState.carbs} onChange={(e) => { setAddState({ ...addState, carbs: e.target.value }) }} />
+                    <InputRightAddon children='g' />
+                  </InputGroup>
+                </Box>
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon children='Fat' />
+                    <Input value={addState.fat} onChange={(e) => { setAddState({ ...addState, fat: e.target.value }) }} />
+                    <InputRightAddon children='g' />
+                  </InputGroup>
+                </Box>
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon children='Protein' />
+                    <Input value={addState.protein} onChange={(e) => { setAddState({ ...addState, protein: e.target.value }) }} />
+                    <InputRightAddon children='g' />
+                  </InputGroup>
+                </Box>
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon children='Sodium' />
+                    <Input value={addState.sodium} onChange={(e) => { setAddState({ ...addState, sodium: e.target.value }) }} />
+                    <InputRightAddon children='mg' />
+                  </InputGroup>
+                </Box>
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon children='Sugar' />
+                    <Input value={addState.sugar} onChange={(e) => { setAddState({ ...addState, sugar: e.target.value }) }} />
+                    <InputRightAddon children='g' />
+                  </InputGroup>
+                </Box>
+              </SimpleGrid>
+              <Text textAlign='center'>{errorMessage}</Text>
             </Box>
           </ModalBody>
-
           <ModalFooter justifyContent='space-between'>
-            <Button colorScheme='gray' mr={3} onClick={redirectFood}>Close</Button>
-            <Button onClick={handleFormSubmit}
-              bg='var(--shade5)'
-              color='var(--shade1)'
-              _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
-            >
+            <Button colorScheme='gray' onClick={() => { setModalState(false) }}>Cancel</Button>
+            <Button onClick={handleAddFood}>
               Add Food
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <AlertDialog
+        motionPreset='slideInBottom'
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent>
+          <AlertDialogHeader>Food Added</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            Continue search or view foods?
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button onClick={onClose}>
+              Continue Search
+            </Button>
+            <Button onClick={() => { window.location.assign('/food') }}>
+              View Foods
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Box>
   );
 }

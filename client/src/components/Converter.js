@@ -1,6 +1,5 @@
 // import packages
 import React, { useEffect, useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
 
 // import package components
 import {
@@ -15,139 +14,91 @@ import { FiArrowDown } from 'react-icons/fi';
 // import local style sheet
 import '../styles/Converter.css';
 
-// functional component to create routines modal
+// functional component/popover to convert values
 const Converter = () => {
 
+  // define states
   const [unitType, setUnitType] = useState('')
   const [unit1, setUnit1] = useState('')
   const [unit2, setUnit2] = useState('')
   const [values, setValues] = useState({ val1: '', val2: '' })
   const [conversionFactor, setConversionFactor] = useState('')
 
+  // define conversion factors based on units
+  const conversionFactors = [
+    { units: 'gram_kilogram', factor: 0.001 },
+    { units: 'gram_milligram', factor: 1000 },
+    { units: 'gram_microgram', factor: 1e6 },
+    { units: 'gram_pound', factor: 0.00220462 },
+    { units: 'gram_ounce', factor: 0.035274 },
+    { units: 'gram_jin', factor: 0.002 },
+    { units: 'kilogram_gram', factor: 1000 },
+    { units: 'kilogram_milligram', factor: 1e6 },
+    { units: 'kilogram_microgram', factor: 1e9 },
+    { units: 'kilogram_pound', factor: 2.20462 },
+    { units: 'kilogram_ounce', factor: 35.274 },
+    { units: 'kilogram_jin', factor: 2 },
+    { units: 'milligram_gram', factor: 352740 },
+    { units: 'millogram_kilogram', factor: 1e-6 },
+    { units: 'milligram_microgram', factor: 1000 },
+    { units: 'milligram_pound', factor: 2.2046e-6 },
+    { units: 'milligram_ounce', factor: 3.5274e-5 },
+    { units: 'milligram_jin', factor: 2e-6 },
+    { units: 'microgram_gram', factor: 1e-6 },
+    { units: 'microgram_kilogram', factor: 1e-9 },
+    { units: 'microgram_milligram', factor: 0.001 },
+    { units: 'microgram_pound', factor: 2.2046e-9 },
+    { units: 'microgram_ounce', factor: 3.5274e-8 },
+    { units: 'microgram_jin', factor: 2e-9 },
+    { units: 'pound_gram', factor: 453.592 },
+    { units: 'pound_kilogram', factor: 0.453592 },
+    { units: 'pound_milligram', factor: 453592 },
+    { units: 'pound_microgram', factor: 4.536e+8 },
+    { units: 'pound_ounce', factor: 16 },
+    { units: 'pound_jin', factor: 0.90718474 },
+    { units: 'ounce_gram', factor: 28.3495 },
+    { units: 'ounce_kilogram', factor: 0.0283495 },
+    { units: 'ounce_milligram', factor: 28349.5 },
+    { units: 'ounce_microgram', factor: 2.835e+7 },
+    { units: 'ounce_pound', factor: 0.0625 },
+    { units: 'ounce_jin', factor: 0.05669904625 },
+    { units: 'jin_gram', factor: 500 },
+    { units: 'jin_kilogram', factor: 0.5 },
+    { units: 'jin_milligram', factor: 500000 },
+    { units: 'jin_microgram', factor: 5e8 },
+    { units: 'jin_pound', factor: 1.1023113109244 },
+    { units: 'jin_ounce', factor: 17.63698097479 },
+    { units: 'joule_kilojoule', factor: 0.001 },
+    { units: 'joule_calorie', factor: 0.239006 },
+    { units: 'joule_kilocalorie', factor: 0.000239006 },
+    { units: 'kilojoule_joule', factor: 1000 },
+    { units: 'kilojoule_calorie', factor: 239.006 },
+    { units: 'kilojoule_kilocalorie', factor: 0.239006 },
+    { units: 'calorie_joule', factor: 4.184 },
+    { units: 'calorie_kilojoule', factor: 0.004184 },
+    { units: 'calorie_kilocalorie', factor: 0.001 },
+    { units: 'kilocalorie_joule', factor: 4184 },
+    { units: 'kilocalorie_kilojoule', factor: 4.184 },
+    { units: 'kilocalorie_calorie', factor: 1000 },
+  ]
+  // call on render and state changes
   useEffect(() => {
+    // if unit types and both units are filled out, set the conversion factor
     if (unitType !== '' && unit1 !== '' && unit2 !== '') {
-      let factor = 0
+      let multiple = 0
       if (unit1 === unit2) {
-        factor = 1
+        multiple = 1
       } else {
-        if (unitType === 'Weight') {
-          if (unit1 === 'gram' && unit2 === 'kilogram') {
-            factor = 0.001
-          } else if (unit1 === 'gram' && unit2 === 'milligram') {
-            factor = 1000
-          } else if (unit1 === 'gram' && unit2 === 'microgram') {
-            factor = 1e6
-          } else if (unit1 === 'gram' && unit2 === 'pound') {
-            factor = 0.00220462
-          } else if (unit1 === 'gram' && unit2 === 'ounce') {
-            factor = 0.035274
-          } else if (unit1 === 'gram' && unit2 === 'jin') {
-            factor = 0.002
-          } else if (unit1 === 'kilogram' && unit2 === 'gram') {
-            factor = 1000
-          } else if (unit1 === 'kilogram' && unit2 === 'milligram') {
-            factor = 1e6
-          } else if (unit1 === 'kilogram' && unit2 === 'microgram') {
-            factor = 1e9
-          } else if (unit1 === 'kilogram' && unit2 === 'pound') {
-            factor = 2.20462
-          } else if (unit1 === 'kilogram' && unit2 === 'ounce') {
-            factor = 35.274
-          } else if (unit1 === 'kilogram' && unit2 === 'jin') {
-            factor = 2
-          } else if (unit1 === 'milligram' && unit2 === 'gram') {
-            factor = 352740
-          } else if (unit1 === 'milligram' && unit2 === 'kilogram') {
-            factor = 1e-6
-          } else if (unit1 === 'milligram' && unit2 === 'microgram') {
-            factor = 1000
-          } else if (unit1 === 'milligram' && unit2 === 'pound') {
-            factor = 2.2046e-6
-          } else if (unit1 === 'milligram' && unit2 === 'ounce') {
-            factor = 3.5274e-5
-          } else if (unit1 === 'milligram' && unit2 === 'jin') {
-            factor = 2e-6
-          } else if (unit1 === 'microgram' && unit2 === 'gram') {
-            factor = 1e-6
-          } else if (unit1 === 'microgram' && unit2 === 'kilogram') {
-            factor = 1e-9
-          } else if (unit1 === 'microgram' && unit2 === 'milligram') {
-            factor = 0.001
-          } else if (unit1 === 'microgram' && unit2 === 'pound') {
-            factor = 2.2046e-9
-          } else if (unit1 === 'microgram' && unit2 === 'ounce') {
-            factor = 3.5274e-8
-          } else if (unit1 === 'microgram' && unit2 === 'jin') {
-            factor = 2e-9
-          } else if (unit1 === 'pound' && unit2 === 'gram') {
-            factor = 453.592
-          } else if (unit1 === 'pound' && unit2 === 'kilogram') {
-            factor = 0.453592
-          } else if (unit1 === 'pound' && unit2 === 'milligram') {
-            factor = 453592
-          } else if (unit1 === 'pound' && unit2 === 'microgram') {
-            factor = 4.536e+8
-          } else if (unit1 === 'pound' && unit2 === 'ounce') {
-            factor = 16
-          } else if (unit1 === 'pound' && unit2 === 'jin') {
-            factor = 0.90718474
-          } else if (unit1 === 'ounce' && unit2 === 'gram') {
-            factor = 28.3495
-          } else if (unit1 === 'ounce' && unit2 === 'kilogram') {
-            factor = 0.0283495
-          } else if (unit1 === 'ounce' && unit2 === 'milligram') {
-            factor = 28349.5
-          } else if (unit1 === 'ounce' && unit2 === 'microgram') {
-            factor = 2.835e+7
-          } else if (unit1 === 'ounce' && unit2 === 'pound') {
-            factor = 0.0625
-          } else if (unit1 === 'ounce' && unit2 === 'jin') {
-            factor = 0.05669904625
-          } else if (unit1 === 'jin' && unit2 === 'gram') {
-            factor = 500
-          } else if (unit1 === 'jin' && unit2 === 'kilogram') {
-            factor = 0.5
-          } else if (unit1 === 'jin' && unit2 === 'milligram') {
-            factor = 500000
-          } else if (unit1 === 'jin' && unit2 === 'microgram') {
-            factor = 5e8
-          } else if (unit1 === 'jin' && unit2 === 'pound') {
-            factor = 1.1023113109244
-          } else if (unit1 === 'jin' && unit2 === 'ounce') {
-            factor = 17.63698097479
-          }
-        } else if (unitType === 'Energy') {
-          if (unit1 === 'joule' && unit2 === 'kilojoule') {
-            factor = 0.001
-          } else if (unit1 === 'joule' && unit2 === 'calorie') {
-            factor = 0.239006
-          } else if (unit1 === 'joule' && unit2 === 'kilocalorie') {
-            factor = 0.000239006
-          } else if (unit1 === 'kilojoule' && unit2 === 'joule') {
-            factor = 1000
-          } else if (unit1 === 'kilojoule' && unit2 === 'calorie') {
-            factor = 239.006
-          } else if (unit1 === 'kilojoule' && unit2 === 'kilocalorie') {
-            factor = 0.239006
-          } else if (unit1 === 'calorie' && unit2 === 'joule') {
-            factor = 4.184
-          } else if (unit1 === 'calorie' && unit2 === 'kilojoule') {
-            factor = 0.004184
-          } else if (unit1 === 'calorie' && unit2 === 'kilocalorie') {
-            factor = 0.001
-          } else if (unit1 === 'kilocalorie' && unit2 === 'joule') {
-            factor = 4184
-          } else if (unit1 === 'kilocalorie' && unit2 === 'kilojoule') {
-            factor = 4.184
-          } else if (unit1 === 'kilocalorie' && unit2 === 'calorie') {
-            factor = 1000
-          }
-        }
+        let unitCombo = unit1 + '_' + unit2
+        let combo = conversionFactors.find(item => item.units === unitCombo)
+        multiple = combo.factor
       }
-      setValues({ ...values, val2: +parseFloat(values.val1 * factor).toFixed(9) })
-      setConversionFactor(+parseFloat(factor).toFixed(9))
+      // based on val1 and the conversion factor, set val2
+      setValues({ ...values, val2: +parseFloat(values.val1 * multiple).toFixed(9) })
+      setConversionFactor(+parseFloat(multiple).toFixed(9))
     }
-  }, [values])
+    // call on each value change
+  }, [values, unitType, unit1, unit2])
 
   return (
     <Box className='converter'>

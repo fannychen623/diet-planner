@@ -5,7 +5,7 @@ const plannerSchema = new Schema({
   date: {
     type: Date,
     required: true,
-    // unique: true,
+    unique: true,
     get: (date)=> format(date, 'MM/dd/yyyy')
   },
   diet: [

@@ -1,34 +1,30 @@
 // import package
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-// importy query
+// importy query and mutations
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { ADD_MEAL, ADD_MEAL_FOOD } from '../utils/mutations';
 
-// // import local component
-// import FoodCards from '../components/FoodCards';
-
 // import package components
 import {
-  chakra, Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
-  Input, InputGroup, InputLeftElement, InputLeftAddon, Text, Checkbox,
+  Box, Flex, Spacer, Heading, Text, Button, IconButton,
+  Input, InputGroup, InputLeftElement, InputLeftAddon,
+  Checkbox, NumberInput, NumberInputField,
+  NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
   Popover, PopoverTrigger, PopoverContent, PopoverBody,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  NumberInput, NumberInputField,
-  NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
 
 // import icons
-import {
-  FiPlusSquare, FiMinusSquare, FiSearch, FiInfo,
-} from 'react-icons/fi';
+import { FiPlusSquare, FiMinusSquare, FiSearch, FiInfo } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/NewEditMeal.css';
 
+// function to transform text to proper case
 function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
@@ -38,7 +34,7 @@ function toTitleCase(str) {
   );
 }
 
-// functional component for the foods page
+// functional component for the new meal page
 const NewMeal = () => {
 
   // emulates a fetch (useQuery expects a Promise)
@@ -56,91 +52,17 @@ const NewMeal = () => {
     enabled: true
   });
 
-  // define add routine mutation
-  const [addMeal, { mealError, mealData }] = useMutation(ADD_MEAL);
-  const [addMealFood, { mealFoodError, mealFoodData }] = useMutation(ADD_MEAL_FOOD);
+  // extract the foods from the query data
+  const foods = useMemo(() => data?.me.foods, [data]);
+  const meals = useMemo(() => data?.me.meals, [data]);
 
-  const [errorMessage, setErrorMessage] = useState('')
+  // map through data to get array of food titles
+  const mealTitles = useMemo(() => meals.map(meal => meal.title), [meals]);
 
+  // functions to toggle modal
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  // extract the foods from the query data
-  const foods = data?.me.foods || [];
-
-  const [foodsList, setFoodsList] = useState(foods)
-  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
-  const [searchValue, setSearchValue] = useState('')
-
-  // set state of combined preview text
-  const [foodPreview, setFoodPreview] = useState('')
-
-  const [mealDetails, setMealDetails] = useState({ title: '', numberOfServing: 1.00 })
-
-  const [total, setTotal] = useState({
-    calories: 0,
-    carbs: 0,
-    fat: 0,
-    protein: 0,
-    sodium: 0,
-    sugar: 0,
-  });
-
-  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
-
-  const [foodAdded, setFoodAdded] = useState([])
-
-  useEffect(() => {
-
-    setDisplayState(Array(foodsList.length).fill(true))
-    for (let i = 0; i < foodsList.length; i++) {
-      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
-        displayState[i] = true
-      } else {
-        displayState[i] = false
-      }
-    }
-
-    setDisplayState({ ...displayState })
-
-    let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
-
-    for (let i = 0; i < foodAdded.length; i++) {
-      newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories * foodAdded[i].servings
-      newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs * foodAdded[i].servings
-      newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat * foodAdded[i].servings
-      newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein * foodAdded[i].servings
-      newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium * foodAdded[i].servings
-      newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar * foodAdded[i].servings
-    }
-
-    setTotal({
-      calories: +parseFloat(newTotal.calories).toFixed(2),
-      carbs: +parseFloat(newTotal.carbs).toFixed(2),
-      fat: +parseFloat(newTotal.fat).toFixed(2),
-      protein: +parseFloat(newTotal.protein).toFixed(2),
-      sodium: +parseFloat(newTotal.sodium).toFixed(2),
-      sugar: +parseFloat(newTotal.sugar).toFixed(2)
-    })
-
-  }, [foodAdded, foodsList, foods, searchValue]);
-
-  const handleChangeState = (event) => {
-    event.preventDefault()
-    const { value } = event.target
-
-    let checkboxStates = []
-    for (var i = 0; i < foodsList.length; i++) {
-      if (foodsList[i].title === value) {
-        checkboxStates.push(!checkedState[i])
-      } else {
-        checkboxStates.push(checkedState[i])
-      }
-    };
-
-    setCheckedState(checkboxStates)
-  }
-
-  // function to add workout to combined routine text
+  // function to get food preview viewd in modal
   const getFoodPreview = (index) => {
     setFoodPreview(
       'Serving Size: ' + foods[index].servingSize + ' ' + foods[index].servingUnit + '\n' +
@@ -154,10 +76,75 @@ const NewMeal = () => {
     return foodPreview
   };
 
+  // define states
+  const [mealDetails, setMealDetails] = useState({ title: '', numberOfServing: 1.00 })
+  const [foodAdded, setFoodAdded] = useState([])
+  const [foodsList, setFoodsList] = useState(foods)
+  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
+  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
+  const [searchValue, setSearchValue] = useState('')
+  const [foodPreview, setFoodPreview] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [total, setTotal] = useState({
+    calories: 0,
+    carbs: 0,
+    fat: 0,
+    protein: 0,
+    sodium: 0,
+    sugar: 0,
+  });
+
+  // call on render and defined state changes
+  useEffect(() => {
+    // set displayed food in modal based on search value
+    setDisplayState(Array(foodsList.length).fill(true))
+    for (let i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+        displayState[i] = true
+      } else {
+        displayState[i] = false
+      }
+    }
+    setDisplayState({ ...displayState })
+
+    // calculate total meal nutritional value at each food/serving size change
+    let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+    for (let i = 0; i < foodAdded.length; i++) {
+      newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories * foodAdded[i].servings
+      newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs * foodAdded[i].servings
+      newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat * foodAdded[i].servings
+      newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein * foodAdded[i].servings
+      newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium * foodAdded[i].servings
+      newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar * foodAdded[i].servings
+    }
+    setTotal({
+      calories: +parseFloat(newTotal.calories).toFixed(2),
+      carbs: +parseFloat(newTotal.carbs).toFixed(2),
+      fat: +parseFloat(newTotal.fat).toFixed(2),
+      protein: +parseFloat(newTotal.protein).toFixed(2),
+      sodium: +parseFloat(newTotal.sodium).toFixed(2),
+      sugar: +parseFloat(newTotal.sugar).toFixed(2)
+    })
+  }, [foodAdded, foodsList, foods, searchValue]);
+
+  // function to get values of food checked in modal
+  const handleChangeState = (event) => {
+    event.preventDefault()
+    const { value } = event.target
+    let checkboxStates = []
+    for (var i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title === value) {
+        checkboxStates.push(!checkedState[i])
+      } else {
+        checkboxStates.push(checkedState[i])
+      }
+    };
+    setCheckedState(checkboxStates)
+  }
+
+  // function to add food from modal to page
   const handleAddFoods = async (event) => {
     event.preventDefault()
-
-    // loop through all the checked routines to add
     for (let i = 0; i < checkedState.length; i++) {
       if (checkedState[i]) {
         let foodIndex = foods.findIndex(food => food.title === foodsList[i].title)
@@ -176,17 +163,16 @@ const NewMeal = () => {
           })
         }
         checkedState[i] = false
-        setFoodsList(foods => foods.filter((food) => food.title != foodsList[i].title))
+        setFoodsList(foods => foods.filter((food) => food.title !== foodsList[i].title))
       }
     }
-
     onClose()
   };
 
+  // function to update individual food servings and total nutritional value
   const handleUpdateServings = async (event) => {
     event.preventDefault()
     const { id, value } = event.target
-
     if (value) {
       for (let i = 0; i < foodAdded.length; i++) {
         if (foodAdded[i].id === id) {
@@ -200,7 +186,6 @@ const NewMeal = () => {
         }
       }
       let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
-
       for (let i = 0; i < foodAdded.length; i++) {
         newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories * foodAdded[i].servings
         newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs * foodAdded[i].servings
@@ -209,7 +194,6 @@ const NewMeal = () => {
         newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium * foodAdded[i].servings
         newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar * foodAdded[i].servings
       }
-
       setTotal({
         calories: +parseFloat(newTotal.calories).toFixed(2),
         carbs: +parseFloat(newTotal.carbs).toFixed(2),
@@ -218,23 +202,24 @@ const NewMeal = () => {
         sodium: +parseFloat(newTotal.sodium).toFixed(2),
         sugar: +parseFloat(newTotal.sugar).toFixed(2)
       })
-
     }
   }
 
+  // function to remove food from meal page and add it back to modal food list
   const handleRemoveFood = async (event) => {
     event.preventDefault()
     const { id } = event.target
-
     if (id !== '') {
       foodsList.push(foods[foods.findIndex(food => food._id === id)])
       setFoodAdded(foodAdded.filter((item) => item.id !== id))
     }
   };
 
+  // mutation and function to add meal
+  const [addMeal, { mealError, mealData }] = useMutation(ADD_MEAL);
   const handleAddMeal = async (event) => {
     event.preventDefault()
-
+    // check that at least one food is added with valid serving value
     let error = false
     if (foodAdded.length === 0) {
       setErrorMessage('Error: Must add at least 1 food');
@@ -246,9 +231,9 @@ const NewMeal = () => {
         error = true
       }
     }
+    // add meal to database
     if (!error) {
       try {
-        // add routine with variables routineNanem and routine
         const { mealData } = await addMeal({
           variables: { title: mealDetails.title, numberOfServing: parseFloat(mealDetails.numberOfServing) },
 
@@ -256,30 +241,30 @@ const NewMeal = () => {
             handleAddMealFood(mealData.addMeal._id)
           }
         });
-
       } catch (e) {
         console.error(e);
         if (mealDetails.title === '') { setErrorMessage('Error: Missing meal name') }
         if (mealDetails.numberOfServing <= 0) { setErrorMessage('Error: Invalid number of serving input') }
+        if (mealTitles.includes(mealDetails.title)) { setErrorMessage('Error: Duplicate food name') }
       }
     }
   };
 
+// mutation and function to add meal food
+  const [addMealFood, { mealFoodError, mealFoodData }] = useMutation(ADD_MEAL_FOOD);
   const handleAddMealFood = async (mealId) => {
     for (let i = 0; i < foodAdded.length; i++) {
       let servings = parseFloat(foodAdded[i].servings)
       let food = foodAdded[i].id
       try {
-        // add routine with variables routineNanem and routine
         const { mealFoodData } = await addMealFood({
           variables: { mealId, servings, food },
         });
-
       } catch (e) {
         console.error(e)
       }
     }
-    // redirect back to the routines page
+    // redirect back to the meal page
     window.location.assign('/meal');
   };
 
@@ -461,9 +446,7 @@ const NewMeal = () => {
               Close
             </Button>
             <Spacer />
-            <Button
-              onClick={handleAddFoods}
-            >
+            <Button onClick={handleAddFoods}>
               Add Food(s)
             </Button>
           </ModalFooter>

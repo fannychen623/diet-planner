@@ -1,6 +1,6 @@
 // import packages and local auth
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import Auth from '../utils/auth';
 
@@ -8,14 +8,14 @@ import Auth from '../utils/auth';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../utils/mutations';
 
-// import package components and icon
+// import package components
 import {
-  Box, Button, FormControl, Spinner, Input,
-  InputGroup, InputLeftAddon, InputRightElement,
-  ModalFooter, ModalBody,
+  Box, Button, IconButton, FormControl, Spinner, ModalFooter, ModalBody,
+  Input, InputGroup, InputLeftAddon, InputLeftElement, InputRightElement,
 } from '@chakra-ui/react'
 
-import { FiMail, FiEyeOff, FiEye, FiLock, FiUnlock } from 'react-icons/fi';
+// import icons
+import { FiMail, FiEyeOff, FiEye, FiLock } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/LoginSignup.css';
@@ -23,7 +23,7 @@ import '../styles/LoginSignup.css';
 // functional component for the login tab
 const Login = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 768px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // define the form state, default empty
   const [formState, setFormState] = useState({ email: '', password: '' });
@@ -82,10 +82,10 @@ const Login = () => {
               {isMobile ? (
                 <Box>
                   <InputGroup>
-                    <InputLeftAddon>
+                    <InputLeftElement>
                       <span style={{ color: 'red' }}>*</span>
                       <FiMail />
-                    </InputLeftAddon>
+                    </InputLeftElement>
                     <Input
                       type='email'
                       name='email'
@@ -95,16 +95,10 @@ const Login = () => {
                     />
                   </InputGroup>
                   <InputGroup>
-                    <InputLeftAddon>
-                      <span style={{ color: 'red'}}>*</span>
-                      <Button
-                        variant='ghost'
-                        color='white'
-                        onClick={() => setShow(!show)}
-                      >
-                        {show ? <FiUnlock /> : <FiLock />}
-                      </Button>
-                    </InputLeftAddon>
+                    <InputLeftElement>
+                      <span style={{ color: 'red' }}>*</span>
+                      <FiLock />
+                    </InputLeftElement>
                     <Input
                       type={show ? 'text' : 'password'}
                       name='password'
@@ -112,6 +106,13 @@ const Login = () => {
                       value={formState.password}
                       onChange={handleChange}
                     />
+                    <InputRightElement>
+                      <IconButton
+                        variant='ghost'
+                        onClick={() => setShow(!show)}
+                        icon={show ? <FiEye /> : <FiEyeOff />}
+                      />
+                    </InputRightElement>
                   </InputGroup>
                 </Box>
               ) : (
@@ -154,6 +155,11 @@ const Login = () => {
                 </Box>
               )}
             </FormControl>
+            {error && (
+              <Box className='login-error'>
+                {error.message}
+              </Box>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button onClick={returnToHome} >
@@ -163,11 +169,6 @@ const Login = () => {
               Login
             </Button>
           </ModalFooter>
-          </Box>
-      )}
-      {error && (
-        <Box>
-          {error.message}
         </Box>
       )}
     </Box>

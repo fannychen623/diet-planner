@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
-// importy query
+// importy query and mutation
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { REMOVE_MEAL } from '../utils/mutations';
@@ -13,25 +13,20 @@ import MealContent from '../components/MealContent';
 
 // import package components
 import {
-  Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
-  Accordion, AccordionItem,
-  AccordionButton, AccordionPanel, AccordionIcon,
+  Box, Flex, Spacer, Spinner, Heading, Button, IconButton,
   InputGroup, InputLeftElement, Input,
+  Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
 } from '@chakra-ui/react'
 
 // import icons
-import {
-  FiSearch, FiEdit, FiTrash2,
-} from 'react-icons/fi';
+import { FiSearch, FiEdit, FiTrash2 } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/Meal.css';
 
-// functional component for the routines page
+// functional component for the meal page
 const Meal = () => {
 
-  // navigate for the edit post button
-  const navigate = useNavigate();
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
   const emulateFetch = _ => {
@@ -51,16 +46,21 @@ const Meal = () => {
   const foods = data?.me.foods || [];
   const meals = data?.me.meals || [];
 
+  // define states
   const [mealList, setMealList] = useState([...meals])
-
   const [displayState, setDisplayState] = useState(Array(mealList.length).fill(true))
   const [searchValue, setSearchValue] = useState('')
 
+  // navigate for the new meal button
+  const navigate = useNavigate();
+
+  // call on render and defined state changes
   useEffect(() => {
+    // set meal list on data render complete
     if (mealList.length === 0) {
       setMealList(meals)
-    } 
-
+    }
+    // set display state base on search value
     setDisplayState(Array(mealList.length).fill(true))
     for (let i = 0; i < mealList.length; i++) {
       if (mealList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
@@ -69,28 +69,19 @@ const Meal = () => {
         displayState[i] = false
       }
     }
-
     setDisplayState({ ...displayState })
 
     refetch();
   }, [foods, meals, mealList, searchValue])
 
-  // define add routine mutation
+  // mutation and function to remove meal
   const [removeMeal, { removeError, removeData }] = useMutation(REMOVE_MEAL);
-
-  // on click to remove food (delete button)
   const handleRemoveMeal = async (id) => {
-    console.log(id)
-
-    // if id is not blank
     if (id !== '') {
       try {
-        // remove comment with variables postId and commentId
         const { removeData } = await removeMeal({
           variables: { mealId: id },
         });
-
-        // re-render the page
         refetch();
       } catch (e) {
         console.error(e);
@@ -98,9 +89,8 @@ const Meal = () => {
     }
   };
 
-  // if not routines were passed, return message
+  // if no meals exist in database, render message
   if (!meals.length) {
-    console.log(meals)
     return (
       <Box className='meal-page'>
         <Flex>
@@ -109,8 +99,6 @@ const Meal = () => {
           </Box>
           <Spacer />
           <Box>
-            {/* button to create new routine, embedded with link to the createRoutines component */}
-            {/* alternative, can use navigate onClick to achieve the same results */}
             <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
           </Box>
         </Flex >
@@ -126,12 +114,9 @@ const Meal = () => {
         </Box>
         <Spacer />
         <Box>
-          {/* button to create new routine, embedded with link to the createRoutines component */}
-          {/* alternative, can use navigate onClick to achieve the same results */}
           <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
         </Box>
       </Flex>
-      {/* populate page only once data loads */}
       {loading ? (
         <Box textAlign='center'>
           <Spinner /> Loading...
@@ -147,24 +132,21 @@ const Meal = () => {
             </InputGroup>
           </Box>
           {mealList.map((meal, index) => (
-            <>
+            <div key={meal._id}>
               {displayState[`${index}`] ? (
-                <Accordion allowMultiple className='accordian'>
+                <Accordion key={meal._id} allowMultiple className='accordian'>
                   <AccordionItem>
-                    <AccordionButton
-                      _hover={{ bg: 'var(--shade4)' }}
-                      _expanded={{ bg: 'var(--shade4)' }}
-                    >
-                      <Box as="span" flex='1' textAlign='left'>
+                    <Box display='flex' alignItems='center'>
+                      <AccordionButton justifyContent='spaced-between'>
                         {meal.title}
-                      </Box>
-                      <Spacer />
-                      <Box>
+                        <Spacer />
+                      </AccordionButton>
+                      <Box display='flex'>
                         <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit p='100%' />} />
                         <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 p='100%' />} />
                       </Box>
                       <AccordionIcon />
-                    </AccordionButton>
+                    </Box>
                     <AccordionPanel>
                       <MealContent contents={meal.content} foods={foods} />
                     </AccordionPanel>
@@ -173,7 +155,7 @@ const Meal = () => {
               ) : (
                 <></>
               )}
-            </>
+            </div>
           ))}
         </Box>
       )}

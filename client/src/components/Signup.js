@@ -1,6 +1,6 @@
 // import package and local auth
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import Auth from '../utils/auth';
 
@@ -10,12 +10,12 @@ import { ADD_USER } from '../utils/mutations';
 
 // import package component and icon
 import {
-  Box, Button, FormControl, Spinner, Input,
-  InputGroup, InputLeftAddon, InputRightElement,
+  Box, Button, IconButton, FormControl, Spinner, Input,
+  InputGroup, InputLeftAddon, InputLeftElement, InputRightElement,
   ModalFooter, ModalBody,
 } from '@chakra-ui/react'
 
-import { FiUser, FiMail, FiEyeOff, FiEye, FiLock, FiUnlock  } from 'react-icons/fi';
+import { FiUser, FiMail, FiEyeOff, FiEye, FiLock, FiUnlock } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/LoginSignup.css';
@@ -73,109 +73,115 @@ const Signup = () => {
         <Box>
           <ModalBody>
             <FormControl isRequired>
-            {isMobile ? (
-              <Box>
-              <InputGroup>
-                <InputLeftAddon>
-                  <span style={{ color: 'red' }}>*</span>
-                  <FiUser />
-                </InputLeftAddon>
-                <Input
-                  type='name'
-                  name='username'
-                  placeholder='username'
-                  value={formState.name}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-              <InputGroup>
-                <InputLeftAddon>
-                  <span style={{ color: 'red' }}>*</span>
-                  <FiMail />
-                </InputLeftAddon>
-                <Input
-                  type='email'
-                  name='email'
-                  placeholder='email'
-                  value={formState.email}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-              <InputGroup>
-                <InputLeftAddon>
-                  <span style={{ color: 'red' }}>*</span>
-                  <Button
-                    variant='ghost'
-                    color='white'
-                    onClick={() => setShow(!show)}
-                  >
-                    {show ? <FiUnlock /> : <FiLock />}
-                  </Button>
-                </InputLeftAddon>
-                <Input
-                  type={show ? 'text' : 'password'}
-                  name='password'
-                  placeholder='password'
-                  value={formState.password}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-              </Box>
-            ):(
-              <Box>
-              <InputGroup>
-                <InputLeftAddon>
-                  <span style={{ color: 'red' }}>*</span>
-                  Username
-                </InputLeftAddon>
-                <Input
-                  type='name'
-                  name='username'
-                  value={formState.name}
-                  onChange={handleChange}
-                />
-                <InputRightElement>
-                  <FiUser />
-                </InputRightElement>
-              </InputGroup>
-              <InputGroup>
-                <InputLeftAddon>
-                  <span style={{ color: 'red' }}>*</span>
-                  Email
-                </InputLeftAddon>
-                <Input
-                  type='email'
-                  name='email'
-                  value={formState.email}
-                  onChange={handleChange}
-                />
-                <InputRightElement>
-                  <FiMail />
-                </InputRightElement>
-              </InputGroup>
-              <InputGroup>
-                <InputLeftAddon>
-                  <span style={{ color: 'red' }}>*</span>
-                  Password
-                </InputLeftAddon>
-                <Input
-                  type={show ? 'text' : 'password'}
-                  name='password'
-                  value={formState.password}
-                  onChange={handleChange}
-                />
-                <InputRightElement>
-                  <Button
-                    variant='ghost'
-                    onClick={() => setShow(!show)}
-                  >
-                    {show ? <FiEye /> : <FiEyeOff />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+              {isMobile ? (
+                <Box>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <span style={{ color: 'red' }}>*</span>
+                      <FiUser />
+                    </InputLeftElement>
+                    <Input
+                      type='name'
+                      name='username'
+                      placeholder='username'
+                      value={formState.name}
+                      onChange={handleChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <span style={{ color: 'red' }}>*</span>
+                      <FiMail />
+                    </InputLeftElement>
+                    <Input
+                      type='email'
+                      name='email'
+                      placeholder='email'
+                      value={formState.email}
+                      onChange={handleChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <span style={{ color: 'red' }}>*</span>
+                      <FiLock />
+                    </InputLeftElement>
+                    <Input
+                      type={show ? 'text' : 'password'}
+                      name='password'
+                      placeholder='password'
+                      value={formState.password}
+                      onChange={handleChange}
+                    />
+                    <InputRightElement>
+                      <IconButton
+                        variant='ghost'
+                        onClick={() => setShow(!show)}
+                        icon={show ? <FiEye /> : <FiEyeOff />}
+                      />
+                    </InputRightElement>
+                  </InputGroup>
+                </Box>
+              ) : (
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <span style={{ color: 'red' }}>*</span>
+                      Username
+                    </InputLeftAddon>
+                    <Input
+                      type='name'
+                      name='username'
+                      value={formState.name}
+                      onChange={handleChange}
+                    />
+                    <InputRightElement>
+                      <FiUser />
+                    </InputRightElement>
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <span style={{ color: 'red' }}>*</span>
+                      Email
+                    </InputLeftAddon>
+                    <Input
+                      type='email'
+                      name='email'
+                      value={formState.email}
+                      onChange={handleChange}
+                    />
+                    <InputRightElement>
+                      <FiMail />
+                    </InputRightElement>
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftAddon>
+                      <span style={{ color: 'red' }}>*</span>
+                      Password
+                    </InputLeftAddon>
+                    <Input
+                      type={show ? 'text' : 'password'}
+                      name='password'
+                      value={formState.password}
+                      onChange={handleChange}
+                    />
+                    <InputRightElement>
+                      <Button
+                        variant='ghost'
+                        onClick={() => setShow(!show)}
+                      >
+                        {show ? <FiEye /> : <FiEyeOff />}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
+                </Box>
+              )}
+            </FormControl>
+            {error && (
+              <Box className='signup-error'>
+                {error.message}
               </Box>
             )}
-            </FormControl>
           </ModalBody>
           <ModalFooter>
             <Button onClick={returnToHome} >
@@ -185,11 +191,6 @@ const Signup = () => {
               Signup
             </Button>
           </ModalFooter>
-        </Box>
-      )}
-      {error && (
-        <Box m='5' p='3'>
-          {error.message}
         </Box>
       )}
     </Box>

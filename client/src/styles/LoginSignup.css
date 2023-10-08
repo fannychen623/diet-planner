@@ -91,3 +91,31 @@
     min-width: unset;
     background-color: var(--trans);
 }
+
+/* error message */
+.login-modal .login-error, .signup-modal .signup-error {
+    margin-top: -0.75em;
+    margin-bottom: 1em;
+}
+
+@media (max-width: 480px) {
+
+/* inputleftelement */
+.login-modal .css-j2xror, .signup-modal .css-j2xror {
+    left: 0.5em;
+}
+
+/* input field */
+.login-modal .css-qluo93, .login-modal .css-ffroc,
+.signup-modal .css-qluo93, .signup-modal .css-ffroc {
+    padding-left: 3.5em;
+    border-color: var(--shade5);
+}
+
+/* view password icon button */
+.login-modal .css-15bt6gt:hover, .login-modal .css-15bt6gt[data-hover],
+.signup-modal .css-15bt6gt:hover, .signup-modal .css-15bt6gt[data-hover] {
+    background: var(--trans);
+}
+
+}

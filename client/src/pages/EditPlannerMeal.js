@@ -1,25 +1,20 @@
 // import package
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation, useParams } from 'react-router-dom'
+import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom'
 
-// importy query
+// importy query and mutations
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { UPDATE_DIET, UPDATE_DIET_FOOD } from '../utils/mutations';
 
-// // import local component
-// import FoodCards from '../components/FoodCards';
-
 // import package components
 import {
-  chakra, Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
-  Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon, Text, Tooltip,
-  Checkbox, useCheckbox, useCheckboxGroup,
-  Popover, PopoverTrigger, PopoverContent, PopoverHeader,
-  PopoverBody, PopoverFooter, PopoverArrow,
-  Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  NumberInput, NumberInputField,
+  Box, Flex, Spacer, Heading, Text, Button, IconButton,
+  Input, InputGroup, InputLeftElement, InputLeftAddon,
+  Checkbox, NumberInput, NumberInputField,
   NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
+  Popover, PopoverTrigger, PopoverContent, PopoverBody,
+  Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
@@ -32,6 +27,7 @@ import {
 // import local style sheet
 import '../styles/NewEditMeal.css';
 
+// function to transform text to proper case
 function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
@@ -41,7 +37,7 @@ function toTitleCase(str) {
   );
 }
 
-// functional component for the foods page
+// functional component for the edit food from planner page
 const EditPlannerMeal = () => {
 
   // emulates a fetch (useQuery expects a Promise)
@@ -59,38 +55,18 @@ const EditPlannerMeal = () => {
     enabled: true
   });
 
+  // extract the foods from the query data
+  const foods = useMemo(() => data?.me.foods, [data]);
+
   // fetch object parameter from the directed link
   const { state } = useLocation();
-  // define the postId from the url parameter
-
-  // define add routine mutation
-  const [updateDiet, { dietError, dietData }] = useMutation(UPDATE_DIET);
-  const [updateDietFood, { dietFoodError, dietFoodData }] = useMutation(UPDATE_DIET_FOOD);
-
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  // extract the foods from the query data 
-  const foods = data?.me.foods || [];
-  const planners = data?.me.planner || [];
   const meal = state.planner
   const date = state.date
 
-  // set state of combined preview text
-  const [foodPreview, setFoodPreview] = useState('')
+  // function to toggle modal
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [mealDetails, setMealDetails] = useState({ title: meal.title, numberOfServing: meal.numberOfServing })
-
-  const [total, setTotal] = useState({
-    calories: 0,
-    carbs: 0,
-    fat: 0,
-    protein: 0,
-    sodium: 0,
-    sugar: 0,
-  });
-
+  // function to get food for the meal
   const getMealFood = () => {
     let mealContent = meal.content
     let mealFoodServings = mealContent.map(thisMeal => thisMeal.servings)
@@ -114,75 +90,18 @@ const EditPlannerMeal = () => {
     return mealFoodAdded
   }
 
-  const [foodAdded, setFoodAdded] = useState(getMealFood())
-
+  // function to get list of food not added to meal
   const getFoodList = () => {
     let mealContent = meal.content
     let mealFoodIds = mealContent.map(thisMeal => thisMeal.food)
     let mealFoodAdded = foods
     for (let i = 0; i < mealFoodIds.length; i++) {
-      mealFoodAdded = mealFoodAdded.filter((food) => food._id != mealFoodIds[i])
+      mealFoodAdded = mealFoodAdded.filter((food) => food._id !== mealFoodIds[i])
     }
     return mealFoodAdded
   }
 
-  const [foodsList, setFoodList] = useState(getFoodList())
-  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
-  const [searchValue, setSearchValue] = useState('')
-
-  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
-
-  useEffect(() => {
-
-    setDisplayState(Array(foodsList.length).fill(true))
-    for (let i = 0; i < foodsList.length; i++) {
-      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
-        displayState[i] = true
-      } else {
-        displayState[i] = false
-      }
-    }
-
-    setDisplayState({ ...displayState })
-    
-    let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
-
-    for (let i = 0; i < foodAdded.length; i++) {
-      newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories
-      newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs
-      newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat
-      newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein
-      newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium
-      newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar
-    }
-
-    setTotal({
-      calories: +parseFloat(newTotal.calories).toFixed(2),
-      carbs: +parseFloat(newTotal.carbs).toFixed(2),
-      fat: +parseFloat(newTotal.fat).toFixed(2),
-      protein: +parseFloat(newTotal.protein).toFixed(2),
-      sodium: +parseFloat(newTotal.sodium).toFixed(2),
-      sugar: +parseFloat(newTotal.sugar).toFixed(2)
-    })
-  }, [foodAdded, foodsList, foods, searchValue]);
-
-  const handleChangeState = (event) => {
-    event.preventDefault()
-    const { value } = event.target
-
-    let checkboxStates = []
-    for (var i = 0; i < foodsList.length; i++) {
-      if (foodsList[i].title === value) {
-        checkboxStates.push(!checkedState[i])
-      } else {
-        checkboxStates.push(checkedState[i])
-      }
-    };
-
-    setCheckedState(checkboxStates)
-  }
-
-  // function to add workout to combined routine text
+  // function to get food preview viewed in modal
   const getFoodPreview = (index) => {
     setFoodPreview(
       'Serving Size: ' + foods[index].servingSize + ' ' + foods[index].servingUnit + '\n' +
@@ -196,10 +115,75 @@ const EditPlannerMeal = () => {
     return foodPreview
   };
 
+  // define states
+  const [mealDetails, setMealDetails] = useState({ title: meal.title, numberOfServing: meal.numberOfServing })
+  const [foodAdded, setFoodAdded] = useState(getMealFood())
+  const [foodsList, setFoodList] = useState(getFoodList())
+  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
+  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
+  const [searchValue, setSearchValue] = useState('')
+  const [foodPreview, setFoodPreview] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [total, setTotal] = useState({
+    calories: 0,
+    carbs: 0,
+    fat: 0,
+    protein: 0,
+    sodium: 0,
+    sugar: 0,
+  });
+
+  // call on render and defined state changes
+  useEffect(() => {
+// set displayed food in modal based on search value
+    setDisplayState(Array(foodsList.length).fill(true))
+    for (let i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+        displayState[i] = true
+      } else {
+        displayState[i] = false
+      }
+    }
+    setDisplayState({ ...displayState })
+    
+    // calculate total nutritional value at each food/serving size change
+    let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+    for (let i = 0; i < foodAdded.length; i++) {
+      newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories
+      newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs
+      newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat
+      newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein
+      newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium
+      newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar
+    }
+    setTotal({
+      calories: +parseFloat(newTotal.calories).toFixed(2),
+      carbs: +parseFloat(newTotal.carbs).toFixed(2),
+      fat: +parseFloat(newTotal.fat).toFixed(2),
+      protein: +parseFloat(newTotal.protein).toFixed(2),
+      sodium: +parseFloat(newTotal.sodium).toFixed(2),
+      sugar: +parseFloat(newTotal.sugar).toFixed(2)
+    })
+  }, [foodAdded, foodsList, foods, searchValue]);
+
+  // function to get values of food checked in modal
+  const handleChangeState = (event) => {
+    event.preventDefault()
+    const { value } = event.target
+    let checkboxStates = []
+    for (var i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title === value) {
+        checkboxStates.push(!checkedState[i])
+      } else {
+        checkboxStates.push(checkedState[i])
+      }
+    };
+    setCheckedState(checkboxStates)
+  }
+
+  // function to add food from modal to page
   const handleAddFoods = async (event) => {
     event.preventDefault()
-
-    // loop through all the checked routines to add
     for (let i = 0; i < checkedState.length; i++) {
       if (checkedState[i]) {
         let foodIndex = foods.findIndex(food => food.title === foodsList[i].title)
@@ -221,14 +205,13 @@ const EditPlannerMeal = () => {
         setFoodList(foods => foods.filter((food) => food.title != foodsList[i].title))
       }
     }
-
     onClose()
   };
 
+  // function to update individual food servings and total nutritional value
   const handleUpdateServings = async (event) => {
     event.preventDefault()
     const { id, value } = event.target
-
     if (value) {
       for (let i = 0; i < foodAdded.length; i++) {
         if (foodAdded[i].id === id) {
@@ -242,7 +225,6 @@ const EditPlannerMeal = () => {
         }
       }
       let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
-
       for (let i = 0; i < foodAdded.length; i++) {
         newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories * foodAdded[i].servings
         newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs * foodAdded[i].servings
@@ -251,7 +233,6 @@ const EditPlannerMeal = () => {
         newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium * foodAdded[i].servings
         newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar * foodAdded[i].servings
       }
-
       setTotal({
         calories: +parseFloat(newTotal.calories).toFixed(2),
         carbs: +parseFloat(newTotal.carbs).toFixed(2),
@@ -260,23 +241,24 @@ const EditPlannerMeal = () => {
         sodium: +parseFloat(newTotal.sodium).toFixed(2),
         sugar: +parseFloat(newTotal.sugar).toFixed(2)
       })
-
     }
   };
 
+  // function to remove food from meal page and add it back to modal food list
   const handleRemoveFood = async (event) => {
     event.preventDefault()
     const { id } = event.target
-
     if (id !== '') {
       foodsList.push(foods[foods.findIndex(food => food._id === id)])
       setFoodAdded(foodAdded.filter((item) => item.id !== id))
     }
   };
 
+  // mutation and function to update diet
+  const [updateDiet, { dietError, dietData }] = useMutation(UPDATE_DIET);
   const handleUpdateDiet = async (event) => {
     event.preventDefault()
-
+    // check that at least one food is added with valid serving value
     let error = false
     if (foodAdded.length === 0) {
       setErrorMessage('Error: Must add at least 1 food');
@@ -288,7 +270,7 @@ const EditPlannerMeal = () => {
         error = true
       }
     }
-
+    // update diet in database
     if (!error) {
       try {
         // add routine with variables routineNanem and routine
@@ -308,22 +290,21 @@ const EditPlannerMeal = () => {
     }
   };
 
+  // mutation and function to update diet food
+  const [updateDietFood, { dietFoodError, dietFoodData }] = useMutation(UPDATE_DIET_FOOD);
   const handleUpdateDietFood = async () => {
     for (let i = 0; i < foodAdded.length; i++) {
       let servings = parseFloat(foodAdded[i].servings)
       let food = foodAdded[i].id
-
       try {
-        // add routine with variables routineNanem and routine
         const { dietFoodData } = await updateDietFood({
           variables: { dietId: meal.id, servings, food },
         });
-
       } catch (e) {
         console.error(e)
       }
     }
-    // redirect back to the routines page
+    // redirect back to the calendar page of directed planner date
     window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
   };
 
@@ -459,7 +440,7 @@ const EditPlannerMeal = () => {
                 <InputLeftElement pointerEvents='none'>
                   <FiSearch color='var(--shade5)' />
                 </InputLeftElement>
-                {/* <Input onChange={(e) => { setSearchValue(e.target.value) }} /> */}
+                <Input onChange={(e) => { setSearchValue(e.target.value) }} />
               </InputGroup>
             </Box>
           </ModalHeader>
@@ -506,9 +487,7 @@ const EditPlannerMeal = () => {
               Close
             </Button>
             <Spacer />
-            <Button
-              onClick={handleAddFoods}
-            >
+            <Button onClick={handleAddFoods}>
               Add Food(s)
             </Button>
           </ModalFooter>

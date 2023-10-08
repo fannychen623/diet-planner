@@ -1,0 +1,59 @@
+/* styling for the Routine page */
+.search-page {
+    font-family: var(--font);
+    min-height: 100vh;
+    height: fit-content;
+    padding: 2rem;
+}
+
+/* page title */
+.search-page .css-1dklj6k {
+    font-family: var(--font);
+    font-size: 2.75rem;
+    color: var(--shade5);
+    padding-top: 0.5rem;
+    margin-bottom: 0.75em;
+}
+
+/* search bar */
+.search-page .css-ffroc {
+    border-color: var(--shade5);
+    border-width: 0.15em;
+    margin-bottom: 1em;
+}
+
+/* search bar */
+.search-page .css-ffroc:hover {
+    border-color: var(--shade5);
+    border-width: 0.25em;
+}
+
+/* search button */
+.search-page .css-ez23ye {
+    width: 20em;
+    background-color: var(--shade3);
+}
+
+/* search button */
+.search-page .css-ez23ye:hover {
+    background-color: var(--shade4);
+}
+
+/* search input info inputrightelement tooltip */
+.search-page .css-1lds0jh {
+    color: var(--shade5);
+}
+
+/* card containers */
+.search-page .css-jv498s {
+    margin: 1em;
+}
+
+@media (max-width: 480px) {
+
+/* search button */
+.search-page .css-ez23ye {
+    width: 5em;
+}
+
+}

@@ -1,10 +1,8 @@
-// import package
-import React, { useState, useEffect } from 'react';
-import { Link, useParams, useRouter } from 'react-router-dom';
-import { useStateWithCallbackInstant } from 'use-state-with-callback';
+// import packages
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
-// import queries
+// import query
 import { useQuery } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries'
 
@@ -12,19 +10,14 @@ import { QUERY_ME } from '../utils/queries'
 import Graph from '../components/Graph';
 
 // import package components
-import {
-  Grid, GridItem, Box, Select,
-  Input, InputGroup, InputLeftAddon,
-  Stat, StatLabel, StatNumber,
-  StatHelpText, StatGroup,
-  Heading, Text, Spacer
-} from '@chakra-ui/react'
+import { Box, Select, Spacer, Input, InputGroup, InputLeftAddon } from '@chakra-ui/react'
 
 // import local style sheet
 import '../styles/Progress.css';
 
 // functional component for the progress page
 const Progress = () => {
+
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
   const emulateFetch = _ => {
@@ -43,13 +36,16 @@ const Progress = () => {
   // extract the progress information from the query data
   const foods = data?.me.foods || [];
   const planner = data?.me.planner || [];
+  // get all planner dates
   const plannerDates = planner.map(entry => entry.date)
 
+  // define states
   const [rangeType, setRangeType] = useState('')
   const [graphType, setGraphType] = useState('')
   const [plannerRange, setPlannerRange] = useState({ start: plannerDates[0], end: plannerDates[plannerDates.length - 1] })
   const [date, setDate] = useState({ start: '', end: '' })
 
+  // transform date based on initial format
   const convertDateFormat = (dateValue) => {
     if (!dateValue) return;
     if (dateValue.includes('-')) {
@@ -64,14 +60,18 @@ const Progress = () => {
     }
   }
 
+  // function to get records from queried data
   const getProgressRecords = () => {
     let weight = []
     let nutrition = []
+    // for each planner record
     planner.forEach((plan) => {
+      // add date and weight if applicable
       if (plan.weight) {
         weight.push({ date: plan.date, weight: plan.weight })
       }
       let mealTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+      // add date and calculate diet total if applicable
       if (plan.diet.length !== 0) {
         let diet = plan.diet
         diet.forEach((meal) => {
@@ -86,6 +86,7 @@ const Progress = () => {
           })
         })
       }
+      // add date and calculate custom diet total if applicable
       if (plan.customDiet.length !== 0) {
         let diet = plan.customDiet
         diet.forEach((meal) => {
@@ -112,6 +113,7 @@ const Progress = () => {
     return { weight: weight, nutrition: nutrition };
   }
 
+  // function to set date range based on range type
   const setQuickDateRange = (range) => {
     if (range !== 'Custom Range') {
       let startDate = plannerRange.start
@@ -140,6 +142,7 @@ const Progress = () => {
     setGraphType('')
   }
 
+  // call on render and defined state changes
   useEffect(() => {
     if (!data) {
       return;
@@ -152,7 +155,6 @@ const Progress = () => {
   return (
     <Box className='progress-page'>
       <Box display='flex' justifyContent='space-between' alignItems='center'>
-        {/* select field to set date range or show custom date range fields */}
         <Box>
           <Select
             placeholder='Select Date Range'

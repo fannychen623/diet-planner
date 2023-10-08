@@ -1,37 +1,31 @@
 // import package
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom'
 
-// importy query
+// importy query and mutations
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { UPDATE_MEAL, UPDATE_MEAL_FOOD } from '../utils/mutations';
 
-// // import local component
-// import FoodCards from '../components/FoodCards';
-
 // import package components
 import {
-  chakra, Flex, Box, Spacer, Heading, Button, Spinner, IconButton,
-  Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon, Text, Tooltip,
-  Checkbox, useCheckbox, useCheckboxGroup,
-  Popover, PopoverTrigger, PopoverContent, PopoverHeader,
-  PopoverBody, PopoverFooter, PopoverArrow,
-  Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  NumberInput, NumberInputField,
+  Box, Flex, Spacer, Heading, Text, Button, IconButton,
+  Input, InputGroup, InputLeftElement, InputLeftAddon,
+  Checkbox, NumberInput, NumberInputField,
   NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
+  Popover, PopoverTrigger, PopoverContent, PopoverBody,
+  Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
 
 // import icons
-import {
-  FiSearch, FiPlusSquare, FiMinusSquare, FiInfo,
-} from 'react-icons/fi';
+import { FiSearch, FiPlusSquare, FiMinusSquare, FiInfo } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/NewEditMeal.css';
 
+// function to transform text to proper case
 function toTitleCase(str) {
   return str.replace(
     /\w\S*/g,
@@ -41,7 +35,7 @@ function toTitleCase(str) {
   );
 }
 
-// functional component for the foods page
+// functional component for the edit meal page
 const EditMeal = () => {
 
   // emulates a fetch (useQuery expects a Promise)
@@ -59,36 +53,23 @@ const EditMeal = () => {
     enabled: true
   });
 
-  // define the postId from the url parameter
+  // extract the foods from the query data
+  const foods = useMemo(() => data?.me.foods, [data]);
+  const meals = useMemo(() => data?.me.meals, [data]);
+
+  // map through data to get array of food titles
+  const mealTitles = useMemo(() => meals.map(meal => meal.title), [meals]);
+
+  // get meal id from url
   const { mealId } = useParams();
 
-  // define add routine mutation
-  const [updateMeal, { mealError, mealData }] = useMutation(UPDATE_MEAL);
-  const [updateMealFood, { mealFoodError, mealFoodData }] = useMutation(UPDATE_MEAL_FOOD);
-
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  // extract the foods from the query data
-  const foods = data?.me.foods || [];
-  const meals = data?.me.meals || [];
+  // get specified meal
   const meal = meals[meals.findIndex(meal => meal._id === mealId)]
 
-  // set state of combined preview text
-  const [foodPreview, setFoodPreview] = useState('')
+  // functions to toggle modal
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [mealDetails, setMealDetails] = useState({ title: meal.title, numberOfServing: meal.numberOfServing })
-
-  const [total, setTotal] = useState({
-    calories: 0,
-    carbs: 0,
-    fat: 0,
-    protein: 0,
-    sodium: 0,
-    sugar: 0,
-  });
-
+  // function to get food for the meal
   const getMealFood = () => {
     let mealContent = meal.content
     let mealFoodServings = mealContent.map(thisMeal => thisMeal.servings)
@@ -112,75 +93,18 @@ const EditMeal = () => {
     return mealFoodAdded
   }
 
-  const [foodAdded, setFoodAdded] = useState(getMealFood())
-
+  // function to get list of food not added to meal
   const getFoodList = () => {
     let mealContent = meal.content
     let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
     let mealFoodAdded = foods
     for (let i = 0; i < mealFoodIds.length; i++) {
-      mealFoodAdded = mealFoodAdded.filter((food) => food._id != mealFoodIds[i])
+      mealFoodAdded = mealFoodAdded.filter((food) => food._id !== mealFoodIds[i])
     }
     return mealFoodAdded
   }
 
-  const [foodsList, setFoodList] = useState(getFoodList())
-  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
-  const [searchValue, setSearchValue] = useState('')
-
-  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
-
-  useEffect(() => {
-
-    setDisplayState(Array(foodsList.length).fill(true))
-    for (let i = 0; i < foodsList.length; i++) {
-      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
-        displayState[i] = true
-      } else {
-        displayState[i] = false
-      }
-    }
-
-    setDisplayState({ ...displayState })
-
-    let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
-
-    for (let i = 0; i < foodAdded.length; i++) {
-      newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories
-      newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs
-      newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat
-      newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein
-      newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium
-      newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar
-    }
-
-    setTotal({
-      calories: +parseFloat(newTotal.calories).toFixed(2),
-      carbs: +parseFloat(newTotal.carbs).toFixed(2),
-      fat: +parseFloat(newTotal.fat).toFixed(2),
-      protein: +parseFloat(newTotal.protein).toFixed(2),
-      sodium: +parseFloat(newTotal.sodium).toFixed(2),
-      sugar: +parseFloat(newTotal.sugar).toFixed(2)
-    })
-  }, [foodAdded, foodsList, foods, searchValue]);
-
-  const handleChangeState = (event) => {
-    event.preventDefault()
-    const { value } = event.target
-
-    let checkboxStates = []
-    for (var i = 0; i < foodsList.length; i++) {
-      if (foodsList[i].title === value) {
-        checkboxStates.push(!checkedState[i])
-      } else {
-        checkboxStates.push(checkedState[i])
-      }
-    };
-
-    setCheckedState(checkboxStates)
-  }
-
-  // function to add workout to combined routine text
+  // function to get food preview viewed in modal
   const getFoodPreview = (index) => {
     setFoodPreview(
       'Serving Size: ' + foods[index].servingSize + ' ' + foods[index].servingUnit + '\n' +
@@ -194,10 +118,75 @@ const EditMeal = () => {
     return foodPreview
   };
 
+  // define states
+  const [mealDetails, setMealDetails] = useState({ title: meal.title, numberOfServing: meal.numberOfServing })
+  const [foodAdded, setFoodAdded] = useState(getMealFood())
+  const [foodsList, setFoodList] = useState(getFoodList())
+  const [checkedState, setCheckedState] = useState(Array(foodsList.length).fill(false))
+  const [displayState, setDisplayState] = useState(Array(foodsList.length).fill(true))
+  const [searchValue, setSearchValue] = useState('')
+  const [foodPreview, setFoodPreview] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [total, setTotal] = useState({
+    calories: 0,
+    carbs: 0,
+    fat: 0,
+    protein: 0,
+    sodium: 0,
+    sugar: 0,
+  });
+
+  // call on render and defined state changes
+  useEffect(() => {
+    // set displayed food in modal based on search value
+    setDisplayState(Array(foodsList.length).fill(true))
+    for (let i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
+        displayState[i] = true
+      } else {
+        displayState[i] = false
+      }
+    }
+    setDisplayState({ ...displayState })
+
+    // calculate total meal nutritional value at each food/serving size change
+    let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+    for (let i = 0; i < foodAdded.length; i++) {
+      newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories
+      newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs
+      newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat
+      newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein
+      newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium
+      newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar
+    }
+    setTotal({
+      calories: +parseFloat(newTotal.calories).toFixed(2),
+      carbs: +parseFloat(newTotal.carbs).toFixed(2),
+      fat: +parseFloat(newTotal.fat).toFixed(2),
+      protein: +parseFloat(newTotal.protein).toFixed(2),
+      sodium: +parseFloat(newTotal.sodium).toFixed(2),
+      sugar: +parseFloat(newTotal.sugar).toFixed(2)
+    })
+  }, [foodAdded, foodsList, foods, searchValue]);
+
+  // function to get values of food checked in modal
+  const handleChangeState = (event) => {
+    event.preventDefault()
+    const { value } = event.target
+    let checkboxStates = []
+    for (var i = 0; i < foodsList.length; i++) {
+      if (foodsList[i].title === value) {
+        checkboxStates.push(!checkedState[i])
+      } else {
+        checkboxStates.push(checkedState[i])
+      }
+    };
+    setCheckedState(checkboxStates)
+  }
+
+  // function to add food from modal to page
   const handleAddFoods = async (event) => {
     event.preventDefault()
-
-    // loop through all the checked routines to add
     for (let i = 0; i < checkedState.length; i++) {
       if (checkedState[i]) {
         let foodIndex = foods.findIndex(food => food.title === foodsList[i].title)
@@ -216,17 +205,16 @@ const EditMeal = () => {
           })
         }
         checkedState[i] = false
-        setFoodList(foods => foods.filter((food) => food.title != foodsList[i].title))
+        setFoodList(foods => foods.filter((food) => food.title !== foodsList[i].title))
       }
     }
-
     onClose()
   };
 
+  // function to update individual food servings and total nutritional value
   const handleUpdateServings = async (event) => {
     event.preventDefault()
     const { id, value } = event.target
-
     if (value) {
       for (let i = 0; i < foodAdded.length; i++) {
         if (foodAdded[i].id === id) {
@@ -240,7 +228,6 @@ const EditMeal = () => {
         }
       }
       let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
-
       for (let i = 0; i < foodAdded.length; i++) {
         newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories * foodAdded[i].servings
         newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs * foodAdded[i].servings
@@ -249,7 +236,6 @@ const EditMeal = () => {
         newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium * foodAdded[i].servings
         newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar * foodAdded[i].servings
       }
-
       setTotal({
         calories: +parseFloat(newTotal.calories).toFixed(2),
         carbs: +parseFloat(newTotal.carbs).toFixed(2),
@@ -258,23 +244,24 @@ const EditMeal = () => {
         sodium: +parseFloat(newTotal.sodium).toFixed(2),
         sugar: +parseFloat(newTotal.sugar).toFixed(2)
       })
-
     }
   };
 
+  // function to remove food from meal page and add it back to modal food list
   const handleRemoveFood = async (event) => {
     event.preventDefault()
     const { id } = event.target
-
     if (id !== '') {
       foodsList.push(foods[foods.findIndex(food => food._id === id)])
       setFoodAdded(foodAdded.filter((item) => item.id !== id))
     }
   };
 
+  // mutation and function to update meal
+  const [updateMeal, { mealError, mealData }] = useMutation(UPDATE_MEAL);
   const handleUpdateMeal = async (event) => {
     event.preventDefault()
-
+    // check that at least one food is added with valid serving value
     let error = false
     if (foodAdded.length === 0) {
       setErrorMessage('Error: Must add at least 1 food');
@@ -286,10 +273,9 @@ const EditMeal = () => {
         error = true
       }
     }
-
+    // update meal in database
     if (!error) {
       try {
-        // add routine with variables routineNanem and routine
         const { mealData } = await updateMeal({
           variables: { mealId, title: mealDetails.title, numberOfServing: parseFloat(mealDetails.numberOfServing), content: [] },
 
@@ -297,31 +283,30 @@ const EditMeal = () => {
             handleUpdateMealFood()
           }
         });
-
       } catch (e) {
         console.error(e);
         if (mealDetails.title === '') { setErrorMessage('Error: Missing meal name') }
         if (mealDetails.numberOfServing <= 0) { setErrorMessage('Error: Invalid number of serving input') }
+        if (mealTitles.includes(mealDetails.title)) { setErrorMessage('Error: Duplicate meal name') }
       }
     }
   };
 
+  // mutation and function to update meal food
+  const [updateMealFood, { mealFoodError, mealFoodData }] = useMutation(UPDATE_MEAL_FOOD);
   const handleUpdateMealFood = async () => {
     for (let i = 0; i < foodAdded.length; i++) {
       let servings = parseFloat(foodAdded[i].servings)
       let food = foodAdded[i].id
-
       try {
-        // add routine with variables routineNanem and routine
         const { mealFoodData } = await updateMealFood({
           variables: { mealId, servings, food },
         });
-
       } catch (e) {
         console.error(e)
       }
     }
-    // redirect back to the routines page
+    // redirect back to the meal page
     window.location.assign('/meal');
   };
 
@@ -457,7 +442,7 @@ const EditMeal = () => {
                 <InputLeftElement pointerEvents='none'>
                   <FiSearch color='var(--shade5)' />
                 </InputLeftElement>
-                {/* <Input onChange={(e) => { setSearchValue(e.target.value) }} /> */}
+                <Input onChange={(e) => { setSearchValue(e.target.value) }} />
               </InputGroup>
             </Box>
           </ModalHeader>
@@ -465,37 +450,37 @@ const EditMeal = () => {
           <ModalBody overflowY='auto' maxHeight='50vh' >
             {foodsList.map((food, index) => (
               <>
-              {displayState[`${index}`] ? (
-              <Flex key={food._id}
-                justifyContent='space-between'
-                alignItems='center'
-              >
-                <Box>
-                  <Checkbox
-                    value={food.title}
-                    isChecked={checkedState[index]}
-                    onChange={handleChangeState}
+                {displayState[`${index}`] ? (
+                  <Flex key={food._id}
+                    justifyContent='space-between'
+                    alignItems='center'
                   >
-                    {food.title}
-                  </Checkbox>
-                </Box>
-                <Box>
-                  <Popover onOpen={() => { getFoodPreview(index) }}>
-                    <PopoverTrigger>
-                      <IconButton
-                        aria-label={food.title}
-                        icon={<FiInfo p='100%' />}
-                      />
-                    </PopoverTrigger>
-                    <PopoverContent width='fit-content' border='none'>
-                      <PopoverBody>{foodPreview}</PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                </Box>
-              </Flex>
-              ):(
-                <></>
-              )}
+                    <Box>
+                      <Checkbox
+                        value={food.title}
+                        isChecked={checkedState[index]}
+                        onChange={handleChangeState}
+                      >
+                        {food.title}
+                      </Checkbox>
+                    </Box>
+                    <Box>
+                      <Popover onOpen={() => { getFoodPreview(index) }}>
+                        <PopoverTrigger>
+                          <IconButton
+                            aria-label={food.title}
+                            icon={<FiInfo p='100%' />}
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent width='fit-content' border='none'>
+                          <PopoverBody>{foodPreview}</PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Box>
+                  </Flex>
+                ) : (
+                  <></>
+                )}
               </>
             ))}
           </ModalBody>
@@ -504,9 +489,7 @@ const EditMeal = () => {
               Close
             </Button>
             <Spacer />
-            <Button
-              onClick={handleAddFoods}
-            >
+            <Button onClick={handleAddFoods}>
               Add Food(s)
             </Button>
           </ModalFooter>

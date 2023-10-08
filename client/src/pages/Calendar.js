@@ -1,9 +1,10 @@
 // import packages
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom'
 import { format } from 'date-fns';
+import Calendar from 'react-calendar';
 
-// import queries and mutations
+// import query and mutations
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_ME } from '../utils/queries';
 import {
@@ -12,45 +13,33 @@ import {
   REMOVE_CUSTOM_DIET, ADD_WEIGHT
 } from '../utils/mutations';
 
-// import local components/stylesheet and pacakge components/stylesheet
-// import CalendarList from '../components/CalendarList';
-import Calendar from 'react-calendar';
+// import package and local stylesheet
 import 'react-calendar/dist/Calendar.css';
 import '../styles/Calendar.css';
 
-// import package components and icons
+// import package components
 import {
-  Grid, GridItem, Box, Spacer, Stack, Flex,
-  IconButton, Spinner, Text, Button, SimpleGrid,
-  InputGroup, InputLeftAddon, InputRightAddon,
-  Card, CardHeader, CardBody, Checkbox,
-  Input, CircularProgress, CircularProgressLabel,
-  Accordion, AccordionItem,
-  AccordionButton, AccordionPanel, AccordionIcon,
+  Box, Flex, Stack, Grid, GridItem, SimpleGrid, 
+  Spinner, Spacer, Text, Button, IconButton, Checkbox,
+  Input, InputGroup, InputLeftAddon, InputRightAddon,
+  Card, CardHeader, CardBody, CircularProgress, CircularProgressLabel,
+  Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
   Tabs, TabList, TabPanels, Tab, TabPanel,
-  Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  Popover, PopoverTrigger, PopoverArrow, PopoverContent,
-  PopoverCloseButton, PopoverHeader, PopoverBody, PopoverFooter,
+  Popover, PopoverTrigger, PopoverContent, PopoverBody,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
 
-import {
-  FiCheck, FiSave, FiInfo, FiPlus, FiEdit2, FiEdit3, FiTrash2,
-  FiEdit, FiPlusSquare, FiMinusSquare, FiMinus
-} from 'react-icons/fi';
+// import icons
+import { FiCheck, FiEdit3, FiPlus, FiMinus, FiInfo } from 'react-icons/fi';
 
+// function to divide values for daily statistics
 function divide(a, b) {
   return ((a / b) * 100).toFixed(0);
 }
 
 // functional component for the calendar page
 const CalendarPage = () => {
-
-  // navigate for the edit post button
-  const navigate = useNavigate();
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -67,35 +56,42 @@ const CalendarPage = () => {
     enabled: true,
   });
 
-  // extract the tracker information from the query data
-  const planners = data?.me.planner || [];
-  const profile = data?.me.profile || [];
+  // extract planner, profile, foods, and meal from the query data
+  const planners = useMemo(() => data?.me.planner, [data]);
+  const profile = useMemo(() => data?.me.profile, [data]);
   const foods = data?.me.foods || [];
   const meals = data?.me.meals || [];
 
-  // define the postId from the url parameter
+  // define the calendar date from the url parameter
   const { fetchDate } = useParams();
 
+  // set and format the date from the parameter
   const [date, setDate] = useState(fetchDate.replace(/_/g, '/'))
 
+  // convert the date format to ISO, passed into the calendar
   const convertToISO = () => {
     let darr = date.split('/');
     let dobj = new Date(parseInt(darr[2]), parseInt(darr[0]) - 1, parseInt(darr[1]));
     return new Date(dobj.toISOString())
   }
 
+  // navigate to calendar date
+  const navigate = useNavigate();
+
+  // functions to toggle add meal modal
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  // set variable states
   const [plannerId, setPlannerId] = useState('n/a')
-
   const [currentPlannerDiet, setCurrentPlannerDiet] = useState([])
-
   const [currentPlannerCustomDiet, setCurrentPlannerCustomDiet] = useState([])
-
+  const [mealCheckedState, setMealCheckedState] = useState(Array(meals.length).fill(false))
+  const [foodCheckedState, setFoodCheckedState] = useState(Array(foods.length).fill(false))
   const [weight, setWeight] = useState('')
-
   const [tabIndex, setTabIndex] = useState(0)
-
+  const [mealPreview, setMealPreview] = useState('')
+  const [foodPreview, setFoodPreview] = useState('')
   const [editCustom, setEditCustom] = useState('')
-
   const [customDiet, setCustomDiet] = useState({
     name: '',
     calories: '',
@@ -106,21 +102,26 @@ const CalendarPage = () => {
     sugar: '',
   });
 
+  // function update custom diet states on changes
   const handleChange = (name, value) => {
-    // set the form state to the new values
     setCustomDiet({
       ...customDiet,
       [name]: value,
     });
   };
 
+  // call on render and state changes
   useEffect(() => {
+    // on data fetch complete
     if (!data) {
       return;
     } else {
+      // clear weight
       setWeight('')
+      // get planner dates and planner ids
       let plannerDates = planners.map(planner => planner.date)
       let plannerIds = planners.map(planner => planner._id)
+      // if date has existing planner record, set planner id, else set planner id as n/a
       if (plannerDates.length !== 0) {
         let planId = plannerIds[plannerDates.findIndex(plannerDate => plannerDate === date)]
         if (planId) {
@@ -131,10 +132,12 @@ const CalendarPage = () => {
       } else {
         setPlannerId('n/a')
       }
+      // get planner record on date
       let dietInfo = []
       let customDietInfo = []
       let plannerInfo = planners[plannerDates.findIndex(plannerDate => plannerDate === date)]
       if (plannerInfo) {
+        // set planner meals and custom meals
         for (let i = 0; i < plannerInfo.diet.length; i++) {
           let dietContent = plannerInfo.diet[i].content.map(content => ({ servings: content.servings, food: content.food[0]._id }))
           dietInfo.push({
@@ -156,6 +159,7 @@ const CalendarPage = () => {
             sugar: plannerInfo.customDiet[i].sugar
           })
         }
+        // set planner weight if exist in record
         if (plannerInfo.weight) {
           setWeight(plannerInfo.weight)
         }
@@ -164,17 +168,11 @@ const CalendarPage = () => {
       }
       setCurrentPlannerDiet(dietInfo)
       setCurrentPlannerCustomDiet(customDietInfo)
-      // console.log(dietInfo)
-      console.log(plannerInfo)
-      console.log(currentPlannerCustomDiet)
     }
-
-
+    // call function on state changes
   }, [data, date, planners, plannerId]);
 
-  const [mealCheckedState, setMealCheckedState] = useState(Array(meals.length).fill(false))
-  const [foodCheckedState, setFoodCheckedState] = useState(Array(foods.length).fill(false))
-
+  // set meals/food to add based on checked state
   const handleChangeState = (event) => {
     event.preventDefault()
     const { value } = event.target
@@ -200,10 +198,7 @@ const CalendarPage = () => {
     setFoodCheckedState(foodCheckboxStates)
   }
 
-  // set state of combined preview text
-  const [mealPreview, setMealPreview] = useState('')
-
-  // function to add workout to combined routine text
+  // function to get meal information to preview in modal
   const getMealPreview = (id) => {
     let index = meals.findIndex(meal => meal._id === id)
     let mealTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
@@ -229,9 +224,7 @@ const CalendarPage = () => {
     return mealPreview
   };
 
-  const [foodPreview, setFoodPreview] = useState('')
-
-  // function to add workout to combined routine text
+  // function to get food information to preview in modal
   const getFoodPreview = (id) => {
     let index = foods.findIndex(food => food._id === id)
 
@@ -247,6 +240,7 @@ const CalendarPage = () => {
     return foodPreview
   };
 
+  // function to get nutrional value of each meal
   const getMealTotals = (mealFoods) => {
     let foodContent = mealFoods.content
     let total = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
@@ -268,6 +262,7 @@ const CalendarPage = () => {
     return total;
   }
 
+  // function to get total nutritional value for the date
   const getDailyStats = () => {
     let daily = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
     currentPlannerDiet.forEach((diet) => {
@@ -297,15 +292,14 @@ const CalendarPage = () => {
     return daily;
   }
 
-  // mutation to add tracker
+  // mutation and function to add planner
   const [addPlanner, { plannerData }] = useMutation(ADD_PLANNER);
-
   const handleAddPlanner = async (type) => {
     try {
       const { plannerData } = await addPlanner({
-        // pass in the selected date to add new tracking data
         variables: { date: date },
 
+        // based on passed type, call the next function
         onCompleted(plannerData) {
           setPlannerId(plannerData.addPlanner._id)
           if (type === 'diet') {
@@ -322,15 +316,17 @@ const CalendarPage = () => {
     }
   };
 
+  // mutation and function to add diet
   const [addDiet, { dietError, dietData }] = useMutation(ADD_DIET);
-
   const handleAddDiet = async (id) => {
     const planId = id
 
+    // add planner if no record exist for date
     if (planId === 'n/a') {
       let type = 'diet'
       handleAddPlanner(type);
     } else {
+      // add meal and/or food
       let dietId = ''
       let dietMeals = []
       let dietType = ''
@@ -343,7 +339,6 @@ const CalendarPage = () => {
           dietType = 'Meals'
           try {
             const { dietData } = await addDiet({
-              // pass in the selected date to add new tracking data
               variables: { plannerId: planId, title: meals[i].title, numberOfServing: 1, content: [] },
 
               onCompleted(dietData) {
@@ -356,6 +351,7 @@ const CalendarPage = () => {
           mealCheckedState[i] = false
         }
       }
+      // add meal content after meal details
       handleAddDietContent(dietMeals, dietId, dietType)
 
       for (let j = 0; j < foodCheckedState.length; j++) {
@@ -363,7 +359,6 @@ const CalendarPage = () => {
           dietType = 'Foods'
           try {
             const { dietData } = await addDiet({
-              // pass in the selected date to add new tracking data
               variables: { plannerId: planId, title: foods[j].title, numberOfServing: 1, content: [] },
 
               onCompleted(dietData) {
@@ -377,12 +372,13 @@ const CalendarPage = () => {
         }
       }
 
+      // add food content after food details
       handleAddDietContent(dietMeals, dietId, dietType)
     }
   };
 
+  // mutation and function to add diet food
   const [addDietFood, { dietFoodError, dietFoodData }] = useMutation(ADD_DIET_FOOD);
-
   const handleAddDietContent = (dietMeals, planId, dietType) => {
     if (dietType === 'Meals') {
       dietMeals.forEach((meal) => {
@@ -393,7 +389,6 @@ const CalendarPage = () => {
           let servings = food.servings
           let id = food.food[0]._id
           try {
-            // add routine with variables routineNanem and routine
             const { dietFoodData } = addDietFood({
               variables: { dietId, servings, food: id },
             });
@@ -410,7 +405,6 @@ const CalendarPage = () => {
           let id = foods[foods.findIndex(item => item.title === meal.title)]._id
           let servings = 1
           try {
-            // add routine with variables routineNanem and routine
             const { dietFoodData } = addDietFood({
               variables: { dietId, servings, food: id },
             });
@@ -426,14 +420,13 @@ const CalendarPage = () => {
     onClose()
   };
 
+  // mutation and function to remove diet
   const [removeDiet, { removeDietError, removeDietData }] = useMutation(REMOVE_DIET);
-
   const handleRemoveDiet = async (event) => {
     event.preventDefault()
     const { id } = event.target
     if (id !== '') {
       try {
-        // add routine with variables routineNanem and routine
         const { removeDietData } = await removeDiet({
           variables: { plannerId, dietId: id },
 
@@ -448,20 +441,22 @@ const CalendarPage = () => {
     }
   };
 
+  // mutation and function to add custom diet
   const [addCustomDiet, { customDietError, customDietData }] = useMutation(ADD_CUSTOM_DIET);
-
   const handleAddCustomDiet = async (id) => {
     const planId = id
 
+    // uncheck all meals and food
     mealCheckedState.forEach((state, index, array) => array[index] = false)
     foodCheckedState.forEach((state, index, array) => array[index] = false)
+    
+    // add planner if no record exist for date
     if (planId === 'n/a') {
       let type = 'customDiet'
       handleAddPlanner(type)
     } else {
       try {
         const { customDietData } = await addCustomDiet({
-          // pass in the selected date to add new tracking data
           variables: {
             plannerId: planId,
             title: customDiet.title,
@@ -472,10 +467,6 @@ const CalendarPage = () => {
             sodium: parseFloat(customDiet.sodium) || 0,
             sugar: parseFloat(customDiet.sugar) || 0,
           },
-
-          onCompleted(customDietData) {
-            // redirect to posts page
-          }
         });
       } catch (e) {
         console.error(e);
@@ -486,8 +477,8 @@ const CalendarPage = () => {
     onClose()
   };
 
+  // mutation and function to update custome diet
   const [updateCustomDiet, { updateCustomDietError, updateCustomDietData }] = useMutation(UPDATE_CUSTOM_DIET);
-
   const handleUpdateCustomDiet = async (id) => {
 
     if (id !== '') {
@@ -527,8 +518,8 @@ const CalendarPage = () => {
     };
   };
 
+  // mutation and function to remove custom diet
   const [removeCustomDiet, { removeCustomDietError, removeCustomDietData }] = useMutation(REMOVE_CUSTOM_DIET);
-
   const handleRemoveCustomDiet = async (event) => {
     event.preventDefault()
     const { id } = event.target
@@ -549,11 +540,12 @@ const CalendarPage = () => {
     }
   };
 
+  // mutation and function to add weight
   const [addWeight, { addWeightError, addWeightData }] = useMutation(ADD_WEIGHT);
-
   const handleAddWeight = async (id) => {
     const planId = id
 
+    // add planner if no record exist for date
     if (planId === 'n/a') {
       let type = 'weight'
       handleAddPlanner(type)
@@ -564,7 +556,7 @@ const CalendarPage = () => {
           variables: { plannerId: planId, weight: parseFloat(weight) },
 
           onCompleted(weightData) {
-            // redirect to posts page
+            // reload calendar page with selected date
             window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
           }
         });
@@ -606,7 +598,7 @@ const CalendarPage = () => {
                   <Text ml='0.5em'>Add Item(s)</Text>
                 </Box>
                 <Spacer />
-                <Box display='flex' alignItems='center' justifiyContent='spaced-between'>
+                <Box display='flex' alignItems='center' justifyContent='spaced-between'>
                   <Spacer />
                   <Text mr='0.5em'>Weight:</Text>
                   <InputGroup>
@@ -630,7 +622,6 @@ const CalendarPage = () => {
                   )}
                 </Box>
               </Box>
-              {/* if tracked and query is complete */}
               {loading ? (
                 <Box display='flex' alignItems='center' mt='1em'>
                   <Spinner mr='1em' /><Text>Loading...</Text>

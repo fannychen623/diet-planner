@@ -59,11 +59,32 @@
     margin-bottom: 1em;
 }
 
+/* accordian button container */
+.meal-page .css-70qvj9, .meal-page .css-70qvj9::before, .meal-page .css-70qvj9::after {
+    padding: 1em;
+    border-color: var(--shade2);
+}
+
+/* accordian button container */
+.meal-page .css-70qvj9:hover {
+    background-color: var(--shade4);
+}
+
 /* accordian button */
-.meal-page .css-17mg6aq {
-    border-color: var(--shade4);
-    border-top-width: 0px;
-    border-bottom-width: 1em;
+.meal-page .css-1aeclw8 {
+    font-size: 1.5em;
+}
+
+/* accordian button expanded */
+.meal-page .css-1aeclw8[aria-expanded=true] {
+    font-weight: bolder;
+    border-left: 0.20em dashed var(--shade5);
+    padding-left: 1em;
+}
+
+/* accordian button */
+.meal-page .css-1aeclw8:hover, .meal-page .css-1aeclw8[data-hover] {
+    background: none;
 }
 
 /* accordian titles */

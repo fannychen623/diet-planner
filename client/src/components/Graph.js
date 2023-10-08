@@ -1,12 +1,15 @@
-// import package
+// import packages
 import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'
 
-// functional component for the line graphs on the tracker page
+// functional component of graphs to be rendered on the progress page
+// pass in data, date and graph type information
 const Graph = ({ data, date, graphType }) => {
 
+	// set the date range
 	const [dateRange, setDateRange] = useState({ start: new Date(date.start).getTime(), end: new Date(date.end).getTime() })
 
+	// convert dates to time format
 	const convertDates = () => {
 		let weight = data.weight.map(entry => ({
 			date: new Date(entry.date).getTime(),
@@ -24,6 +27,7 @@ const Graph = ({ data, date, graphType }) => {
 		return { weight, nutrition };
 	}
 
+	// filter data based on date range
 	const filterData = () => {
 		let weight = []
 		convertDates().weight.forEach((entry) => {
@@ -48,143 +52,17 @@ const Graph = ({ data, date, graphType }) => {
 		return { weight, nutrition };
 	}
 
+	// set array of filtered weight and nutrition data
 	const [weightData, setWeightData] = useState(filterData().weight)
 	const [nutritionData, setNutritionData] = useState(filterData().nutrition)
 
-	useEffect(() => {
-		setDateRange({ ...dateRange, start: new Date(date.start).getTime(), end: new Date(date.end).getTime() })
-		if (!isNaN(dateRange.start) && !isNaN(dateRange.end) && graphType !== '') {
-			setWeightData(filterData().weight)
-			setNutritionData(filterData().nutrition)
-			if (new Date(dateRange.end - dateRange.start).getDate() > 60) {
-				setGraphDetails({ ...graphDetails, format: 'M/d/yy' })
-			} else if (new Date(dateRange.end - dateRange.start).getDate() > 30) {
-				setGraphDetails({ ...graphDetails, format: 'M/d' })
-			} else if (new Date(dateRange.end - dateRange.start).getDate() > 10) {
-				setGraphDetails({ ...graphDetails, format: 'MMM/dd' })
-			}
-			if (graphType === 'Weight') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Weight Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: weightSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Weight (lbs)'
-				})
-			} else if (graphType === 'Calorie') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Calorie Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: calorieSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Calorie (kcal)'
-				})
-			} else if (graphType === 'Carbohydrate') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Carbohydrate Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: carbsSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Carbohydrate (g)'
-				})
-			} else if (graphType === 'Fat') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Fat Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: fatSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Fat (g)'
-				})
-			} else if (graphType === 'Protein') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Protein Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: proteinSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Protein (g)'
-				})
-			} else if (graphType === 'Sodium') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Sodium Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: sodiumSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Sodium (mg)'
-				})
-			} else if (graphType === 'Sugar') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Sugar Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: sugarSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Sugar (g)'
-				})
-			} else if (graphType === 'Weight + Calorie') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Weight & Calorie Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: weightCalorieSeries,
-					yAxis: yAxis2,
-					yAxisLabel1: 'Weight (lbs)',
-					yAxisLabel2: 'Calorie (kcal)'
-				})
-			} else if (graphType === 'Weight + Macronutrients') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Weight & Nutrition Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: weightMacronutrientsSeries,
-					yAxis: yAxis2,
-					yAxisLabel1: 'Weight (lbs)',
-					yAxisLabel2: 'Nutrient (g)'
-				})
-			} else if (graphType === 'Calorie + Macronutrients') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Calorie & Nutrition Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: calorieMacronutrientsSeries,
-					yAxis: yAxis2,
-					yAxisLabel1: 'Calorie (kcal)',
-					yAxisLabel2: 'Nutrient (g)'
-				})
-			} else if (graphType === 'Macronutrients') {
-				setGraphDetails({
-					...graphDetails,
-					title: 'Nutrition (Carbs, Fat, Protein) Trend',
-					subtitle: date.start + ' to ' + date.end,
-					series: macronutrientsSeries,
-					yAxis: yAxis1,
-					yAxisLabel1: 'Nutrient (g)'
-				})
-			} 
-		}
-		console.log(data)
-	}, [data, date, graphType])
-
+	// define the different combination of data series
+	// blank series on initial render or incomplete variables
 	const blankSeries = [{
 		type: 'line',
 		name: 'None',
 		data: weightData.map(entry => ({ x: entry.date, y: entry.weight }))
 	}]
-
-	const [graphDetails, setGraphDetails] = useState({
-		title: 'Select Graph Type',
-		subtitle: 'Date Range',
-		series: blankSeries,
-		format: 'M/d/y',
-		yAxis: '',
-		yAxisLabel1: '',
-		yAxisLabel2: ''
-	})
 
 	const weightSeries = [{
 		type: 'line',
@@ -305,6 +183,18 @@ const Graph = ({ data, date, graphType }) => {
 		}
 	]
 
+	// set graph details
+	const [graphDetails, setGraphDetails] = useState({
+		title: 'Select Graph Type',
+		subtitle: 'Date Range',
+		series: blankSeries,
+		format: 'M/d/y',
+		yAxis: '',
+		yAxisLabel1: '',
+		yAxisLabel2: ''
+	})
+
+	// set y axis options
 	const yAxis1 = {
 		title: {
 			text: graphDetails.yAxisLabel1,
@@ -364,6 +254,7 @@ const Graph = ({ data, date, graphType }) => {
 		},
 	}]
 
+	// define chart settings/options
 	const options = {
 		chart: {
 			fontFamily: 'var(--font)'
@@ -470,10 +361,132 @@ const Graph = ({ data, date, graphType }) => {
 		}
 	};
 
+	// call on render and state changes
+	useEffect(() => {
+		// set date range
+		setDateRange({ ...dateRange, start: new Date(date.start).getTime(), end: new Date(date.end).getTime() })
+		// if all variables available, set data and graph details based on variables
+		if (!isNaN(dateRange.start) && !isNaN(dateRange.end) && graphType !== '') {
+			setWeightData(filterData().weight)
+			setNutritionData(filterData().nutrition)
+			if (new Date(dateRange.end - dateRange.start).getDate() > 60) {
+				setGraphDetails({ ...graphDetails, format: 'M/d/yy' })
+			} else if (new Date(dateRange.end - dateRange.start).getDate() > 30) {
+				setGraphDetails({ ...graphDetails, format: 'M/d' })
+			} else if (new Date(dateRange.end - dateRange.start).getDate() > 10) {
+				setGraphDetails({ ...graphDetails, format: 'MMM/dd' })
+			}
+			if (graphType === 'Weight') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Weight Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: weightSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Weight (lbs)'
+				})
+			} else if (graphType === 'Calorie') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Calorie Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: calorieSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Calorie (kcal)'
+				})
+			} else if (graphType === 'Carbohydrate') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Carbohydrate Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: carbsSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Carbohydrate (g)'
+				})
+			} else if (graphType === 'Fat') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Fat Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: fatSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Fat (g)'
+				})
+			} else if (graphType === 'Protein') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Protein Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: proteinSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Protein (g)'
+				})
+			} else if (graphType === 'Sodium') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Sodium Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: sodiumSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Sodium (mg)'
+				})
+			} else if (graphType === 'Sugar') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Sugar Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: sugarSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Sugar (g)'
+				})
+			} else if (graphType === 'Weight + Calorie') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Weight & Calorie Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: weightCalorieSeries,
+					yAxis: yAxis2,
+					yAxisLabel1: 'Weight (lbs)',
+					yAxisLabel2: 'Calorie (kcal)'
+				})
+			} else if (graphType === 'Weight + Macronutrients') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Weight & Nutrition Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: weightMacronutrientsSeries,
+					yAxis: yAxis2,
+					yAxisLabel1: 'Weight (lbs)',
+					yAxisLabel2: 'Nutrient (g)'
+				})
+			} else if (graphType === 'Calorie + Macronutrients') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Calorie & Nutrition Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: calorieMacronutrientsSeries,
+					yAxis: yAxis2,
+					yAxisLabel1: 'Calorie (kcal)',
+					yAxisLabel2: 'Nutrient (g)'
+				})
+			} else if (graphType === 'Macronutrients') {
+				setGraphDetails({
+					...graphDetails,
+					title: 'Nutrition (Carbs, Fat, Protein) Trend',
+					subtitle: date.start + ' to ' + date.end,
+					series: macronutrientsSeries,
+					yAxis: yAxis1,
+					yAxisLabel1: 'Nutrient (g)'
+				})
+			}
+		}
+		// call function on change of passed details
+	}, [data, date, graphType])
+
 	return (
 		<Chart
 			options={options}
-			series={graphType ? (graphDetails.series):([])}
+			series={graphType ? (graphDetails.series) : ([])}
 			width='90%'
 			height='80%'
 		/>

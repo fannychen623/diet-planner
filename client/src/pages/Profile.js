@@ -1,25 +1,23 @@
 // import packages and local auth
-import React, { useEffect, useState, useCallback } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 
-// import queries and mutations
+// import query and mutations
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { ADD_PROFILE, UPDATE_PROFILE } from '../utils/mutations';
 
 // import package components
 import {
-  Box, Grid, GridItem, Heading, Text, Stack,
-  Button, Select, SimpleGrid, RadioGroup, Radio,
+  Box, Grid, GridItem, Heading, Text,
+  Button, Select, RadioGroup, Radio,
   Input, InputGroup, InputLeftAddon, InputRightAddon,
   Card, CardHeader, CardBody, CardFooter,
-  FormControl, FormLabel, FormHelperText,
 } from '@chakra-ui/react';
 
 // import local style sheet
 import '../styles/Profile.css';
 
-// component to view or create profile
+// functional component for the profile page
 const Profile = () => {
 
   // emulates a fetch (useQuery expects a Promise)
@@ -54,18 +52,18 @@ const Profile = () => {
     protein: '',
   });
 
+  // define states
   const [profileId, setProfileId] = useState('')
   const [unit, setUnit] = useState('US Units')
   const [height, setHeight] = useState({ feet: '', inches: '' })
   const [weight, setWeight] = useState({ US: '', Metric: '' })
   const [BMR, setBMR] = useState('')
-  // set state of calorie intake display, default to false
-  const [showCalories, setShowCalories] = useState(false);
 
-  // if user already has a profile, set the states of the field to existing data
+  // call on render and defined state changes
   useEffect(() => {
     if (!profile) {
       return;
+      // if profile exist, set profile states and calculate metabolic values
     } else {
       setProfileId(profile._id)
       setFormState({
@@ -93,6 +91,7 @@ const Profile = () => {
     }
   }, [profile]);
 
+  // function to calculate macros
   const calculateMacros = () => {
     if (
       formState.age !== '' &&
@@ -169,15 +168,15 @@ const Profile = () => {
     }
   };
 
-  // on title/text change
+  // function to update form state on change
   const handleChange = (name, value) => {
-    // set the form state to the new values
     setFormState({
       ...formState,
       [name]: value,
     });
   };
 
+  // function to convert height and weight values to metric units
   const handleAddHeightWeight = (name, value) => {
     let metricHeight = 0
     if (name === 'feet') {
@@ -199,35 +198,26 @@ const Profile = () => {
     };
   };
 
-  // mutation to update profile, pass in the id of the current user
+  // mutation and function to add profile
   const [addProfile, { addError, addData }] = useMutation(ADD_PROFILE);
-
-  // update profile on submit
   const handleAddProfile = async () => {
     try {
       const { addData } = addProfile({
-        // pass in set fields
         variables: { ...formState },
       });
-
-      // reload page on success
       window.location.reload();
     } catch (err) {
       console.error(err);
     }
   };
 
-  // mutation to update profile, pass in the id of the current user
+  // mutation and function to update profile
   const [updateProfile, { updateError, updateData }] = useMutation(UPDATE_PROFILE);
-
-  // update profile on submit
   const handleUpdateProfile = async () => {
     try {
       const { updateData } = updateProfile({
-        // pass in set fields
         variables: { profileId, ...formState },
       });
-
       refetch();
     } catch (err) {
       console.error(err);
@@ -247,7 +237,6 @@ const Profile = () => {
                 width='fit-content'
                 borderColor='var(--shade4)'
                 name='unit'
-                defaultValue={'US Units'}
                 value={unit}
                 onChange={(e) => { setUnit(e.target.value) }}
               >
@@ -419,7 +408,7 @@ const Profile = () => {
                   </Box>
                 </Box>
               ) : (
-                <Text class='createProfileText'>Complete your personal profile to calculate your BMR and daily nutrition levels.</Text>
+                <Text className='createProfileText'>Complete your personal profile to calculate your BMR and daily nutrition levels.</Text>
               )}
             </CardBody>
           </Card>
