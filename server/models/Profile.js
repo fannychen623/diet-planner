@@ -3,6 +3,11 @@ const { Schema, model } = require('mongoose');
 
 const profileSchema = new Schema(
     {
+    theme : {
+        type: String,
+        required: true,
+        default: 'original',
+    },
     age: {
         type: Number,
         required: true,

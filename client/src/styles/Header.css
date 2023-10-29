@@ -6,6 +6,9 @@
     padding: 1em 1em;
     border-bottom: 0.75em solid var(--shade5)
 }
+html[theme='light'] .nav-bar {
+    background-color: white;
+}
 
 /* nav bar logo image */
 .nav-bar img {
@@ -41,6 +44,9 @@
         align-items: center;
         font-size: 1.75em;
         color: var(--shade5);
+    }
+    html[theme='dark'] .header-drawer .css-9fgtzh {
+        color: var(--shade1);
     }
 
     /* drawer menu link container */

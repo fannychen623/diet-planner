@@ -20,6 +20,7 @@ const typeDef = gql`
 
   type Profile {
     _id: ID!
+    theme: String!
     age: Int!
     sex: String!
     height: Float!
@@ -46,7 +47,7 @@ const typeDef = gql`
   }
   
   type Meal {
-    _id: ID
+    _id: ID!
     title: String!
     numberOfServing: Float!
     content: [Content]
@@ -54,7 +55,7 @@ const typeDef = gql`
 
   type Content {
     servings: Float!
-    food: [Food]
+    food: ID!
   }
   
   type Planner {
@@ -69,7 +70,20 @@ const typeDef = gql`
     _id: ID!
     title: String!
     numberOfServing: Float!
-    content: [Content]
+    content: [dietContent]
+  }
+
+  type dietContent {
+    servings: Float!
+    title: String!
+    servingSize: Float!
+    servingUnit: String!
+    calories: Float!
+    carbs: Float!
+    fat: Float!
+    protein: Float!
+    sodium: Float!
+    sugar: Float!
   }
 
   type customDiet {
@@ -91,9 +105,7 @@ const typeDef = gql`
     profiles: [Profile]
     profile(profileId: ID!): Profile
     foods: [Food]
-    food: [Food]
     meals: [Meal]
-    meal: [Meal]
   }
 
   type Mutation {
@@ -109,6 +121,7 @@ const typeDef = gql`
     ): Auth
 
     addProfile(
+      theme: String!,
       age: Int!, 
       sex: String!, 
       height: Float!, 
@@ -123,6 +136,7 @@ const typeDef = gql`
 
     updateProfile(
       profileId: ID!, 
+      theme: String!,
       age: Int!, 
       sex: String!, 
       height: Float!, 
@@ -163,6 +177,11 @@ const typeDef = gql`
     removeFood(
       foodId: ID!
     ): Food
+
+    removeMealFood(
+      mealId: ID!, 
+      foodId: ID!
+    ): Meal
 
     addMeal(
       title: String!, 
@@ -209,7 +228,15 @@ const typeDef = gql`
     addDietFood(
       dietId: ID!, 
       servings: Float!, 
-      food: ID!
+      title: String!, 
+      servingSize: Float!, 
+      servingUnit: String!, 
+      calories: Float!, 
+      carbs: Float!, 
+      fat: Float!, 
+      protein: Float!, 
+      sodium: Float!, 
+      sugar: Float!
     ): Planner
 
     updateDiet(
@@ -222,7 +249,15 @@ const typeDef = gql`
     updateDietFood(
       dietId: ID!, 
       servings: Float!, 
-      food: ID!
+      title: String!, 
+      servingSize: Float!, 
+      servingUnit: String!, 
+      calories: Float!, 
+      carbs: Float!, 
+      fat: Float!, 
+      protein: Float!, 
+      sodium: Float!, 
+      sugar: Float!
     ): Planner
 
     removeDiet(
@@ -262,6 +297,9 @@ const typeDef = gql`
       weight: Float!
     ): Planner
     
+    removeWeight(
+      plannerId: ID!
+    ): Planner
   }
 `;
 

@@ -58,7 +58,7 @@ const EditMeal = () => {
   const meals = useMemo(() => data?.me.meals, [data]);
 
   // map through data to get array of food titles
-  const mealTitles = useMemo(() => meals.map(meal => meal.title), [meals]);
+  const mealTitles = useMemo(() => meals.map(meal => meal.title) || [], [meals]);
 
   // get meal id from url
   const { mealId } = useParams();
@@ -73,7 +73,7 @@ const EditMeal = () => {
   const getMealFood = () => {
     let mealContent = meal.content
     let mealFoodServings = mealContent.map(thisMeal => thisMeal.servings)
-    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
+    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food)
     let mealFoodAdded = []
     for (let i = 0; i < mealContent.length; i++) {
       let foodIndex = foods.findIndex(food => food._id === mealFoodIds[i])
@@ -96,7 +96,7 @@ const EditMeal = () => {
   // function to get list of food not added to meal
   const getFoodList = () => {
     let mealContent = meal.content
-    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food[0]._id)
+    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food)
     let mealFoodAdded = foods
     for (let i = 0; i < mealFoodIds.length; i++) {
       mealFoodAdded = mealFoodAdded.filter((food) => food._id !== mealFoodIds[i])

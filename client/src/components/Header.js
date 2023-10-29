@@ -1,24 +1,28 @@
 // import packages and local auth
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import Auth from '../utils/auth';
 
+// import query and mutations
+import { useQuery } from '@apollo/client';
+import { QUERY_ME } from '../utils/queries';
+
 // import local component
+import LoginSignup from './LoginSignup';
 import Converter from './Converter';
 
 // import package components
 import {
   Box, Tooltip, Image, IconButton,
   Popover, PopoverTrigger, Spacer,
-  
+
 } from '@chakra-ui/react';
 
 // import icons
 import {
   IoNutritionOutline, IoFastFoodOutline, IoSearchOutline, IoRepeatSharp,
-  IoCalendarNumberOutline, IoBarChartOutline, IoFitnessOutline, 
-  IoEnterOutline, IoExitOutline,
+  IoCalendarNumberOutline, IoBarChartOutline, IoFitnessOutline, IoExitOutline,
 } from 'react-icons/io5';
 
 // import local style sheet
@@ -36,15 +40,29 @@ function Header() {
   // navigate for the calendar button
   const navigate = useNavigate();
 
+  // query all data associated with the signed in user
+  const { loading, data } = useQuery(QUERY_ME);
+
+  // extract the profile data 
+  const profileTheme = useMemo(() => data?.me.profile.theme, [data]);
+
+  useEffect(() => {
+    if (!profileTheme) {
+      return;
+    } else {
+      document.documentElement.setAttribute('theme', profileTheme)
+    }
+  }, [profileTheme]);
+
   return (
-    <Box className='nav-bar'>
+    <Box>
       {/* check that user is logged in and token is not expired */}
       {Auth.loggedIn() && !Auth.isTokenExpired() ? (
-        <Box display='flex' justifyContent='space-between'>
+        <Box className='nav-bar' display='flex' justifyContent='space-between'>
           <Box display='flex' alignItems='center'>
             <Link to='/'>
               <Tooltip label='Home'>
-                <Image src='./logo.png' alt='Dietry' />
+                <Image src={`./logo_${profileTheme}.png`} alt='Dietry' />
               </Tooltip>
             </Link>
             <Link to='/food'>
@@ -95,18 +113,7 @@ function Header() {
         </Box>
       ) : (
         // if user is not logged in or token is expired
-        <Box display='flex' justifyContent='space-between' alignItems='center'>
-          <Link to='/'>
-              <Tooltip label='Home'>
-                <Image src='./logo.png' alt='Dietry' />
-              </Tooltip>
-            </Link>
-            <Link to='/loginSignup'>
-              <Tooltip label='Login/Signup'>
-                <IconButton variant='link' aria-label='Login' icon={<IoEnterOutline p='100%' />} />
-              </Tooltip>
-            </Link>
-        </Box>
+        <LoginSignup />
       )}
     </Box>
   );

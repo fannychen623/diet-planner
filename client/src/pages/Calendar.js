@@ -1,6 +1,7 @@
 // import packages
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
+import { useMediaQuery } from 'react-responsive';
 import { format } from 'date-fns';
 import Calendar from 'react-calendar';
 
@@ -8,9 +9,9 @@ import Calendar from 'react-calendar';
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_ME } from '../utils/queries';
 import {
-  ADD_PLANNER, ADD_DIET, ADD_DIET_FOOD,
+  ADD_PLANNER, REMOVE_PLANNER, ADD_DIET, ADD_DIET_FOOD,
   REMOVE_DIET, ADD_CUSTOM_DIET, UPDATE_CUSTOM_DIET,
-  REMOVE_CUSTOM_DIET, ADD_WEIGHT
+  REMOVE_CUSTOM_DIET, ADD_WEIGHT, REMOVE_WEIGHT,
 } from '../utils/mutations';
 
 // import package and local stylesheet
@@ -19,7 +20,7 @@ import '../styles/Calendar.css';
 
 // import package components
 import {
-  Box, Flex, Stack, Grid, GridItem, SimpleGrid, 
+  Box, Flex, Stack, Grid, GridItem, SimpleGrid,
   Spinner, Spacer, Text, Button, IconButton, Checkbox,
   Input, InputGroup, InputLeftAddon, InputRightAddon,
   Card, CardHeader, CardBody, CircularProgress, CircularProgressLabel,
@@ -31,15 +32,34 @@ import {
 } from '@chakra-ui/react'
 
 // import icons
-import { FiCheck, FiEdit3, FiPlus, FiMinus, FiInfo } from 'react-icons/fi';
+import { FiCheck, FiEdit3, FiDelete, FiPlus, FiMinus, FiInfo } from 'react-icons/fi';
 
 // function to divide values for daily statistics
 function divide(a, b) {
   return ((a / b) * 100).toFixed(0);
 }
 
+// transform date based on initial format
+function convertDateFormat(dateValue) {
+  let darr = dateValue.split('-');
+  let dobj = darr[1] + '/' + darr[2] + '/' + darr[0]
+  return dobj;
+}
+
+// function to transform text to proper case
+function toTitleCase(str) {
+  return str.replace(
+    /\w\S*/g,
+    function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    }
+  );
+}
+
 // functional component for the calendar page
 const CalendarPage = () => {
+
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -139,7 +159,7 @@ const CalendarPage = () => {
       if (plannerInfo) {
         // set planner meals and custom meals
         for (let i = 0; i < plannerInfo.diet.length; i++) {
-          let dietContent = plannerInfo.diet[i].content.map(content => ({ servings: content.servings, food: content.food[0]._id }))
+          let dietContent = plannerInfo.diet[i].content.map(content => ({ servings: content.servings, title: content.title, servingSize: content.servingSize, servingUnit: content.servingUnit, calories: content.calories, carbs: content.carbs, fat: content.fat, protein: content.protein, sodium: content.sodium, sugar: content.sugar }))
           dietInfo.push({
             id: plannerInfo.diet[i]._id,
             title: plannerInfo.diet[i].title,
@@ -204,12 +224,12 @@ const CalendarPage = () => {
     let mealTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
 
     for (let i = 0; i < meals[index].content.length; i++) {
-      mealTotal.calories += foods[foods.findIndex(food => food._id === meals[index].content[i].food[0]._id)].calories * meals[index].content[i].servings
-      mealTotal.carbs += foods[foods.findIndex(food => food._id === meals[index].content[i].food[0]._id)].carbs * meals[index].content[i].servings
-      mealTotal.fat += foods[foods.findIndex(food => food._id === meals[index].content[i].food[0]._id)].fat * meals[index].content[i].servings
-      mealTotal.protein += foods[foods.findIndex(food => food._id === meals[index].content[i].food[0]._id)].protein * meals[index].content[i].servings
-      mealTotal.sodium += foods[foods.findIndex(food => food._id === meals[index].content[i].food[0]._id)].sodium * meals[index].content[i].servings
-      mealTotal.sugar += foods[foods.findIndex(food => food._id === meals[index].content[i].food[0]._id)].sugar * meals[index].content[i].servings
+      mealTotal.calories += foods[foods.findIndex(food => food._id === meals[index].content[i].food)].calories * meals[index].content[i].servings
+      mealTotal.carbs += foods[foods.findIndex(food => food._id === meals[index].content[i].food)].carbs * meals[index].content[i].servings
+      mealTotal.fat += foods[foods.findIndex(food => food._id === meals[index].content[i].food)].fat * meals[index].content[i].servings
+      mealTotal.protein += foods[foods.findIndex(food => food._id === meals[index].content[i].food)].protein * meals[index].content[i].servings
+      mealTotal.sodium += foods[foods.findIndex(food => food._id === meals[index].content[i].food)].sodium * meals[index].content[i].servings
+      mealTotal.sugar += foods[foods.findIndex(food => food._id === meals[index].content[i].food)].sugar * meals[index].content[i].servings
     }
 
     setMealPreview(
@@ -245,12 +265,12 @@ const CalendarPage = () => {
     let foodContent = mealFoods.content
     let total = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
     foodContent.forEach((content) => {
-      total.calories += foods[foods.findIndex(item => item._id === content.food)].calories * content.servings
-      total.carbs += foods[foods.findIndex(item => item._id === content.food)].carbs * content.servings
-      total.fat += foods[foods.findIndex(item => item._id === content.food)].fat * content.servings
-      total.protein += foods[foods.findIndex(item => item._id === content.food)].protein * content.servings
-      total.sodium += foods[foods.findIndex(item => item._id === content.food)].sodium * content.servings
-      total.sugar += foods[foods.findIndex(item => item._id === content.food)].sugar * content.servings
+      total.calories += content.calories * content.servings
+      total.carbs += content.carbs * content.servings
+      total.fat += content.fat * content.servings
+      total.protein += content.protein * content.servings
+      total.sodium += content.sodium * content.servings
+      total.sugar += content.sugar * content.servings
     })
     total.calories = +parseFloat(total.calories * mealFoods.numberOfServing).toFixed(2)
     total.carbs = +parseFloat(total.carbs * mealFoods.numberOfServing).toFixed(2)
@@ -292,6 +312,29 @@ const CalendarPage = () => {
     return daily;
   }
 
+  // mutation and function to remove planner
+  const [removePlanner, { removePlannerData }] = useMutation(REMOVE_PLANNER);
+  const checkPlannerContent = async () => {
+    if (weight === 0 || weight === '' || isNaN(weight)) {
+      let dietCount = currentPlannerDiet.length + currentPlannerCustomDiet.length
+      if (dietCount === 1 || dietCount === 0) {
+        // planner empty, remove planner
+        try {
+          const { removePlannerData } = await removePlanner({
+            variables: { plannerId },
+
+            onCompleted(removePlannerData) {
+              refetch();
+            }
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }
+
+
   // mutation and function to add planner
   const [addPlanner, { plannerData }] = useMutation(ADD_PLANNER);
   const handleAddPlanner = async (type) => {
@@ -327,13 +370,9 @@ const CalendarPage = () => {
       handleAddPlanner(type);
     } else {
       // add meal and/or food
-      let dietId = ''
       let dietMeals = []
       let dietType = ''
-      const setDietData = (a, b) => {
-        dietId = a
-        dietMeals = b
-      }
+      const setDietData = (a) => { dietMeals = a }
       for (let i = 0; i < mealCheckedState.length; i++) {
         if (mealCheckedState[i]) {
           dietType = 'Meals'
@@ -342,7 +381,7 @@ const CalendarPage = () => {
               variables: { plannerId: planId, title: meals[i].title, numberOfServing: 1, content: [] },
 
               onCompleted(dietData) {
-                setDietData(dietData.addDiet._id, dietData.addDiet.diet)
+                setDietData(dietData.addDiet.diet)
               }
             });
           } catch (e) {
@@ -352,7 +391,7 @@ const CalendarPage = () => {
         }
       }
       // add meal content after meal details
-      handleAddDietContent(dietMeals, dietId, dietType)
+      handleAddDietContent(dietMeals, dietType)
 
       for (let j = 0; j < foodCheckedState.length; j++) {
         if (foodCheckedState[j]) {
@@ -362,7 +401,7 @@ const CalendarPage = () => {
               variables: { plannerId: planId, title: foods[j].title, numberOfServing: 1, content: [] },
 
               onCompleted(dietData) {
-                setDietData(dietData.addDiet._id, dietData.addDiet.diet)
+                setDietData(dietData.addDiet.diet)
               }
             });
           } catch (e) {
@@ -373,40 +412,61 @@ const CalendarPage = () => {
       }
 
       // add food content after food details
-      handleAddDietContent(dietMeals, dietId, dietType)
+      handleAddDietContent(dietMeals, dietType)
     }
   };
 
   // mutation and function to add diet food
   const [addDietFood, { dietFoodError, dietFoodData }] = useMutation(ADD_DIET_FOOD);
-  const handleAddDietContent = (dietMeals, planId, dietType) => {
+  const handleAddDietContent = (dietMeals, dietType) => {
+    // console.log(dietMeals)
     if (dietType === 'Meals') {
       dietMeals.forEach((meal) => {
         let dietId = meal._id
         let title = meal.title
-        let mealItem = meals[meals.findIndex(meal => meal.title === title)].content
-        mealItem.forEach((food) => {
-          let servings = food.servings
-          let id = food.food[0]._id
-          try {
-            const { dietFoodData } = addDietFood({
-              variables: { dietId, servings, food: id },
-            });
+        if (meals.findIndex(meal => meal.title === title) > -1) {
+          let mealItem = meals[meals.findIndex(meal => meal.title === title)].content
+          mealItem.forEach((content) => {
+            let servings = content.servings
+            let index = foods.findIndex((food) => food._id === content.food)
+            let title = foods[index].title
+            let servingSize = foods[index].servingSize
+            let servingUnit = foods[index].servingUnit
+            let calories = foods[index].calories
+            let carbs = foods[index].carbs
+            let fat = foods[index].fat
+            let protein = foods[index].protein
+            let sodium = foods[index].sodium
+            let sugar = foods[index].sugar
+            try {
+              const { dietFoodData } = addDietFood({
+                variables: { dietId, servings, title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar },
+              });
 
-          } catch (e) {
-            console.error(e)
-          }
-        });
+            } catch (e) {
+              console.error(e)
+            }
+          });
+        }
       });
     } else if (dietType === 'Foods') {
       dietMeals.forEach((meal) => {
         if (meal.content.length === 0) {
           let dietId = meal._id
-          let id = foods[foods.findIndex(item => item.title === meal.title)]._id
+          let index = foods.findIndex(item => item.title === meal.title)
+          let title = foods[index].title
+          let servingSize = foods[index].servingSize
+          let servingUnit = foods[index].servingUnit
+          let calories = foods[index].calories
+          let carbs = foods[index].carbs
+          let fat = foods[index].fat
+          let protein = foods[index].protein
+          let sodium = foods[index].sodium
+          let sugar = foods[index].sugar
           let servings = 1
           try {
             const { dietFoodData } = addDietFood({
-              variables: { dietId, servings, food: id },
+              variables: { dietId, servings, title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar },
             });
 
           } catch (e) {
@@ -431,7 +491,7 @@ const CalendarPage = () => {
           variables: { plannerId, dietId: id },
 
           onCompleted(removeDietData) {
-            refetch();
+            checkPlannerContent();
           }
         });
 
@@ -449,7 +509,7 @@ const CalendarPage = () => {
     // uncheck all meals and food
     mealCheckedState.forEach((state, index, array) => array[index] = false)
     foodCheckedState.forEach((state, index, array) => array[index] = false)
-    
+
     // add planner if no record exist for date
     if (planId === 'n/a') {
       let type = 'customDiet'
@@ -459,7 +519,7 @@ const CalendarPage = () => {
         const { customDietData } = await addCustomDiet({
           variables: {
             plannerId: planId,
-            title: customDiet.title,
+            title: toTitleCase(customDiet.title),
             calories: parseFloat(customDiet.calories),
             carbs: parseFloat(customDiet.carbs) || 0,
             fat: parseFloat(customDiet.fat) || 0,
@@ -471,6 +531,16 @@ const CalendarPage = () => {
       } catch (e) {
         console.error(e);
       }
+      setCustomDiet({
+        ...customDiet,
+        name: '',
+        calories: '',
+        carbs: '',
+        fat: '',
+        protein: '',
+        sodium: '',
+        sugar: '',
+      })
     }
 
     refetch()
@@ -530,7 +600,7 @@ const CalendarPage = () => {
           variables: { plannerId, customDietId: id },
 
           onCompleted(removeCustomDietData) {
-            refetch();
+            checkPlannerContent();
           }
         });
 
@@ -566,37 +636,74 @@ const CalendarPage = () => {
     }
   };
 
+  // mutation and function to remove diet
+  const [removeWeight, { removeWeightError, removeWeightData }] = useMutation(REMOVE_WEIGHT);
+  const handleRemoveWeight = async (id) => {
+    const planId = id
+    try {
+      const { removeDietData } = await removeWeight({
+        variables: { plannerId: planId },
+
+        onCompleted(removeWeightData) {
+          checkPlannerContent()
+          window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
+        }
+      });
+
+    } catch (e) {
+      console.error(e)
+    }
+  };
+
   return (
     <Box className='calendar-page'>
       <Grid templateColumns='repeat(10, 1fr)' gap='6'>
-        <GridItem colSpan='5'>
-          <Box className='calendar'>
-            <Box className='calendar-container'>
-              {/* react calendar component */}
-              <Calendar
-                value={convertToISO()}
-                defaultValue={convertToISO()}
-                onClickDay={(e) => { setDate(format(e, 'MM/dd/yyyy')) }}
-                calendarType='US' />
+        {isMobile ? (<></>) : (
+          <GridItem colSpan='5'>
+            <Box className='calendar'>
+              <Box className='calendar-container'>
+                {/* react calendar component */}
+                <Calendar
+                  value={convertToISO()}
+                  defaultValue={convertToISO()}
+                  onClickDay={(e) => { setDate(format(e, 'MM/dd/yyyy')) }}
+                  calendarType='US' />
+              </Box>
             </Box>
-          </Box>
-        </GridItem>
-        <GridItem colSpan='5'>
+          </GridItem>
+        )}
+        <GridItem colSpan={isMobile ? 10 : 5}>
           <Card>
             <CardHeader>
-              {/* header with selected date in string format */}
-              <Text>{format(new Date(date), 'MMMM do, yyyy')}</Text>
+              {isMobile ? (
+                <Box>
+                  <InputGroup>
+                    <InputLeftAddon>Date</InputLeftAddon>
+                    <Input
+                      type='date'
+                      value={format(new Date(date), 'yyyy-MM-dd')}
+                      onChange={(e) => { setDate(convertDateFormat(e.target.value)) }}
+                    />
+                  </InputGroup>
+                </Box>
+              ) : (
+                <Text>{format(new Date(date), 'MMMM do, yyyy')}</Text>
+              )}
             </CardHeader>
             <CardBody>
               <Box display='flex' justifyContent='spaced-between'>
-                <Box display='flex' alignItems='center'>
-                  <IconButton
-                    size='md'
-                    icon={<FiPlus p='100%' />}
-                    onClick={onOpen}
-                  />
-                  <Text ml='0.5em'>Add Item(s)</Text>
-                </Box>
+                {isMobile ? (
+                  <></>
+                ) : (
+                  <Box display='flex' alignItems='center'>
+                    <IconButton
+                      size='md'
+                      icon={<FiPlus p='100%' />}
+                      onClick={onOpen}
+                    />
+                    <Text ml='0.5em'>Add Item(s)</Text>
+                  </Box>
+                )}
                 <Spacer />
                 <Box display='flex' alignItems='center' justifyContent='spaced-between'>
                   <Spacer />
@@ -613,12 +720,21 @@ const CalendarPage = () => {
                       onClick={(e) => { handleAddWeight(plannerId) }}
                     />
                   ) : (
-                    <IconButton
-                      size='md'
-                      value={plannerId}
-                      icon={<FiPlus p='100%' />}
-                      onClick={(e) => { handleAddWeight(plannerId) }}
-                    />
+                    isNaN(weight) ? (
+                      <IconButton
+                        size='md'
+                        value={plannerId}
+                        icon={<FiDelete p='100%' />}
+                        onClick={(e) => { handleRemoveWeight(plannerId) }}
+                      />
+                    ) : (
+                      <IconButton
+                        size='md'
+                        value={plannerId}
+                        icon={<FiPlus p='100%' />}
+                        onClick={(e) => { handleAddWeight(plannerId) }}
+                      />
+                    )
                   )}
                 </Box>
               </Box>
@@ -633,7 +749,7 @@ const CalendarPage = () => {
                   ) : (
                     <Box>
                       <Accordion allowToggle>
-                        <AccordionItem bg='var(--shade5)' color='white'>
+                        <AccordionItem bg='var(--shade5)' color='var(--shade1)'>
                           <h2>
                             <AccordionButton>
                               <Box as="span" flex='1' textAlign='left'>
@@ -650,7 +766,7 @@ const CalendarPage = () => {
                         {currentPlannerDiet.map((planner) => (
                           <AccordionItem>
                             <h2>
-                              <AccordionButton _hover={{ bg: 'var(--shade2)' }} _expanded={{ bg: 'var(--shade2)', fontWeight: 'bold' }}>
+                              <AccordionButton _hover={{ bg: 'var(--shade2)', color: 'var(--shade6)'}} _expanded={{ bg: 'var(--shade2)', color: 'var(--shade6)', fontWeight: 'bold' }}>
                                 <Grid templateColumns='repeat(10, 1fr)' gap='4'>
                                   <GridItem colSpan='9' alignItems='center'>
                                     <Box textAlign='left'>
@@ -683,7 +799,7 @@ const CalendarPage = () => {
                                 <GridItem colSpan='6'>
                                   <Text as='b'>Contains: </Text>
                                   {planner.content.map((content) => (
-                                    <Text>{content.servings}{content.servings <= 1 ? (' serving of ') : (' servings of ')}{foods[foods.findIndex(food => food._id === content.food)].title}</Text>
+                                    <Text>{content.servings}{content.servings <= 1 ? (' serving of ') : (' servings of ')}{content.title}</Text>
                                   ))}
                                 </GridItem>
                                 <GridItem colSpan='4'>
@@ -868,7 +984,7 @@ const CalendarPage = () => {
                           </AccordionItem>
                         ))}
                       </Accordion>
-                      <Accordion allowToggle defaultIndex={[0]}>
+                      <Accordion allowToggle defaultIndex={isMobile ? '' : 0}>
                         <AccordionItem>
                           <h2>
                             <AccordionButton _hover={{ bg: 'var(--shade5)' }}>
@@ -880,11 +996,11 @@ const CalendarPage = () => {
                             </AccordionButton>
                           </h2>
                           <AccordionPanel borderBottom='none'>
-                            <SimpleGrid columns='4' spacingY='1em' textAlign='center' alignItems='center'>
+                            <SimpleGrid columns={isMobile ? 2 : 4} spacingY='1em' spacingX='1em' textAlign='center' alignItems='center'>
                               <Box>
                                 <Stack>
-                                  <Text class='statTitle'>Calories</Text>
-                                  <Text class='statValue'>{getDailyStats().calories}/{profile.calories} kcal</Text>
+                                  <Text className='statTitle'>Calories</Text>
+                                  <Text className='statValue'>{getDailyStats().calories}/{profile.calories} kcal</Text>
                                 </Stack>
                               </Box>
                               <Box>
@@ -894,8 +1010,8 @@ const CalendarPage = () => {
                               </Box>
                               <Box>
                                 <Stack>
-                                  <Text class='statTitle'>Carbs</Text>
-                                  <Text class='statValue'>{getDailyStats().carbs}/{profile.carbs} g</Text>
+                                  <Text className='statTitle'>Carbs</Text>
+                                  <Text className='statValue'>{getDailyStats().carbs}/{profile.carbs} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
@@ -905,8 +1021,8 @@ const CalendarPage = () => {
                               </Box>
                               <Box>
                                 <Stack>
-                                  <Text class='statTitle'>Fat</Text>
-                                  <Text class='statValue'>{getDailyStats().fat}/{profile.fat} g</Text>
+                                  <Text className='statTitle'>Fat</Text>
+                                  <Text className='statValue'>{getDailyStats().fat}/{profile.fat} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
@@ -916,8 +1032,8 @@ const CalendarPage = () => {
                               </Box>
                               <Box>
                                 <Stack>
-                                  <Text class='statTitle'>Protein</Text>
-                                  <Text class='statValue'>{getDailyStats().protein}/{profile.protein} g</Text>
+                                  <Text className='statTitle'>Protein</Text>
+                                  <Text className='statValue'>{getDailyStats().protein}/{profile.protein} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
@@ -927,8 +1043,8 @@ const CalendarPage = () => {
                               </Box>
                               <Box>
                                 <Stack>
-                                  <Text class='statTitle'>Sodium</Text>
-                                  <Text class='statValue'>{getDailyStats().sodium}/2300 mg</Text>
+                                  <Text className='statTitle'>Sodium</Text>
+                                  <Text className='statValue'>{getDailyStats().sodium}/2300 mg</Text>
                                 </Stack>
                               </Box>
                               <Box>
@@ -938,8 +1054,8 @@ const CalendarPage = () => {
                               </Box>
                               <Box>
                                 <Stack>
-                                  <Text class='statTitle'>Sugar</Text>
-                                  <Text class='statValue'>{getDailyStats().sugar}/{profile.sex === 'Male' ? (36) : (24)} g</Text>
+                                  <Text className='statTitle'>Sugar</Text>
+                                  <Text className='statValue'>{getDailyStats().sugar}/{profile.sex === 'Male' ? (36) : (24)} g</Text>
                                 </Stack>
                               </Box>
                               <Box>
@@ -975,9 +1091,9 @@ const CalendarPage = () => {
           <ModalBody overflowY='auto' maxHeight='50vh' >
             <Tabs isFitted variant='line' onChange={(index) => setTabIndex(index)}>
               <TabList>
-                <Tab _selected={{ color: 'white', bg: 'var(--shade5)' }}>Meals</Tab>
-                <Tab _selected={{ color: 'white', bg: 'var(--shade5)' }}>Food</Tab>
-                <Tab _selected={{ color: 'white', bg: 'var(--shade5)' }}>Custom</Tab>
+                <Tab _selected={{ color: 'var(--shade1)', bg: 'var(--shade5)' }}>Meals</Tab>
+                <Tab _selected={{ color: 'var(--shade1)', bg: 'var(--shade5)' }}>Food</Tab>
+                <Tab _selected={{ color: 'var(--shade1)', bg: 'var(--shade5)' }}>Custom</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>

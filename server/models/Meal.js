@@ -8,7 +8,6 @@ const mealSchema = new Schema(
             minlength: 1,
             maxlength: 300,
             trim: true,
-            unique: true,
         },
         numberOfServing: {
             type: Number,
@@ -16,16 +15,16 @@ const mealSchema = new Schema(
         },
         content: [
             {
+                _id: false,
                 servings: {
                     type: Number,
                     require: true,
                 },
-                food: [
-                    {
-                        type: Schema.Types.ObjectId,
-                        ref: 'Food',
-                    }
-                ],
+                food: {
+                    type: Schema.Types.ObjectId,
+                    _id: false,
+                    ref: 'Food',
+                },
             },
         ],
     }

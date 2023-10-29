@@ -1,10 +1,13 @@
 // import packages
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import Chart from 'react-apexcharts'
 
 // functional component of graphs to be rendered on the progress page
 // pass in data, date and graph type information
 const Graph = ({ data, date, graphType }) => {
+
+	const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
 	// set the date range
 	const [dateRange, setDateRange] = useState({ start: new Date(date.start).getTime(), end: new Date(date.end).getTime() })
@@ -487,8 +490,8 @@ const Graph = ({ data, date, graphType }) => {
 		<Chart
 			options={options}
 			series={graphType ? (graphDetails.series) : ([])}
-			width='90%'
-			height='80%'
+			width={isMobile ? '100%': '90%'}
+			height={isMobile ? '50%': '80%'}
 		/>
 	);
 };

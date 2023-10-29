@@ -57,7 +57,7 @@ const NewMeal = () => {
   const meals = useMemo(() => data?.me.meals, [data]);
 
   // map through data to get array of food titles
-  const mealTitles = useMemo(() => meals.map(meal => meal.title), [meals]);
+  const mealTitles = useMemo(() => meals.map(meal => meal.title) || [], [meals]);
 
   // functions to toggle modal
   const { isOpen, onOpen, onClose } = useDisclosure()

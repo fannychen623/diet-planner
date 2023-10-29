@@ -5,6 +5,9 @@
     --popper-arrow-bg: var(--shade2);
     --popper-arrow-shadow-color: var(--shade5);
 }
+html[theme='dark'] .converter .css-sjj62m {
+    background-color: var(--shade5);
+}
 
 /* popover header */
 .converter .css-1t6b1jw {
@@ -17,17 +20,22 @@
 /* select type container */
 .converter .css-1a5ho4p {
     margin-bottom: 1em;
+    color: black;
 }
 
 /* value and unit container */
 .converter .css-k008qs {
     margin: 0.5em 0em;
+    color: black;
 }
 
 /* value inputs */
 .converter .css-1cjy4zv {
     border-color: var(--shade5);
     width: 75%;
+}
+html[theme='dark'] .converter .css-1cjy4zv {
+    border-color: var(--shade2);
 }
 
 /* value inputs */
@@ -44,9 +52,28 @@
 .converter .css-1ntzpg2 {
     text-align: end;
     background-color: var(--shade2);
-    color: var(--shade5)
+    color: var(--shade6)
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
+
+/* modal header */
+.converter .css-9fgtzh {
+    color: var(--shade5);
+    font-weight: bold;
+    background-color: var(--shade2);
+    margin-bottom: 0.5em;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+}
+
+/* modal footer */
+.converter .css-k0waxj {
+    text-align: end;
+    background-color: var(--shade2);
+    color: var(--shade5);
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
 
 }

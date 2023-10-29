@@ -1,18 +1,23 @@
 // import packages and local auth
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import Auth from '../utils/auth';
 
+// import query and mutations
+import { useQuery } from '@apollo/client';
+import { QUERY_ME } from '../utils/queries';
+
 // import local component
+import LoginSignup from './LoginSignup';
 import Converter from './Converter';
 
 // import package components
 import {
-  Box, Stack, Tooltip, Image, IconButton,
-  Popover, PopoverTrigger, Spacer,
+  Box, Stack, Spacer, Image, 
+  IconButton, Modal, ModalOverlay,
   Drawer, DrawerBody, DrawerFooter, DrawerHeader,
-  DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure
+  DrawerOverlay, DrawerContent, useDisclosure
 } from '@chakra-ui/react';
 
 // import icons
@@ -36,61 +41,72 @@ function Header() {
 
   // navigate for the calendar button
   const navigate = useNavigate();
+  
+  // query all data associated with the signed in user
+  const { loading, data } = useQuery(QUERY_ME);
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  // extract the profile data 
+  const profileTheme = useMemo(() => data?.me.profile.theme, [data]);
+  
+  useEffect(() => {
+    if (!profileTheme) {
+      return;
+    } else {
+      document.documentElement.setAttribute('theme', profileTheme)
+    }
+  }, [profileTheme]);
+
+  const { isOpen: drawerIsOpen, onOpen: drawerOnOpen, onClose: drawerOnClose } = useDisclosure()
+  const { isOpen: modalIsOpen, onOpen: modalOnOpen, onClose: modalOnClose } = useDisclosure()
 
   return (
-    <Box className='nav-bar'>
+    <Box>
       {/* check that user is logged in and token is not expired */}
       {Auth.loggedIn() && !Auth.isTokenExpired() ? (
-        <Box display='flex' justifyContent='space-between'>
+        <Box className='nav-bar' display='flex' justifyContent='space-between'>
           <Link to='/'>
-            <Image src='./logo.png' alt='Dietry' />
+            <Image src={`./logo_${profileTheme}.png`} alt='Dietry' />
           </Link>
-          <IconButton icon={<IoMenuOutline />} onClick={onOpen}></IconButton>
-          <Drawer onClose={onClose} isOpen={isOpen}>
+          <IconButton icon={<IoMenuOutline />} onClick={drawerOnOpen}></IconButton>
+          <Drawer onClose={drawerOnClose} isOpen={drawerIsOpen}>
             <DrawerOverlay />
             <DrawerContent className='header-drawer' maxW='60%'>
-              <DrawerHeader>Menu<Spacer /><IoCloseOutline onClick={onClose}/></DrawerHeader>
+              <DrawerHeader>Menu<Spacer /><IoCloseOutline onClick={drawerOnClose} /></DrawerHeader>
               <DrawerBody>
                 <Stack>
-                  <Link to='/food' onClick={onClose}>
+                  <Link to='/food' onClick={drawerOnClose}>
                     <Box display='flex' alignItems='center'>
                       <IoNutritionOutline />
                       Foods
                     </Box>
                   </Link>
-                  <Link to='/meal' onClick={onClose}>
+                  <Link to='/meal' onClick={drawerOnClose}>
                     <Box display='flex' alignItems='center'>
                       <IoFastFoodOutline />
                       Meals
                     </Box>
                   </Link>
-                  <Link to='/search' onClick={onClose}>
+                  <Link to='/search' onClick={drawerOnClose}>
                     <Box display='flex' alignItems='center'>
                       <IoSearchOutline />
                       Search
                     </Box>
                   </Link>
-                  <Link to='/'>
-                    <Box display='flex' alignItems='center'>
-                      <IoRepeatSharp />
-                      Converter
-                    </Box>
-                  </Link>
-                  <Link onClick={() => { navigate(`/calendar/${format(new Date(), 'MM_dd_yyyy')}`); onClose() }}>
-                    <Box display='flex' alignItems='center'>
-                      <IoCalendarNumberOutline />
-                      Planner
-                    </Box>
-                  </Link>
-                  <Link to='/progress' onClick={onClose}>
+                  <Box display='flex' alignItems='center' onClick={() => { modalOnOpen(); drawerOnClose() }}>
+                    <IoRepeatSharp />
+                    Converter
+                  </Box>
+                  <Box display='flex' alignItems='center' onClick={() => { navigate(`/calendar/${format(new Date(), 'MM_dd_yyyy')}`); drawerOnClose() }}>
+                    <IoCalendarNumberOutline />
+                    Planner
+                  </Box>
+                  <Link to='/progress' onClick={drawerOnClose}>
                     <Box display='flex' alignItems='center'>
                       <IoBarChartOutline />
                       Progress
                     </Box>
                   </Link>
-                  <Link to='/profile' onClick={onClose}>
+                  <Link to='/profile' onClick={drawerOnClose}>
                     <Box display='flex' alignItems='center'>
                       <IoFitnessOutline />
                       Profile
@@ -108,17 +124,14 @@ function Header() {
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
+          <Modal isOpen={modalIsOpen} onClose={modalOnClose} isCentered>
+            <ModalOverlay />
+            <Converter />
+          </Modal>
         </Box>
       ) : (
         // if user is not logged in or token is expired
-        <Box display='flex' justifyContent='space-between' alignItems='center'>
-          <Link to='/'>
-            <Image src='./logo.png' alt='Dietry' />
-          </Link>
-          <Link to='/loginSignup'>
-            <IconButton variant='link' aria-label='Login/Signup' icon={<IoEnterOutline p='100%' />} />
-          </Link>
-        </Box>
+        <LoginSignup />
       )}
     </Box>
   );

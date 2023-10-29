@@ -6,6 +6,12 @@
     padding: 2rem;
 }
 
+/* planner card container */
+html[theme='dark'] .calendar-page .css-jv498s {
+    background-color: var(--trans);
+    border: 0.1em solid var(--shade5);
+}
+
 /* list date */
 .calendar-page .css-1sl53ol {
     font-family: var(--font);
@@ -14,35 +20,47 @@
     border: none;
     padding: 3% 0% 0% 4%;
 }
+html[theme='dark'] .calendar-page .css-1sl53ol {
+    color: var(--shade4);
+}
 
 /* weight input */
 .calendar-page .css-1y0e7gb {
     width: 50%;
     border-color: var(--shade4)
 }
+html[theme='dark'] .calendar-page .css-1y0e7gb {
+    border-color: var(--shade5)
+}
 
 /* weight inputrightaddon */
 .calendar-page .css-1r6jmxn {
     background-color: var(--shade1);
+    color: var(--shade6);
 }
 
 /* add/edit/remove meal and add weight button */
-.calendar-page .css-22xpxh, .calendar-page .css-x9zq2g {
+.calendar-page .css-22xpxh,
+.calendar-page .css-x9zq2g {
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
 /* add/edit/remove meal and add weight button */
-.calendar-page .css-22xpxh:hover, .calendar-page .css-x9zq2g:hover {
+.calendar-page .css-22xpxh:hover,
+.calendar-page .css-x9zq2g:hover {
     background-color: var(--shade6);
 }
 
 /* add meal and weight container */
-.calendar-page .css-gg4vpm {
+.calendar-page .css-85tvzw {
     margin-bottom: 1.5em;
 }
+html[theme='dark'] .calendar-page .css-85tvzw {
+    color: var(--shade5);
+}
 
-/* meal accordian header */ 
+/* meal accordian header */
 .calendar-page .css-ohx7pl {
     border-top-width: 0;
 }
@@ -50,17 +68,21 @@
 /* meal accordian header */
 .calendar-page .css-uttm9k {
     font-size: 1.5em;
-    margin-top: 1em;
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
 /* accordian container */
 .calendar-page .css-17mg6aq {
     border: none;
 }
+html[theme='dark'] .calendar-page .css-17mg6aq {
+    color: var(--shade6);
+}
+
 /* meal accordian icon (not expanded and expanded) */
-.calendar-page .css-186l2rg, .calendar-page .css-j2ph2z {
+.calendar-page .css-186l2rg,
+.calendar-page .css-j2ph2z {
     margin-left: 0.5em;
     margin-right: 0.5em;
 }
@@ -80,7 +102,8 @@
 }
 
 /* custom meal popover header and footer */
-.calendar-page .css-1t6b1jw, .calendar-page .css-1uyazt3 {
+.calendar-page .css-1t6b1jw,
+.calendar-page .css-1uyazt3 {
     background-color: var(--shade3);
 }
 
@@ -92,7 +115,7 @@
 /* custom meal popover save button */
 .calendar-page .css-ez23ye:hover {
     background-color: var(--shade4);
-    color: white;
+    color: var(--shade1);
 }
 
 /* daily stats accordian header */
@@ -101,12 +124,15 @@
     margin-top: 0.25em;
     margin-bottom: 0.5em;
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
-/* daily stat catergories */
+/* daily stat categories */
 .calendar-page .statTitle {
     font-size: 2em;
+    color: var(--shade5);
+}
+html[theme='dark'] .calendar-page .statTitle {
     color: var(--shade5);
 }
 
@@ -125,27 +151,66 @@
 /* daily stats circle inner text value */
 .calendar-page .css-f1j64i {
     font-size: 0.5em;
-    color: var(--shade6);
+    color: var(--shade5);
 }
+html[theme='dark'] .calendar-page .css-f1j64i {
+    color: var(--shade5);
+}
+
+@media (max-width: 480px) {
+
+    /* card header */
+    .calendar-page .css-1sl53ol {
+        padding: 0.5em;
+        padding-bottom: 0;
+    }
+
+    /* date input */
+    .calendar-page .css-1y0e7gb {
+        width: 100%;
+        color: var(--shade6);
+    }
+
+    /* date inputleftaddon */
+    .calendar-page .css-127xmqf {
+        background-color: var(--shade2);
+    }
+
+
+    /* daily stat categories */
+    .calendar-page .statTitle {
+        font-size: 1.75em;
+    }
+
+}
+
 
 /* calendar styling, imported/associated with calendar package */
 /* customized certain styling/colors */
 .react-calendar {
     width: 100%;
     background-color: white;
-    color: black;
+    color: var(--shade6);
     border-radius: 8px;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     font-family: var(--font);
     font-size: 2.25vw;
     padding: 2vw;
 }
+html[theme='dark'] .react-calendar {
+    background-color: var(--trans);
+}
 
 .react-calendar__tile {
     text-align: center;
     padding: 0.75em 0.5em;
     background: none;
-  }
+    color: var(--shade6);
+}
+
+html[theme='dark'] .react-calendar__tile {
+    color: var(--shade5);
+}
 
 .react-calendar__navigation button {
     color: var(--shade5);
@@ -155,9 +220,18 @@
     margin-top: 8px;
 }
 
+html[theme='dark'] .react-calendar__navigation button {
+    color: var(--shade4);
+}
+
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
-    background-color: white;
+    background-color: var(--shade1);
+}
+
+html[theme='dark'] .react-calendar__navigation button:enabled:hover,
+html[theme='dark'] .react-calendar__navigation button:enabled:focus {
+    background-color: var(--shade6);
 }
 
 .react-calendar__navigation button[disabled] {
@@ -168,7 +242,15 @@ abbr[title] {
     text-decoration: none;
 }
 
+html[theme='dark'] abbr[title] {
+    color: var(--shade5);
+}
+
 .react-calendar__month-view__days__day--weekend {
+    color: var(--shade4);
+}
+
+html[theme='dark'] .react-calendar__month-view__days__day--weekend {
     color: var(--shade4);
 }
 
@@ -183,7 +265,14 @@ abbr[title] {
     background: var(--shade3);
     border-radius: 6px;
     font-weight: bold;
-    color: white;
+    color: var(--shade1);
+}
+
+html[theme='dark'] .react-calendar__tile--now {
+    background: var(--shade3);
+    border-radius: 6px;
+    font-weight: bold;
+    color: var(--shade6);
 }
 
 .react-calendar__tile--now:enabled:hover,
@@ -194,27 +283,34 @@ abbr[title] {
     color: var(--shade6);
 }
 
+html[theme='dark'] .react-calendar__tile--now:enabled:hover,
+html[theme='dark'] .react-calendar__tile--now:enabled:focus {
+    background: rgba(211, 211, 211, 0.601);
+    border-radius: 6px;
+    font-weight: bold;
+    color: var(--shade2);
+}
+
 .react-calendar__tile--hasActive:enabled:hover,
 .react-calendar__tile--hasActive:enabled:focus {
-    background: white;
+    background: var(--shade1);
 }
 
 .react-calendar__tile--active {
     background: var(--shade6);
     border-radius: 6px;
     font-weight: bold;
-    color: white;
+    color: var(--shade1);
 }
 
 .react-calendar__tile--active:enabled:hover,
 .react-calendar__tile--active:enabled:focus {
     background: var(--shade6);
-    color: white;
+    color: var(--shade1);
 }
 
 .react-calendar__tile--rangeEnd {
     border-radius: 6px;
     background: var(--shade6);
-    color: white;
+    color: var(--shade1);
 }
-   

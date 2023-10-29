@@ -1,11 +1,14 @@
 // import packages
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 // import package components
 import {
-  Box, Select, Input, PopoverContent,
-  PopoverHeader, PopoverBody, PopoverFooter,
-  PopoverArrow, PopoverCloseButton,
+  Box, Select, Input, 
+  ModalContent, ModalHeader,
+   ModalBody, ModalFooter, ModalCloseButton,
+  PopoverContent, PopoverHeader, PopoverBody, PopoverFooter,
+  PopoverArrow, PopoverCloseButton, useDisclosure,
 } from '@chakra-ui/react'
 
 // import icons
@@ -16,6 +19,11 @@ import '../styles/Converter.css';
 
 // functional component/popover to convert values
 const Converter = () => {
+
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+
+  // set modal to open on default
+  const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true })
 
   // define states
   const [unitType, setUnitType] = useState('')
@@ -102,85 +110,165 @@ const Converter = () => {
 
   return (
     <Box className='converter'>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverHeader>Convert Units</PopoverHeader>
-        <PopoverCloseButton />
-        <PopoverBody>
-          <Box alignContent='center'>
-            <Select
-              placeholder='Select Type'
-              borderColor={unitType ? ('var(--shade5)') : ('red')}
-              value={unitType}
-              onChange={(e) => { setUnitType(e.target.value); setUnit1(''); setUnit2(''); setValues({ val1: '', val2: '' }) }}>
-              <option value='Weight'>Weight</option>
-              <option value='Energy'>Energy</option>
-            </Select>
-          </Box>
-          <Box display='flex'>
-            <Input value={values.val1} onChange={(e) => { setValues({ ...values, val1: e.target.value }) }} />
-            {unitType === 'Weight' ? (
+      {isMobile ? (
+          <ModalContent maxW='80%'>
+            <ModalHeader>Convert Units</ModalHeader>
+            <ModalBody>
+              <Box alignContent='center'>
+                <Select
+                  placeholder='Select Type'
+                  borderColor={unitType ? ('var(--shade5)') : ('red')}
+                  value={unitType}
+                  onChange={(e) => { setUnitType(e.target.value); setUnit1(''); setUnit2(''); setValues({ val1: '', val2: '' }) }}>
+                  <option value='Weight'>Weight</option>
+                  <option value='Energy'>Energy</option>
+                </Select>
+              </Box>
+              <Box display='flex'>
+                <Input value={values.val1} onChange={(e) => { setValues({ ...values, val1: e.target.value }) }} />
+                {unitType === 'Weight' ? (
+                  <Select
+                    placeholder='Unit'
+                    borderColor={unit1 ? ('var(--shade5)') : ('red')}
+                    value={unit1}
+                    onChange={(e) => { setUnit1(e.target.value) }}>
+                    <option value='gram'>gram (g)</option>
+                    <option value='kilogram'>kilogram (kg)</option>
+                    <option value='milligram'>milligram (mg)</option>
+                    <option value='microgram'>microgram (ug)</option>
+                    <option value='pound'>pound (lb)</option>
+                    <option value='ounce'>ounce (oz)</option>
+                    <option value='jin'>jin</option>
+                  </Select>
+                ) : (
+                  <Select
+                    placeholder='Unit'
+                    borderColor={unit1 ? ('var(--shade5)') : ('red')}
+                    value={unit1}
+                    onChange={(e) => { setUnit1(e.target.value) }}>
+                    <option value='joule'>joule (J)</option>
+                    <option value='kilojoule'>kilojoule (kJ)</option>
+                    <option value='calorie'>calorie (C)</option>
+                    <option value='kilocalorie'>kilocalorie (kcal)</option>
+                  </Select>
+                )}
+              </Box>
+              <Box textAlign='-webkit-center'>
+                <FiArrowDown />
+              </Box>
+              <Box display='flex'>
+                <Input isDisabled value={values.val2} />
+                {unitType === 'Weight' ? (
+                  <Select
+                    placeholder='Unit'
+                    borderColor={unit2 ? ('var(--shade5)') : ('red')}
+                    value={unit2}
+                    onChange={(e) => { setUnit2(e.target.value) }}>
+                    <option value='gram'>gram (g)</option>
+                    <option value='kilogram'>kilogram (kg)</option>
+                    <option value='milligram'>milligram (mg)</option>
+                    <option value='microgram'>microgram (ug)</option>
+                    <option value='pound'>pound (lb)</option>
+                    <option value='ounce'>ounce (oz)</option>
+                    <option value='jin'>jin</option>
+                  </Select>
+                ) : (
+                  <Select
+                    placeholder='Unit'
+                    borderColor={unit2 ? ('var(--shade5)') : ('red')}
+                    value={unit2}
+                    onChange={(e) => { setUnit2(e.target.value) }}>
+                    <option value='joule'>joule (J)</option>
+                    <option value='kilojoule'>kilojoule (kJ)</option>
+                    <option value='calorie'>calorie (C)</option>
+                    <option value='kilocalorie'>kilocalorie (kcal)</option>
+                  </Select>
+                )}
+              </Box>
+            </ModalBody>
+            <ModalFooter>Multiply by {conversionFactor || '...'}</ModalFooter>
+          </ModalContent>
+      ) : (
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverHeader>Convert Units</PopoverHeader>
+          <PopoverCloseButton />
+          <PopoverBody>
+            <Box alignContent='center'>
               <Select
-                placeholder='Unit'
-                borderColor={unit1 ? ('var(--shade5)') : ('red')}
-                value={unit1}
-                onChange={(e) => { setUnit1(e.target.value) }}>
-                <option value='gram'>gram (g)</option>
-                <option value='kilogram'>kilogram (kg)</option>
-                <option value='milligram'>milligram (mg)</option>
-                <option value='microgram'>microgram (ug)</option>
-                <option value='pound'>pound (lb)</option>
-                <option value='ounce'>ounce (oz)</option>
-                <option value='jin'>jin</option>
+                placeholder='Select Type'
+                borderColor={unitType ? ('var(--shade5)') : ('red')}
+                value={unitType}
+                onChange={(e) => { setUnitType(e.target.value); setUnit1(''); setUnit2(''); setValues({ val1: '', val2: '' }) }}>
+                <option value='Weight'>Weight</option>
+                <option value='Energy'>Energy</option>
               </Select>
-            ) : (
-              <Select
-                placeholder='Unit'
-                borderColor={unit1 ? ('var(--shade5)') : ('red')}
-                value={unit1}
-                onChange={(e) => { setUnit1(e.target.value) }}>
-                <option value='joule'>joule (J)</option>
-                <option value='kilojoule'>kilojoule (kJ)</option>
-                <option value='calorie'>calorie (C)</option>
-                <option value='kilocalorie'>kilocalorie (kcal)</option>
-              </Select>
-            )}
-          </Box>
-          <Box textAlign='-webkit-center'>
-            <FiArrowDown />
-          </Box>
-          <Box display='flex'>
-            <Input isDisabled value={values.val2} />
-            {unitType === 'Weight' ? (
-              <Select
-                placeholder='Unit'
-                borderColor={unit2 ? ('var(--shade5)') : ('red')}
-                value={unit2}
-                onChange={(e) => { setUnit2(e.target.value) }}>
-                <option value='gram'>gram (g)</option>
-                <option value='kilogram'>kilogram (kg)</option>
-                <option value='milligram'>milligram (mg)</option>
-                <option value='microgram'>microgram (ug)</option>
-                <option value='pound'>pound (lb)</option>
-                <option value='ounce'>ounce (oz)</option>
-                <option value='jin'>jin</option>
-              </Select>
-            ) : (
-              <Select
-                placeholder='Unit'
-                borderColor={unit2 ? ('var(--shade5)') : ('red')}
-                value={unit2}
-                onChange={(e) => { setUnit2(e.target.value) }}>
-                <option value='joule'>joule (J)</option>
-                <option value='kilojoule'>kilojoule (kJ)</option>
-                <option value='calorie'>calorie (C)</option>
-                <option value='kilocalorie'>kilocalorie (kcal)</option>
-              </Select>
-            )}
-          </Box>
-        </PopoverBody>
-        <PopoverFooter>Multiply by {conversionFactor || '...'}</PopoverFooter>
-      </PopoverContent>
+            </Box>
+            <Box display='flex'>
+              <Input value={values.val1} onChange={(e) => { setValues({ ...values, val1: e.target.value }) }} />
+              {unitType === 'Weight' ? (
+                <Select
+                  placeholder='Unit'
+                  borderColor={unit1 ? ('var(--shade5)') : ('red')}
+                  value={unit1}
+                  onChange={(e) => { setUnit1(e.target.value) }}>
+                  <option value='gram'>gram (g)</option>
+                  <option value='kilogram'>kilogram (kg)</option>
+                  <option value='milligram'>milligram (mg)</option>
+                  <option value='microgram'>microgram (ug)</option>
+                  <option value='pound'>pound (lb)</option>
+                  <option value='ounce'>ounce (oz)</option>
+                  <option value='jin'>jin</option>
+                </Select>
+              ) : (
+                <Select
+                  placeholder='Unit'
+                  borderColor={unit1 ? ('var(--shade5)') : ('red')}
+                  value={unit1}
+                  onChange={(e) => { setUnit1(e.target.value) }}>
+                  <option value='joule'>joule (J)</option>
+                  <option value='kilojoule'>kilojoule (kJ)</option>
+                  <option value='calorie'>calorie (C)</option>
+                  <option value='kilocalorie'>kilocalorie (kcal)</option>
+                </Select>
+              )}
+            </Box>
+            <Box textAlign='-webkit-center'>
+              <FiArrowDown />
+            </Box>
+            <Box display='flex'>
+              <Input isDisabled value={values.val2} />
+              {unitType === 'Weight' ? (
+                <Select
+                  placeholder='Unit'
+                  borderColor={unit2 ? ('var(--shade5)') : ('red')}
+                  value={unit2}
+                  onChange={(e) => { setUnit2(e.target.value) }}>
+                  <option value='gram'>gram (g)</option>
+                  <option value='kilogram'>kilogram (kg)</option>
+                  <option value='milligram'>milligram (mg)</option>
+                  <option value='microgram'>microgram (ug)</option>
+                  <option value='pound'>pound (lb)</option>
+                  <option value='ounce'>ounce (oz)</option>
+                  <option value='jin'>jin</option>
+                </Select>
+              ) : (
+                <Select
+                  placeholder='Unit'
+                  borderColor={unit2 ? ('var(--shade5)') : ('red')}
+                  value={unit2}
+                  onChange={(e) => { setUnit2(e.target.value) }}>
+                  <option value='joule'>joule (J)</option>
+                  <option value='kilojoule'>kilojoule (kJ)</option>
+                  <option value='calorie'>calorie (C)</option>
+                  <option value='kilocalorie'>kilocalorie (kcal)</option>
+                </Select>
+              )}
+            </Box>
+          </PopoverBody>
+          <PopoverFooter>Multiply by {conversionFactor || '...'}</PopoverFooter>
+        </PopoverContent>
+      )}
     </Box>
   );
 }

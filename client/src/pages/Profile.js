@@ -1,5 +1,6 @@
 // import packages and local auth
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 // import query and mutations
 import { useQuery, useMutation } from '@apollo/client';
@@ -19,6 +20,8 @@ import '../styles/Profile.css';
 
 // functional component for the profile page
 const Profile = () => {
+
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -40,6 +43,7 @@ const Profile = () => {
 
   // set the form state, default empty
   const [formState, setFormState] = useState({
+    theme: '',
     age: '',
     sex: '',
     height: '',
@@ -67,6 +71,7 @@ const Profile = () => {
     } else {
       setProfileId(profile._id)
       setFormState({
+        theme: profile.theme,
         age: profile.age,
         sex: profile.sex,
         height: profile.height,
@@ -227,22 +232,40 @@ const Profile = () => {
   return (
     <Box className='profile-page'>
       <Grid templateColumns='repeat(10, 1fr)' gap='6'>
-        <GridItem colSpan='5'>
+        <GridItem colSpan={isMobile ? 10 : 5}>
           <Card className='profile'>
             <CardHeader>
               <Heading textAlign='center'>Profile</Heading>
             </CardHeader>
             <CardBody>
-              <Select
-                width='fit-content'
-                borderColor='var(--shade4)'
-                name='unit'
-                value={unit}
-                onChange={(e) => { setUnit(e.target.value) }}
-              >
-                <option value='US Units'>US Units</option>
-                <option value='Metric Units'>Metric Units</option>
-              </Select>
+              <Box display={isMobile ? 'block':'flex'} justifyContent='space-between'>
+                <Select
+                  borderRadius='0.375rem'
+                  width='fit-content'
+                  name='unit'
+                  value={unit}
+                  onChange={(e) => { setUnit(e.target.value) }}
+                >
+                  <option value='US Units'>US Units</option>
+                  <option value='Metric Units'>Metric Units</option>
+                </Select>
+                <InputGroup width='auto' mt={isMobile ? '1em':'auto'}>
+                  <InputLeftAddon
+                    children='Theme'
+                  />
+                  <Select
+                    width={isMobile ? '100%':'fit-content'}
+                    placeholder='Select theme'
+                    name='theme'
+                    value={formState.theme}
+                    onChange={(e) => { handleChange(e.target.name, e.target.value) }}
+                  >
+                    <option value='original'>Original</option>
+                    <option value='light'>Light</option>
+                    <option value='dark'>Dark</option>
+                  </Select>
+                </InputGroup>
+              </Box>
               <InputGroup mt='1em'>
                 <InputLeftAddon
                   children='Age'
@@ -256,7 +279,7 @@ const Profile = () => {
               </InputGroup>
               <InputGroup alignItems='center'>
                 <InputLeftAddon
-                  children='Sex (at birth)'
+                  children={isMobile ? 'Sex' : 'Sex (at birth)'}
                 />
                 <RadioGroup
                   name='sex'
@@ -279,7 +302,7 @@ const Profile = () => {
                     onChange={(e) => { handleAddHeightWeight(e.target.name, e.target.value) }}
                   />
                   <InputRightAddon
-                    children='feet'
+                    children={isMobile ? 'ft' : 'feet'}
                   />
                   <Input
                     name='inches'
@@ -288,7 +311,8 @@ const Profile = () => {
                     onChange={(e) => { handleAddHeightWeight(e.target.name, e.target.value) }}
                   />
                   <InputRightAddon
-                    children='inches'
+                    borderRightRadius='0.375rem'
+                    children={isMobile ? 'in' : 'inches'}
                   />
                 </InputGroup>
               ) : (
@@ -303,6 +327,7 @@ const Profile = () => {
                     onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                   />
                   <InputRightAddon
+                    borderRightRadius='0.375rem'
                     children='cm'
                   />
                 </InputGroup>
@@ -313,12 +338,13 @@ const Profile = () => {
                 />
                 <Input
                   name='weight'
-                  value={unit === 'US Units' ? (weight.US) : (weight.Metric)}
+                  value={unit === 'US Units' ? weight.US : weight.Metric}
                   onBlur={calculateMacros}
                   onChange={(e) => { handleAddHeightWeight(e.target.name, e.target.value) }}
                 />
                 <InputRightAddon
-                  children={unit === 'US Units' ? ('lbs') : ('kg')}
+                  borderRightRadius='0.375rem'
+                  children={unit === 'US Units' ? 'lbs' : 'kg'}
                 />
               </InputGroup>
               <InputGroup>
@@ -370,7 +396,7 @@ const Profile = () => {
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem colSpan='5'>
+        <GridItem colSpan={isMobile ? 10 : 5}>
           <Card className='metabolicStats'>
             <CardHeader>
               <Heading textAlign='center'>Metabolic Statistics</Heading>
@@ -379,8 +405,8 @@ const Profile = () => {
               {profile ? (
                 <Box>
                   <Box display='flex'>
-                  <Heading>Basal Metabolic Rate (BMR)</Heading>
-                  <Text className='statsValue'>{BMR} <span>kcal/day</span></Text>
+                    <Heading>{isMobile ? 'BMR' : 'Basal Metabolic Rate (BMR)'}</Heading>
+                    <Text className='statsValue'>{BMR} <span>kcal/day</span></Text>
                   </Box>
                   <Box display='flex'>
                     <Heading>Calories</Heading>
@@ -404,7 +430,7 @@ const Profile = () => {
                   </Box>
                   <Box display='flex'>
                     <Heading>Sugar</Heading>
-                    <Text className='statsValue'>{formState.sex === 'Male' ? ('< 36'):('< 24')} <span>g/day</span></Text>
+                    <Text className='statsValue'>{formState.sex === 'Male' ? '< 36' : '< 24'} <span>g/day</span></Text>
                   </Box>
                 </Box>
               ) : (
@@ -412,7 +438,7 @@ const Profile = () => {
               )}
             </CardBody>
           </Card>
-          <Text textAlign='right'>BMR Calculations based on Mifflin St Jeor's Equation <a href='https://www.calculator.net/macro-calculator.html'>[Reference]</a></Text>
+          <Text textAlign={isMobile ? 'left' : 'right'}>BMR Calculations based on Mifflin St Jeor's Equation <a href='https://www.calculator.net/macro-calculator.html'>[Reference]</a></Text>
         </GridItem>
       </Grid>
     </Box>

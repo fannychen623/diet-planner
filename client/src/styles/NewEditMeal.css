@@ -1,5 +1,7 @@
 /* styling for the Routine page */
-.new-meal-page, .edit-meal-page, edit-planner-page {
+.new-meal-page,
+.edit-meal-page,
+edit-planner-page {
     font-family: var(--font);
     min-height: 100vh;
     height: fit-content;
@@ -7,32 +9,42 @@
 }
 
 /* page title */
-.new-meal-page .css-1dklj6k, .edit-meal-page .css-1dklj6k, .edit-planner-page .css-1dklj6k {
+.new-meal-page .css-1dklj6k,
+.edit-meal-page .css-1dklj6k,
+.edit-planner-page .css-1dklj6k {
     font-size: 2.5em;
     color: var(--shade5);
     margin-bottom: 0.5em;
 }
 
 /* name and number of serving inputleftaddon */
-.new-meal-page .css-127xmqf, .edit-meal-page .css-127xmqf, .edit-planner-page .css-127xmqf {
+.new-meal-page .css-127xmqf,
+.edit-meal-page .css-127xmqf,
+.edit-planner-page .css-127xmqf {
     border-color: var(--shade5);
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
 /* meal name input */
-.new-meal-page .css-10wjqo2, .edit-meal-page .css-10wjqo2, .edit-planner-page .css-10wjqo2 {
+.new-meal-page .css-10wjqo2,
+.edit-meal-page .css-10wjqo2,
+.edit-planner-page .css-10wjqo2 {
     border-color: var(--shade5);
     width: 45em;
 }
 
 /* meal name input */
-.new-meal-page .css-10wjqo2:hover, .edit-meal-page .css-10wjqo2:hover, .edit-planner-page .css-10wjqo2:hover {
+.new-meal-page .css-10wjqo2:hover,
+.edit-meal-page .css-10wjqo2:hover,
+.edit-planner-page .css-10wjqo2:hover {
     border-color: var(--shade4);
 }
 
 /* number of serving input */
-.new-meal-page .css-1g0mrv8, .edit-meal-page .css-1g0mrv8, .edit-planner-page .css-1g0mrv8 {
+.new-meal-page .css-1g0mrv8,
+.edit-meal-page .css-1g0mrv8,
+.edit-planner-page .css-1g0mrv8 {
     border-color: var(--shade5);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
@@ -40,38 +52,56 @@
 }
 
 /* number of serving input */
-.new-meal-page .css-1g0mrv8:hover, .edit-meal-page .css-1g0mrv8:hover, .edit-planner-page .css-1g0mrv8:hover {
+.new-meal-page .css-1g0mrv8:hover,
+.edit-meal-page .css-1g0mrv8:hover,
+.edit-planner-page .css-1g0mrv8:hover {
     border-color: var(--shade4);
 }
 
 /* number input stepper */
-.new-meal-page .css-1m5jnul, .edit-meal-page .css-1m5jnul, .edit-planner-page .css-1m5jnul {
+.new-meal-page .css-1m5jnul,
+.edit-meal-page .css-1m5jnul,
+.edit-planner-page .css-1m5jnul {
     border-color: var(--shade5);
+}
+html[theme='dark'] .new-meal-page .css-1m5jnul,
+html[theme='dark'] .edit-meal-page .css-1m5jnul,
+html[theme='dark'] .edit-planner-page .css-1m5jnul {
+    color: var(--shade5);
 }
 
 /* number input stepper */
-.new-meal-page .css-1m5jnul:hover, .edit-meal-page .css-1m5jnul:hover, .edit-planner-page .css-1m5jnul:hover {
+.new-meal-page .css-1m5jnul:hover,
+.edit-meal-page .css-1m5jnul:hover,
+.edit-planner-page .css-1m5jnul:hover {
     border-color: var(--shade4);
 }
 
 /* table container */
-.new-meal-page .css-5605sr, .edit-meal-page .css-5605sr, .edit-planner-page .css-5605sr {
-    background-color: rgba(255, 255, 255, 0.25);
+.new-meal-page .css-5605sr,
+.edit-meal-page .css-5605sr,
+.edit-planner-page .css-5605sr {
     margin: 2.5em 0em;
     min-width: 95vw;
 }
 
 /* table header */
-.new-meal-page .css-1zts0j, .edit-meal-page .css-1zts0j, .edit-planner-page .css-1zts0j {
+.new-meal-page .css-1zts0j,
+.edit-meal-page .css-1zts0j,
+.edit-planner-page .css-1zts0j {
     text-align: center;
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
     padding: 1.5em 1.5em;
 }
 
 /* table contents */
-.new-meal-page .css-xumdn4, .edit-meal-page .css-xumdn4, .edit-planner-page .css-xumdn4,
-.new-meal-page .css-xumdn4[data-is-numeric=true], .edit-meal-page .css-xumdn4[data-is-numeric=true], .edit-planner-page .css-xumdn4[data-is-numeric=true] {
+.new-meal-page .css-xumdn4,
+.edit-meal-page .css-xumdn4,
+.edit-planner-page .css-xumdn4,
+.new-meal-page .css-xumdn4[data-is-numeric=true],
+.edit-meal-page .css-xumdn4[data-is-numeric=true],
+.edit-planner-page .css-xumdn4[data-is-numeric=true] {
     text-align: center;
 }
 
@@ -82,28 +112,53 @@
     font-weight: bold;
 }
 
+/* add and remove food icon button */
+.new-meal-page .css-22xpxh,
+.edit-meal-page .css-22xpxh,
+.edit-planner-page .css-22xpxh {
+    background-color: var(--shade5);
+    color: var(--shade1);
+}
+
+/* add and remove food icon button */
+.new-meal-page .css-22xpxh:hover,
+.edit-meal-page .css-22xpxh:hover,
+.edit-planner-page .css-22xpxh:hover {
+    background-color: var(--shade6);
+}
+
 /* # of serving input */
-.new-meal-page .css-jbgy1g, .edit-meal-page .css-jbgy1g, .edit-planner-page .css-jbgy1g {
+.new-meal-page .css-jbgy1g,
+.edit-meal-page .css-jbgy1g,
+.edit-planner-page .css-jbgy1g {
     width: 5em;
+    border-color: var(--shade5);
 }
 
 /* add meal button */
-.new-meal-page .css-ez23ye, .edit-meal-page .css-ez23ye, .edit-planner-page .css-ez23ye {
+.new-meal-page .css-ez23ye,
+.edit-meal-page .css-ez23ye,
+.edit-planner-page .css-ez23ye {
     font-size: 2rem;
     padding: 1.25em 1em;
-    background-color: var(--shade1);
-    color: var(--shade5);
+    background-color: var(--shade5);
+    color: var(--shade1);
 }
 
 /* add meal button */
-.new-meal-page .css-ez23ye:hover, .edit-meal-page .css-ez23ye:hover, .edit-planner-page .css-ez23ye:hover {
-    background-color: var(--shade3);
+.new-meal-page .css-ez23ye:hover,
+.edit-meal-page .css-ez23ye:hover,
+.edit-planner-page .css-ez23ye:hover {
+    background-color: var(--shade4);
 }
 
 /* modal title */
 .meal-modal .css-9fgtzh {
     font-size: 1.75em;
     color: var(--shade5)
+}
+html[theme='dark'] .meal-modal .css-9fgtzh {
+    color: var(--shade4);
 }
 
 /* modal search input */
@@ -112,6 +167,9 @@
     border-color: var(--shade4);
     color: var(--shade6);
 }
+html[theme='dark'] .meal-modal .css-1y0e7gb {
+    color: var(--shade1);
+}
 
 /* modal food list */
 .meal-modal .css-69i1ev {
@@ -119,9 +177,12 @@
 }
 
 /* modal checkbox checked state */
-.meal-modal .css-1ydjfm6[aria-checked=true], .meal-modal .css-1ydjfm6[data-checked], 
-.meal-modal .css-1ydjfm6[aria-checked=true]:hover, .meal-modal .css-1ydjfm6[data-checked]:hover, 
-.meal-modal .css-1ydjfm6[aria-checked=true][data-hover], .meal-modal .css-1ydjfm6[data-checked][data-hover] {
+.meal-modal .css-1ydjfm6[aria-checked=true],
+.meal-modal .css-1ydjfm6[data-checked],
+.meal-modal .css-1ydjfm6[aria-checked=true]:hover,
+.meal-modal .css-1ydjfm6[data-checked]:hover,
+.meal-modal .css-1ydjfm6[aria-checked=true][data-hover],
+.meal-modal .css-1ydjfm6[data-checked][data-hover] {
     background-color: var(--shade4);
     background: var(--shade4);
     border-color: var(--shade4);
@@ -131,6 +192,9 @@
 .meal-modal .css-22xpxh {
     background-color: var(--shade3);
 }
+html[theme='dark'] .meal-modal .css-22xpxh {
+    color: var(--shade6);
+}
 
 /* meal modal food info preview */
 .meal-modal .css-1cj2wja {
@@ -138,6 +202,9 @@
     background-color: var(--shade2);
     border-radius: 0.5em;
     padding: 0.5em;
+}
+html[theme='dark'] .meal-modal .css-1cj2wja {
+    color: var(--shade6);
 }
 
 /* modal info button */
@@ -154,9 +221,7 @@
 /* modal close and add foods button */
 .meal-modal .css-ez23ye:hover {
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
-@media (max-width: 768px) {
-
-}
+@media (max-width: 768px) {}

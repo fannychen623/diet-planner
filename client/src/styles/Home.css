@@ -1,0 +1,24 @@
+/* styling for the Routine page */
+.home-page {
+    font-family: var(--font);
+    min-height: 100vh;
+    height: fit-content;
+    padding: 3rem;
+}
+
+/* navigation buttons */
+.home-page .css-ez23ye {
+    width: 100%;
+    font-size: 3em;
+    padding: 1.5em 1em;
+    border: 0.2em solid var(--shade5);
+    background-color: var(--shade3);
+    color: var(--shade5);
+}
+
+/* navigation buttons */
+.home-page .css-ez23ye:hover {
+    border: 0.2em solid var(--shade3);
+    background-color: var(--shade5);
+    color: var(--shade1);
+}

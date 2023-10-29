@@ -36,10 +36,10 @@ const resolvers = {
       return { token, user };
     },
 
-    addProfile: async (parent, { age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein }, context) => {
+    addProfile: async (parent, { theme, age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein }, context) => {
       if (context.user) {
         const profile = await Profile.create(
-          { age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein });
+          { theme, age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein });
         await User.updateOne(
           { _id: context.user._id },
           { profile: profile._id }
@@ -48,11 +48,11 @@ const resolvers = {
       }
     },
 
-    updateProfile: async (parent, { profileId, age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein }, context) => {
+    updateProfile: async (parent, { profileId, theme, age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein }, context) => {
       if (context.user) {
         return await Profile.findOneAndUpdate(
           { _id: profileId },
-          { age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein },
+          { theme, age, sex, height, weight, activityLevel, goal, calories, carbs, fat, protein },
           { new: true }
         );
       }
@@ -89,6 +89,15 @@ const resolvers = {
           { $pull: { foods: food._id } }
         );
         return food;
+      }
+    },
+
+    removeMealFood: async (parent, { mealId, foodId }, context) => {
+      if (context.user) {
+        return Meal.findOneAndUpdate(
+          { _id: mealId },
+          { $pull: { content: { food: foodId }, }, }
+        );
       }
     },
 
@@ -172,11 +181,11 @@ const resolvers = {
       }
     },
 
-    addDietFood: async (parent, { dietId, servings, food }, context) => {
+    addDietFood: async (parent, { dietId, servings, title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
       if (context.user) {
         return Planner.findOneAndUpdate(
           { "diet._id": dietId },
-          { $addToSet: { "diet.$.content": { servings, food }, }, },
+          { $addToSet: { "diet.$.content": { servings, title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, }, },
           { new: true, runValidators: true }
         );
       }
@@ -192,11 +201,11 @@ const resolvers = {
       }
     },
 
-    updateDietFood: async (parent, { dietId, servings, food }, context) => {
+    updateDietFood: async (parent, { dietId, servings, title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, context) => {
       if (context.user) {
         return Planner.findOneAndUpdate(
           { "diet._id": dietId },
-          { $addToSet: { "diet.$.content": { servings, food }, }, },
+        { $addToSet: { "diet.$.content": { servings, title, servingSize, servingUnit, calories, carbs, fat, protein, sodium, sugar }, }, },
         );
       }
     },
@@ -205,7 +214,7 @@ const resolvers = {
       if (context.user) {
         return Planner.findOneAndUpdate(
           { _id: plannerId },
-          { $pull: { diet: { _id: dietId, }, }, }
+          { $pull: { diet: { _id: dietId }, }, }
         );
       }
     },
@@ -245,6 +254,15 @@ const resolvers = {
           { _id: plannerId },
           { $set: { weight: weight } },
           { new: true, runValidators: true }
+        );
+      }
+    },
+
+    removeWeight: async (parent, { plannerId }, context) => {
+      if (context.user) {
+        return Planner.findOneAndUpdate(
+          { _id: plannerId },
+          {$unset: {weight: 1}},
         );
       }
     },

@@ -1,5 +1,6 @@
 // import packages
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { format } from 'date-fns';
 
 // import query
@@ -17,6 +18,8 @@ import '../styles/Progress.css';
 
 // functional component for the progress page
 const Progress = () => {
+
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -37,7 +40,7 @@ const Progress = () => {
   const foods = data?.me.foods || [];
   const planner = data?.me.planner || [];
   // get all planner dates
-  const plannerDates = planner.map(entry => entry.date)
+  const plannerDates = planner.map(entry => entry.date) || []
 
   // define states
   const [rangeType, setRangeType] = useState('')
@@ -77,12 +80,12 @@ const Progress = () => {
         diet.forEach((meal) => {
           let content = meal.content
           content.forEach((item) => {
-            mealTotal.calories += foods[foods.findIndex(food => food._id === item.food[0]._id)].calories * item.servings * meal.numberOfServing
-            mealTotal.carbs += foods[foods.findIndex(food => food._id === item.food[0]._id)].carbs * item.servings * meal.numberOfServing
-            mealTotal.fat += foods[foods.findIndex(food => food._id === item.food[0]._id)].fat * item.servings * meal.numberOfServing
-            mealTotal.protein += foods[foods.findIndex(food => food._id === item.food[0]._id)].protein * item.servings * meal.numberOfServing
-            mealTotal.sodium += foods[foods.findIndex(food => food._id === item.food[0]._id)].sodium * item.servings * meal.numberOfServing
-            mealTotal.sugar += foods[foods.findIndex(food => food._id === item.food[0]._id)].sugar * item.servings * meal.numberOfServing
+            mealTotal.calories += item.calories * item.servings * meal.numberOfServing
+            mealTotal.carbs += item.carbs * item.servings * meal.numberOfServing
+            mealTotal.fat += item.fat * item.servings * meal.numberOfServing
+            mealTotal.protein += item.protein * item.servings * meal.numberOfServing
+            mealTotal.sodium += item.sodium * item.servings * meal.numberOfServing
+            mealTotal.sugar += item.sugar * item.servings * meal.numberOfServing
           })
         })
       }
@@ -151,10 +154,9 @@ const Progress = () => {
     }
   }, [data, date, rangeType, graphType])
 
-
   return (
     <Box className='progress-page'>
-      <Box display='flex' justifyContent='space-between' alignItems='center'>
+      <Box display={isMobile ? 'block' : 'flex'} justifyContent='space-between' alignItems='center'>
         <Box>
           <Select
             placeholder='Select Date Range'
@@ -170,7 +172,7 @@ const Progress = () => {
             <option value='Custom Range'>Custom Range</option>
           </Select>
         </Box>
-        <Box display='flex' alignItems='center'>
+        <Box display={isMobile ? 'block' : 'flex'}  alignItems='center'>
           <InputGroup>
             <InputLeftAddon>Start Date</InputLeftAddon>
             <Input

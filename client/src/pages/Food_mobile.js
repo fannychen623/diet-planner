@@ -8,23 +8,20 @@ import { UPDATE_FOOD, REMOVE_FOOD } from '../utils/mutations';
 
 // import local component
 import AddFood from '../components/AddFood';
-import EditFood from '../components/EditFood';
 
 // import package components
 import {
-  Box, Flex, Spacer, Spinner, Heading, Text, Button, IconButton,
+  Box, Flex, Spacer, Spinner, Heading, Text, ButtonGroup, Button, IconButton,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-  Menu, MenuButton, MenuList, MenuItem,
   Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon,
   Modal, ModalOverlay, ModalContent, ModalHeader,
-  ModalFooter, ModalBody, ModalCloseButton,
+  ModalFooter, ModalBody,
   AlertDialog, AlertDialogBody, AlertDialogFooter,
-  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay,
-  AlertDialogCloseButton, useDisclosure,
+  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay
 } from '@chakra-ui/react'
 
 // import icons
-import { FiSearch, FiPlus, FiMoreVertical, FiInfo, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiSearch, FiPlus, FiEdit, FiTrash2, FiX } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/Food.css';
@@ -59,14 +56,17 @@ const Food = () => {
 
   // extract the routines from the query data
   const foods = data?.me.foods || [];
-  const foodTitles = foods.map(food => food.title)
+  const meals = data?.me.meals || [];
+  const foodTitles = foods.map(food => food.title) || []
 
   // define states
   const [foodList, setFoodList] = useState([...foods])
-  const [foodPreview, setFoodPreview] = useState('')
   const [modalState, setModalState] = useState(false)
   const [editState, setEditState] = useState({ open: false, index: 0 })
   const [alertState, setAlertState] = useState({ open: false, index: 0 })
+  const [deleteState, setDeleteState] = useState(false)
+  const [associateMeal, setAssociateMeal] = useState([])
+  const [deleteMessage, setDeleteMessage] = useState('')
   const [displayState, setDisplayState] = useState(Array(foodList.length).fill(true))
   const [searchValue, setSearchValue] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -82,22 +82,34 @@ const Food = () => {
     sugar: '',
   });
 
-  // function to get food preview viewd in modal
-  const getFoodPreview = (index) => {
-    setFoodPreview(
-      'Serving Size: ' + foods[index].servingSize + '\n' + foods[index].servingUnit + '\n' +
-      'Calories: ' + foods[index].calories + ' kcal \n' +
-      'Carbs: ' + foods[index].carbs + ' g \n' +
-      'Fat: ' + foods[index].fat + ' g \n' +
-      'Protein: ' + foods[index].protein + ' g \n' +
-      'Sodium: ' + foods[index].sodium + ' mg \n' +
-      'Sugar: ' + foods[index].sugar + ' g'
-    )
-    return foodPreview
-  };
+  const getFoodAssociation = (id) => {
+    let affectedMeals = []
+    let associatedMealIds = []
+    meals.forEach((meal) => {
+      let content = meal.content
+      for (let i = 0; i < content.length; i++) {
+        if (content[i].food === id) {
+          affectedMeals.push(meal.title)
+          associatedMealIds.push(meal._id)
+        }
+      }
+    })
+    let response = ''
+    if (affectedMeals.length !== 0) {
+      setAssociateMeal(associatedMealIds)
+      response =
+        'The food will be removed from the following meal(s) and any associated diary entries.\n\n ' + affectedMeals.join('\n')
+      setDeleteMessage(response)
+      } else {
+      setAssociateMeal([])
+      response = 'The food will be removed from any associated diary entries.\n\n'
+      setDeleteMessage(response)
+    }
+  }
 
   // call on render and defined state changes
   useEffect(() => {
+    setFoodList(foods)
     // set display state base on search value
     setDisplayState(Array(foodList.length).fill(true))
     for (let i = 0; i < foodList.length; i++) {
@@ -110,7 +122,7 @@ const Food = () => {
     setDisplayState({ ...displayState })
 
     refetch();
-  }, [foods, searchValue])
+  }, [foods, foodList, searchValue])
 
   // mutation and function to update food
   const [updateFood, { updateError, updateData }] = useMutation(UPDATE_FOOD);
@@ -221,7 +233,7 @@ const Food = () => {
                   <Th>
                     Foods
                     <IconButton
-                      icon={<FiPlus />}
+                      icon={<FiPlus strokeWidth='3' p='100%' />}
                       onClick={() => {
                         setModalState(true);
                         setTimeout(
@@ -254,7 +266,7 @@ const Food = () => {
           <AlertDialog
             isCentered
             isOpen={alertState.open}
-            onClose={() => { setAlertState({ ...alertState, open: false }) }}
+            onClose={() => { setAlertState({ ...alertState, open: false }); setDeleteState(false) }}
           >
             <AlertDialogOverlay>
               <AlertDialogContent className='food-alert' maxW='75%'>
@@ -262,67 +274,90 @@ const Food = () => {
                   {foods[alertState.index].title}
                 </AlertDialogHeader>
                 <AlertDialogBody>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Text>Serving Size</Text>
-                    <Spacer />
-                    <Text>{foods[alertState.index].servingSize} {foods[alertState.index].servingUnit}</Text>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Text>Calories</Text>
-                    <Spacer />
-                    <Text>{foods[alertState.index].calories} kcal</Text>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Text>Carbs</Text>
-                    <Spacer />
-                    <Text>{foods[alertState.index].carbs} g</Text>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Text>Fat</Text>
-                    <Spacer />
-                    <Text>{foods[alertState.index].fat} g</Text>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Text>Protein</Text>
-                    <Spacer />
-                    <Text>{foods[alertState.index].protein} g</Text>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Text>Sodium</Text>
-                    <Spacer />
-                    <Text>{foods[alertState.index].sodium} mg</Text>
-                  </Box>
-                  <Box display='flex' justifyContent='space-between'>
-                    <Text>Sugar</Text>
-                    <Spacer />
-                    <Text>{foods[alertState.index].sugar} g</Text>
-                  </Box>
+                  {deleteState ? deleteMessage : (
+                    <Box>
+                      <Box display='flex' justifyContent='space-between'>
+                        <Text>Serving Size</Text>
+                        <Spacer />
+                        <Text>{foods[alertState.index].servingSize} {foods[alertState.index].servingUnit}</Text>
+                      </Box>
+                      <Box display='flex' justifyContent='space-between'>
+                        <Text>Calories</Text>
+                        <Spacer />
+                        <Text>{foods[alertState.index].calories} kcal</Text>
+                      </Box>
+                      <Box display='flex' justifyContent='space-between'>
+                        <Text>Carbs</Text>
+                        <Spacer />
+                        <Text>{foods[alertState.index].carbs} g</Text>
+                      </Box>
+                      <Box display='flex' justifyContent='space-between'>
+                        <Text>Fat</Text>
+                        <Spacer />
+                        <Text>{foods[alertState.index].fat} g</Text>
+                      </Box>
+                      <Box display='flex' justifyContent='space-between'>
+                        <Text>Protein</Text>
+                        <Spacer />
+                        <Text>{foods[alertState.index].protein} g</Text>
+                      </Box>
+                      <Box display='flex' justifyContent='space-between'>
+                        <Text>Sodium</Text>
+                        <Spacer />
+                        <Text>{foods[alertState.index].sodium} mg</Text>
+                      </Box>
+                      <Box display='flex' justifyContent='space-between'>
+                        <Text>Sugar</Text>
+                        <Spacer />
+                        <Text>{foods[alertState.index].sugar} g</Text>
+                      </Box>
+                    </Box>
+                  )}
                 </AlertDialogBody>
                 <AlertDialogFooter>
-                  <Button
-                    onClick={() => {
-                      setFormState({
-                        ...formState,
-                        title: (foods[alertState.index].title),
-                        servingSize: foods[alertState.index].servingSize,
-                        servingUnit: foods[alertState.index].servingUnit,
-                        calories: foods[alertState.index].calories,
-                        carbs: foods[alertState.index].carbs,
-                        fat: foods[alertState.index].fat,
-                        protein: foods[alertState.index].protein,
-                        sodium: foods[alertState.index].sodium,
-                        sugar: foods[alertState.index].sugar,
-                      });
-                      setModalState(false);
-                      setEditState({ ...editState, open: true, index: alertState.index });
-                      setAlertState({ ...alertState, open: false });
-                    }}
-                  >
-                    <FiEdit /> Edit
-                  </Button>
-                  <Button onClick={() => { handleRemoveFood(foods[alertState.index]._id) }}>
-                    <FiTrash2 />Delete
-                  </Button>
+                  {deleteState ? (
+                    <ButtonGroup>
+                      <Button
+                        onClick={() => {
+                          setModalState(false);
+                          setAlertState({ ...alertState, open: false });
+                          setDeleteState(false)
+                        }}
+                      >
+                        <FiX /> Cancel
+                      </Button>
+                      <Button onClick={() => { handleRemoveFood(foods[alertState.index]._id) }}>
+                        <FiTrash2 />Delete
+                      </Button>
+                      </ButtonGroup>
+                  ) : (
+                    <ButtonGroup>
+                      <Button
+                        onClick={() => {
+                          setFormState({
+                            ...formState,
+                            title: (foods[alertState.index].title),
+                            servingSize: foods[alertState.index].servingSize,
+                            servingUnit: foods[alertState.index].servingUnit,
+                            calories: foods[alertState.index].calories,
+                            carbs: foods[alertState.index].carbs,
+                            fat: foods[alertState.index].fat,
+                            protein: foods[alertState.index].protein,
+                            sodium: foods[alertState.index].sodium,
+                            sugar: foods[alertState.index].sugar,
+                          });
+                          setModalState(false);
+                          setEditState({ ...editState, open: true, index: alertState.index });
+                          setAlertState({ ...alertState, open: false });
+                        }}
+                      >
+                        <FiEdit /> Edit
+                      </Button>
+                      <Button onClick={() => { setDeleteState(true); getFoodAssociation(foods[alertState.index]._id) }}>
+                        <FiTrash2 />Delete
+                      </Button>
+                    </ButtonGroup>
+                  )}
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialogOverlay>

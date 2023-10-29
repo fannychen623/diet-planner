@@ -8,7 +8,6 @@ const foodSchema = new Schema(
         minlength: 1,
         maxlength: 300,
         trim: true,
-        unique: true,
     },
     servingSize: {
         type: Number,

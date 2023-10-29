@@ -4,7 +4,7 @@ import React, { useEffect, useState, Fragment } from 'react';
 // importy query and mutations
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
-import { REMOVE_FOOD } from '../utils/mutations';
+import { REMOVE_FOOD, REMOVE_MEAL_FOOD } from '../utils/mutations';
 
 // import local component
 import AddFood from '../components/AddFood';
@@ -15,6 +15,8 @@ import {
   Box, Flex, Spacer, Spinner, Heading, Button, IconButton,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   Input, InputGroup, InputLeftElement,
+  AlertDialog, AlertDialogBody, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay
 } from '@chakra-ui/react'
 
 // import icons
@@ -43,12 +45,16 @@ const Food = () => {
 
   // extract the routines from the query data
   const foods = data?.me.foods || [];
+  const meals = data?.me.meals || [];
 
   // define states
   const [foodList, setFoodList] = useState([...foods])
+  const [alertState, setAlertState] = useState({ open: false, id: '' })
   const [modalState, setModalState] = useState(false)
   const [drawerState, setDrawerState] = useState(false)
   const [displayState, setDisplayState] = useState(Array(foodList.length).fill(true))
+  const [associatedMeal, setAssociatedMeal] = useState([])
+  const [deleteMessage, setDeleteMessage] = useState('')
   const [searchValue, setSearchValue] = useState('')
   const [editIndex, setEditIndex] = useState(0);
   const [formState, setFormState] = useState({
@@ -128,19 +134,63 @@ const Food = () => {
     refetch();
   }, [foods, searchValue, sortState])
 
+
+  const getFoodAssociation = (id) => {
+    let affectedMeals = []
+    let mealIds = []
+    meals.forEach((meal) => {
+      let content = meal.content
+      for (let i = 0; i < content.length; i++) {
+        if (content[i].food === id) {
+          affectedMeals.push(meal.title)
+          mealIds.push(meal._id)
+        }
+      }
+    })
+    let response = ''
+    if (affectedMeals.length !== 0) {
+      setAssociatedMeal(mealIds)
+      response =
+        'The food will be removed from the following meal(s):\n\n ' + affectedMeals.join('\n')
+      setDeleteMessage(response)
+    } else {
+      setAssociatedMeal([])
+      response = 'You can not undo this action afterwards.'
+      setDeleteMessage(response)
+    }
+  }
+
+  // mutation and function to remove food
+  const [removeMealFood, { removeMealFoodError, removeMealFoodData }] = useMutation(REMOVE_MEAL_FOOD);
+  const handleRemoveMealFood = () => {
+    if (associatedMeal.length !== 0) {
+      associatedMeal.forEach((meal) => {
+        try {
+          const { removeMealFoodData } = removeMealFood({
+            variables: { mealId: meal, foodId: alertState.id },
+          });
+
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      handleRemoveFood(alertState.id)
+    } else {
+      handleRemoveFood(alertState.id)
+    }
+  };
+
   // mutation and function to remove food
   const [removeFood, { removeError, removeData }] = useMutation(REMOVE_FOOD);
   const handleRemoveFood = async (id) => {
-    if (id !== '') {
-      try {
-        const { removeData } = await removeFood({
-          variables: { foodId: id },
-        });
-        refetch();
-      } catch (e) {
-        console.error(e);
-      }
+    try {
+      const { removeData } = await removeFood({
+        variables: { foodId: id },
+      });
+    } catch (e) {
+      console.error(e);
     }
+    window.location.reload();
   };
 
   // if no food exist in database, render message
@@ -335,7 +385,7 @@ const Food = () => {
                           setDrawerState(true);
                         }}
                           size='sm' icon={<FiEdit p='100%' />} /></Td>
-                        <Td><IconButton onClick={() => { handleRemoveFood(food._id) }} size='sm' icon={<FiTrash2 p='100%' />} /></Td>
+                        <Td><IconButton onClick={() => { setAlertState({ ...alertState, open: true, id: food._id }); getFoodAssociation(food._id) }} size='sm' icon={<FiTrash2 p='100%' />} /></Td>
                       </Tr>
                     ) : (
                       <></>
@@ -349,6 +399,32 @@ const Food = () => {
           <AddFood addOpenState={modalState} addDetails={[]} />
         </Box>
       )}
+      <AlertDialog
+        isOpen={alertState.open}
+        onClose={() => { setAlertState({ ...alertState, open: false }) }}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent className='delete-food'>
+            <AlertDialogHeader>
+              Confirm Delete
+              <span>
+                {alertState.id === '' ? ('') : (foods[foods.findIndex((food) => food._id === alertState.id)].title)}
+              </span>
+            </AlertDialogHeader>
+            <AlertDialogBody whiteSpace='pre-line'>
+              {alertState.id === '' ? ('') : deleteMessage}
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={() => { setAlertState({ ...alertState, open: false }) }}>
+                Cancel
+              </Button>
+              <Button onClick={() => { handleRemoveMealFood() }}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 }

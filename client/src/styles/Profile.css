@@ -6,10 +6,19 @@
   padding: 2rem;
 }
 
+/* profile and metabolic statistics container */
+html[theme='dark'] .profile-page .css-jv498s {
+  background-color: var(--trans);
+  border: 0.5em solid var(--shade5);
+}
+
 /* profile and metabolic statistics header */
 .profile-page .css-xrxou1 {
   font-family: var(--font);
   color: var(--shade5)
+}
+html[theme='dark'] .profile-page .css-xrxou1 {
+  color: var(--shade4)
 }
 
 /* create profile text */
@@ -19,9 +28,28 @@
   margin-bottom: 1em;
 }
 
+/* profile unit selector */
+.profile-page .css-u3vn99, .profile-page .css-u3vn99:hover {
+  border-color: var(--shade3);
+}
+html[theme='dark'] .profile-page .css-u3vn99 {
+  color: white;
+}
+
+/* profile age input */
+.profile-page .css-10wjqo2, .profile-page .css-10wjqo2:hover {
+  border-color: var(--shade3);
+}
+html[theme='dark'] .profile-page .css-10wjqo2 {
+  color: white;
+}
+
 /* male female radio */
 .profile-page .css-1cqh9jq {
   margin-left: 1em;
+}
+html[theme='dark'] .profile-page .css-1cqh9jq {
+  color: white;
 }
 
 /* profile sex input */
@@ -31,19 +59,43 @@
 }
 
 /* profile inputLeftAddon */
-.profile-page .profile .css-127xmqf {
+.profile-page .css-127xmqf {
+  border: var(--shade3);
   background-color: var(--shade3);
+  color: var(--shade6);
 }
 
-/* profile units inputRightAddon */
-.profile-page .profile .css-1r6jmxn {
+/* profile feet inputRightAddon */
+.profile-page .css-1r6jmxn {
   border-radius: 0;
+  border-right: none;
   background-color: var(--shade1);
+  color: var(--shade6);
+}
+
+/* prfile inches and lbs inputrightaddon */
+.profile-page .css-ojlda9 {
+  background-color: var(--shade1);
+  color: var(--shade6);
 }
 
 /* profile inputs */
-.profile-page .profile .css-1y0e7gb {
+.profile-page .css-1y0e7gb, .profile-page .css-1y0e7gb:hover {
   margin-bottom: 1em;
+  border-color: var(--shade3);
+}
+html[theme='dark'] .profile-page .css-1y0e7gb {
+  color: white;
+}
+
+/* profile select fields */
+.profile-page .css-161pkch, .profile-page .css-161pkch:hover {
+  border-color: var(--shade3);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+html[theme='dark'] .profile-page .css-161pkch, html[theme='dark'] .profile-page .css-iohxn1 {
+  color: white;
 }
 
 /* add/update profile button */
@@ -51,14 +103,15 @@
   font-size: 1.5em;
   padding: 1em 1em;
   margin: auto;
+  margin-top: 0.5em;
   background-color: var(--shade4);
-  color: white;
+  color: var(--shade1);
 }
 
 /* add/update profile button */
 .profile-page .css-ez23ye:hover {
   background-color: var(--shade5);
-  color: white;
+  color: var(--shade1);
 }
 
 /* profile card bodies */
@@ -73,16 +126,24 @@
 
 /* stats card bodies */
 .profile-page .metabolicStats .css-1idwstw {
-  padding: 1em 2em 0.85em 2em;
+  padding: 1em 2em 1.35em 2em;
+}
+
+/* stats flexbox containers */
+.profile-page .css-k008qs {
+  align-items: center;
+  margin: 0.75em 0em;
 }
 
 /* stats titles */
 .profile-page .css-1dklj6k {
   font-family: var(--font);
   font-size: 1.75em;
-  margin-bottom: 1em;
   margin-right: 1em;
   color: var(--shade4)
+}
+html[theme='dark'] .profile-page .css-1dklj6k {
+  color: var(--shade5)
 }
 
 /* stats values */
@@ -90,8 +151,10 @@
   font-family: var(--font);
   font-size: 2em;
   font-weight: bolder;
-  margin-top: -0.25em;
   color: var(--shade5)
+}
+html[theme='dark'] .profile-page .metabolicStats .statsValue {
+  color: var(--shade6)
 }
 
 /* stats units */
@@ -99,7 +162,10 @@
   font-family: var(--font);
   font-size: 0.65em;
   margin-left: 1em;
-  color: var(--shade4);
+  color: var(--shade3);
+}
+html[theme='dark'] .metabolicStats span {
+  color: var(--shade5)
 }
 
 /* reference note */
@@ -111,4 +177,53 @@
 .profile-page a {
   font-style: italic;
   color: darkblue
+}
+html[theme='dark'] .profile-page a {
+  color: lightblue
+}
+
+@media (max-width: 480px) {
+
+  /* create profile text */
+.profile-page .createProfileText {
+  font-size: 1em;
+}
+
+  /* profile and metabolic statistics header */
+  .profile-page .css-xrxou1 {
+    font-size: 1.5em;
+  }
+
+  /* profile ft inputleftaddon */
+  .profile-page .css-1r6jmxn {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
+
+  /* metabolic statistics content */
+  .profile-page .metabolicStats .css-1idwstw {
+    margin-top: -1.5em;
+}
+
+  /* stats titles */
+  .profile-page .css-1dklj6k {
+    font-size: 1em;
+  }
+
+  /* stats values */
+  .profile-page .metabolicStats .statsValue {
+    font-size: 1.25em;
+  }
+
+  /* stats units */
+  .profile-page .metabolicStats span {
+    font-size: 0.75em;
+    margin-left: 0.5em;
+  }
+
+  /* reference note */
+  .profile-page .css-13brihr {
+    margin-top: 0.75em;
+  }
+
 }

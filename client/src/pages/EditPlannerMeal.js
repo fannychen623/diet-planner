@@ -56,7 +56,7 @@ const EditPlannerMeal = () => {
   });
 
   // extract the foods from the query data
-  const foods = useMemo(() => data?.me.foods, [data]);
+  const foods = useMemo(() => data?.me.foods || [], [data]);
 
   // fetch object parameter from the directed link
   const { state } = useLocation();
@@ -70,21 +70,34 @@ const EditPlannerMeal = () => {
   const getMealFood = () => {
     let mealContent = meal.content
     let mealFoodServings = mealContent.map(thisMeal => thisMeal.servings)
-    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food)
+    let mealFoodTitle = mealContent.map(thisMeal => thisMeal.title)
+    let mealFoodServingSize = mealContent.map(thisMeal => thisMeal.servingSize)
+    let mealFoodServingUnit = mealContent.map(thisMeal => thisMeal.servingUnit)
+    let mealFoodCalories = mealContent.map(thisMeal => thisMeal.calories)
+    let mealFoodCarbs = mealContent.map(thisMeal => thisMeal.carbs)
+    let mealFoodFat = mealContent.map(thisMeal => thisMeal.fat)
+    let mealFoodProtein = mealContent.map(thisMeal => thisMeal.protein)
+    let mealFoodSodium = mealContent.map(thisMeal => thisMeal.sodium)
+    let mealFoodSugar = mealContent.map(thisMeal => thisMeal.sugar)
     let mealFoodAdded = []
     for (let i = 0; i < mealContent.length; i++) {
-      let foodIndex = foods.findIndex(food => food._id === mealFoodIds[i])
+      let foodId = '_' + i
+      let foodTitles = foods.map((food) => food.title)
+      if (foodTitles.includes(mealFoodTitle[i])) {
+        foodId = foods[foods.findIndex((food) => food.title === mealFoodTitle[i])]._id
+      }
       mealFoodAdded.push({
-        id: mealFoodIds[i],
-        title: foods[foodIndex].title,
-        servingSizeUnit: foods[foodIndex].servingSize + ' ' + foods[foodIndex].servingUnit,
+        id: foodId,
+        title: mealFoodTitle[i],
+        servingSize: mealFoodServingSize[i],
+        servingUnit: mealFoodServingUnit[i],
         servings: mealFoodServings[i],
-        calories: foods[foodIndex].calories,
-        carbs: foods[foodIndex].carbs,
-        fat: foods[foodIndex].fat,
-        protein: foods[foodIndex].protein,
-        sodium: foods[foodIndex].sodium,
-        sugar: foods[foodIndex].sugar,
+        calories: mealFoodCalories[i],
+        carbs: mealFoodCarbs[i],
+        fat: mealFoodFat[i],
+        protein: mealFoodProtein[i],
+        sodium: mealFoodSodium[i],
+        sugar: mealFoodSugar[i],
       })
     }
     return mealFoodAdded
@@ -93,10 +106,10 @@ const EditPlannerMeal = () => {
   // function to get list of food not added to meal
   const getFoodList = () => {
     let mealContent = meal.content
-    let mealFoodIds = mealContent.map(thisMeal => thisMeal.food)
+    let mealFoodTitles = mealContent.map(thisMeal => thisMeal.title)
     let mealFoodAdded = foods
-    for (let i = 0; i < mealFoodIds.length; i++) {
-      mealFoodAdded = mealFoodAdded.filter((food) => food._id !== mealFoodIds[i])
+    for (let i = 0; i < mealFoodTitles.length; i++) {
+      mealFoodAdded = mealFoodAdded.filter((food) => food.title !== mealFoodTitles[i])
     }
     return mealFoodAdded
   }
@@ -135,7 +148,7 @@ const EditPlannerMeal = () => {
 
   // call on render and defined state changes
   useEffect(() => {
-// set displayed food in modal based on search value
+    // set displayed food in modal based on search value
     setDisplayState(Array(foodsList.length).fill(true))
     for (let i = 0; i < foodsList.length; i++) {
       if (foodsList[i].title.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0) {
@@ -145,16 +158,16 @@ const EditPlannerMeal = () => {
       }
     }
     setDisplayState({ ...displayState })
-    
+
     // calculate total nutritional value at each food/serving size change
     let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
     for (let i = 0; i < foodAdded.length; i++) {
-      newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories
-      newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs
-      newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat
-      newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein
-      newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium
-      newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar
+      newTotal.calories += foodAdded[i].calories * foodAdded[i].servings
+      newTotal.carbs += foodAdded[i].carbs * foodAdded[i].servings
+      newTotal.fat += foodAdded[i].fat * foodAdded[i].servings
+      newTotal.protein += foodAdded[i].protein * foodAdded[i].servings
+      newTotal.sodium += foodAdded[i].sodium * foodAdded[i].servings
+      newTotal.sugar += foodAdded[i].sugar * foodAdded[i].servings
     }
     setTotal({
       calories: +parseFloat(newTotal.calories).toFixed(2),
@@ -191,7 +204,8 @@ const EditPlannerMeal = () => {
           foodAdded.push({
             id: foods[foodIndex]._id,
             title: foods[foodIndex].title,
-            servingSizeUnit: foods[foodIndex].servingSize + ' ' + foods[foodIndex].servingUnit,
+            servingSize: foods[foodIndex].servingSize,
+            servingUnit: foods[foodIndex].servingUnit,
             servings: 1,
             calories: foods[foodIndex].calories,
             carbs: foods[foodIndex].carbs,
@@ -202,7 +216,7 @@ const EditPlannerMeal = () => {
           })
         }
         checkedState[i] = false
-        setFoodList(foods => foods.filter((food) => food.title != foodsList[i].title))
+        setFoodList(foods => foods.filter((food) => food.title !== foodsList[i].title))
       }
     }
     onClose()
@@ -214,7 +228,17 @@ const EditPlannerMeal = () => {
     const { id, value } = event.target
     if (value) {
       for (let i = 0; i < foodAdded.length; i++) {
-        if (foodAdded[i].id === id) {
+        if (foodAdded[i].id.indexOf('_') > -1) {
+          let mealContent = meal.content
+          let index = foodAdded[i].id.replace('_', '');
+          foodAdded[i].servings = parseFloat(value);
+          foodAdded[i].calories = mealContent[index].calories * value;
+          foodAdded[i].carbs = mealContent[index].carbs * value;
+          foodAdded[i].fat = mealContent[index].fat * value;
+          foodAdded[i].protein = mealContent[index].protein * value;
+          foodAdded[i].sodium = mealContent[index].sodium * value;
+          foodAdded[i].sugar = mealContent[index].sugar * value
+        } else {
           foodAdded[i].servings = parseFloat(value);
           foodAdded[i].calories = foods[foods.findIndex(food => food._id === id)].calories * value;
           foodAdded[i].carbs = foods[foods.findIndex(food => food._id === id)].carbs * value;
@@ -226,12 +250,12 @@ const EditPlannerMeal = () => {
       }
       let newTotal = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
       for (let i = 0; i < foodAdded.length; i++) {
-        newTotal.calories += foods[foods.findIndex(food => food._id === foodAdded[i].id)].calories * foodAdded[i].servings
-        newTotal.carbs += foods[foods.findIndex(food => food._id === foodAdded[i].id)].carbs * foodAdded[i].servings
-        newTotal.fat += foods[foods.findIndex(food => food._id === foodAdded[i].id)].fat * foodAdded[i].servings
-        newTotal.protein += foods[foods.findIndex(food => food._id === foodAdded[i].id)].protein * foodAdded[i].servings
-        newTotal.sodium += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sodium * foodAdded[i].servings
-        newTotal.sugar += foods[foods.findIndex(food => food._id === foodAdded[i].id)].sugar * foodAdded[i].servings
+        newTotal.calories += foodAdded[i].calories * foodAdded[i].servings
+        newTotal.carbs += foodAdded[i].carbs * foodAdded[i].servings
+        newTotal.fat += foodAdded[i].fat * foodAdded[i].servings
+        newTotal.protein += foodAdded[i].protein * foodAdded[i].servings
+        newTotal.sodium += foodAdded[i].sodium * foodAdded[i].servings
+        newTotal.sugar += foodAdded[i].sugar * foodAdded[i].servings
       }
       setTotal({
         calories: +parseFloat(newTotal.calories).toFixed(2),
@@ -295,10 +319,32 @@ const EditPlannerMeal = () => {
   const handleUpdateDietFood = async () => {
     for (let i = 0; i < foodAdded.length; i++) {
       let servings = parseFloat(foodAdded[i].servings)
-      let food = foodAdded[i].id
+      let info = { title: foodAdded[i].title, servingSize: 0, servingUnit: '', calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+      if (foodAdded[i].id.indexOf('_') > -1) {
+        let mealContent = meal.content
+        let index = foodAdded[i].id.replace('_', '');
+        info.servingSize = mealContent[index].servingSize;
+        info.servingUnit = mealContent[index].servingUnit;
+        info.calories = mealContent[index].calories;
+        info.carbs = mealContent[index].carbs;
+        info.fat = mealContent[index].fat;
+        info.protein = mealContent[index].protein;
+        info.sodium = mealContent[index].sodium;
+        info.sugar = mealContent[index].sugar
+      } else {
+        let index = foods.findIndex((food) => food._id === foodAdded[i].id)
+        info.servingSize = foods[index].servingSize;
+        info.servingUnit = foods[index].servingUnit;
+        info.calories = foods[index].calories;
+        info.carbs = foods[index].carbs;
+        info.fat = foods[index].fat;
+        info.protein = foods[index].protein;
+        info.sodium = foods[index].sodium;
+        info.sugar = foods[index].sugar;
+      }
       try {
         const { dietFoodData } = await updateDietFood({
-          variables: { dietId: meal.id, servings, food },
+          variables: { dietId: meal.id, servings, ...info },
         });
       } catch (e) {
         console.error(e)
@@ -314,7 +360,7 @@ const EditPlannerMeal = () => {
       <Flex>
         <Box>
           <InputGroup>
-            <InputLeftAddon children='Meal Name'/>
+            <InputLeftAddon children='Meal Name' />
             <Input
               type='text'
               name='title'
@@ -327,7 +373,7 @@ const EditPlannerMeal = () => {
         <Spacer />
         <Box>
           <InputGroup>
-            <InputLeftAddon children='Number of Serving'/>
+            <InputLeftAddon children='Number of Serving' />
             <NumberInput
               defaultValue={mealDetails.numberOfServing}
               min={0.25}
@@ -383,7 +429,7 @@ const EditPlannerMeal = () => {
                       onChange={handleUpdateServings}
                     />
                   </Td>
-                  <Td>{addFood.servingSizeUnit}</Td>
+                  <Td>{addFood.servingSize} {addFood.servingUnit}</Td>
                   <Td isNumeric>{+parseFloat(addFood.calories).toFixed(2)}</Td>
                   <Td isNumeric>{+parseFloat(addFood.carbs).toFixed(2)}</Td>
                   <Td isNumeric>{+parseFloat(addFood.fat).toFixed(2)}</Td>
@@ -448,37 +494,37 @@ const EditPlannerMeal = () => {
           <ModalBody overflowY='auto' maxHeight='50vh' >
             {foodsList.map((food, index) => (
               <>
-              {displayState[`${index}`] ? (
-              <Flex key={food._id}
-                justifyContent='space-between'
-                alignItems='center'
-              >
-                <Box>
-                  <Checkbox
-                    value={food.title}
-                    isChecked={checkedState[index]}
-                    onChange={handleChangeState}
+                {displayState[`${index}`] ? (
+                  <Flex key={food._id}
+                    justifyContent='space-between'
+                    alignItems='center'
                   >
-                    {food.title}
-                  </Checkbox>
-                </Box>
-                <Box>
-                  <Popover onOpen={() => { getFoodPreview(index) }}>
-                    <PopoverTrigger>
-                      <IconButton
-                        aria-label={food.title}
-                        icon={<FiInfo p='100%' />}
-                      />
-                    </PopoverTrigger>
-                    <PopoverContent width='fit-content' border='none'>
-                      <PopoverBody>{foodPreview}</PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                </Box>
-              </Flex>
-              ):(
-                <></>
-              )}
+                    <Box>
+                      <Checkbox
+                        value={food.title}
+                        isChecked={checkedState[index]}
+                        onChange={handleChangeState}
+                      >
+                        {food.title}
+                      </Checkbox>
+                    </Box>
+                    <Box>
+                      <Popover onOpen={() => { getFoodPreview(index) }}>
+                        <PopoverTrigger>
+                          <IconButton
+                            aria-label={food.title}
+                            icon={<FiInfo p='100%' />}
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent width='fit-content' border='none'>
+                          <PopoverBody>{foodPreview}</PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Box>
+                  </Flex>
+                ) : (
+                  <></>
+                )}
               </>
             ))}
           </ModalBody>

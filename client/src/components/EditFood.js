@@ -49,7 +49,7 @@ const EditFood = ({ editDetails, editId, editOpenState }) => {
   // extract the foods from the query data
   const foods = useMemo(() => data?.me.foods, [data]);
   // map through data to get array of food titles
-  const foodTitles = useMemo(() => foods.map(food => food.title), [foods]);
+  const foodTitles = useMemo(() => foods.map(food => food.title) || [], [foods]);
 
   // set drawer open state, default false
   const [drawerState, setDrawerState] = useState(false)
@@ -145,7 +145,7 @@ const EditFood = ({ editDetails, editId, editOpenState }) => {
         onClose={() => { setDrawerState(false) }}
       >
         <DrawerOverlay />
-        <DrawerContent className='edit-food' overflowX='auto'>
+        <DrawerContent className='edit-food' overflowX='auto' maxW='35%'>
           <DrawerCloseButton />
           <DrawerHeader>
             Edit

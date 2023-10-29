@@ -1,5 +1,6 @@
 // import packages
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import env from 'react-dotenv';
 
 // import local component
@@ -8,7 +9,7 @@ import AddFood from '../components/AddFood';
 // import package components
 import {
   Box, SimpleGrid, Heading, Text, Button, IconButton,
-  Popover, PopoverTrigger, PopoverContent, PopoverBody,
+  Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody,
   Input, InputGroup, InputLeftElement, InputRightElement,
   Card, CardHeader, CardBody, CardFooter, Tooltip,
 } from '@chakra-ui/react'
@@ -32,11 +33,12 @@ function toTitleCase(str) {
 // functional component for the search page
 const Search = () => {
 
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+
   // define states
   const [searchValue, setSearchValue] = useState('')
   const [branded, setBranded] = useState([])
   const [foundation, setFoundation] = useState([])
-  const [viewOption, setViewOption] = useState('All')
   const [modalState, setModalState] = useState(false)
   const [formState, setFormState] = useState({
     title: '',
@@ -147,36 +149,55 @@ const Search = () => {
     }
   }
 
-  useEffect(() => {
-    setViewOption('All')
-  }, [])
-
   return (
     <Box className='search-page'>
       <Heading>Search Nutrition Facts</Heading>
-      <Box display='flex'>
-        <InputGroup>
-          <InputLeftElement pointerEvents='none'>
-            <FiSearch color='var(--shade5)' />
-          </InputLeftElement>
-          <Input
-            onKeyDown={handleKeyDown}
-            onChange={(e) => { setSearchValue(e.target.value) }}
-          />
-          <InputRightElement>
-            <Tooltip
-              placement='bottom'
-              whiteSpace='pre-line'
-              bg='var(--shade2)'
-              color='var(--shade6)'
-              p='1em'
-              label='Special Operators:&#010;Exact Phrase: "food"&#010;Partial Match: *food&#010;Include Word: +food&#010;Exclude Word: -food'>
-              <span><FiInfo /></span>
-            </Tooltip>
-          </InputRightElement>
-        </InputGroup>
-        <Button onClick={searchFood}>Search</Button>
-      </Box>
+      {isMobile ? (
+        <Box display='flex'>
+          <InputGroup>
+            <InputLeftElement>
+              <Popover placement='bottom-start'>
+                <PopoverTrigger>
+                  <IconButton icon={<FiInfo />} bg='var(--trans)'/>
+                </PopoverTrigger>
+                <PopoverContent maxW='fit-content'>
+                  <PopoverHeader>Special Operators</PopoverHeader>
+                  <PopoverBody whiteSpace='pre-line'>Exact Phrase: <span>"</span>food<span>"</span> {'\n'} Partial Match: <span>*</span>food {'\n'} Include Word: <span>+</span>food {'\n'} Exclude Word: <span>-</span>food</PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </InputLeftElement>
+            <Input
+              onKeyDown={handleKeyDown}
+              onChange={(e) => { setSearchValue(e.target.value) }}
+            />
+          </InputGroup>
+          <IconButton icon={<FiSearch />} onClick={searchFood} />
+        </Box>
+      ) : (
+        <Box display='flex'>
+          <InputGroup>
+            <InputLeftElement pointerEvents='none'>
+              <FiSearch color='var(--shade5)' />
+            </InputLeftElement>
+            <Input
+              onKeyDown={handleKeyDown}
+              onChange={(e) => { setSearchValue(e.target.value) }}
+            />
+            <InputRightElement>
+            <Popover trigger='hover' placement='bottom'>
+                <PopoverTrigger>
+                  <IconButton icon={<FiInfo />} bg='var(--trans)'/>
+                </PopoverTrigger>
+                <PopoverContent maxW='fit-content'>
+                  <PopoverHeader>Special Operators</PopoverHeader>
+                  <PopoverBody whiteSpace='pre-line'>Exact Phrase: <span>"</span>food<span>"</span> {'\n'} Partial Match: <span>*</span>food {'\n'} Include Word: <span>+</span>food {'\n'} Exclude Word: <span>-</span>food</PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </InputRightElement>
+          </InputGroup>
+          <Button onClick={searchFood}>Search</Button>
+        </Box>
+      )}
       <SimpleGrid templateColumns='repeat(auto-fill, minmax(20em, 1fr))'>
         {foundation.map((food, index) => (
           <Card key={index}>

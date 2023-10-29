@@ -1,23 +1,62 @@
+/* import font used throughout pages */
+@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
+
 :root {
+  --trans: #ffffff00;
+  --font: 'Questrial', sans-serif;
+}
+
+:root[theme='original'] {
   --shade1: #ecede8;
   --shade2: #e3e6d8;
   --shade3: #bcd0af;
   --shade4: #83aa86;
   --shade5: #41664c;
   --shade6: #203627;
-  --trans: #ffffff00;
-  --font: 'Questrial', sans-serif;
 }
 
-/* import font used throughout pages */
-@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
+:root[theme='light'] {
+  --shade1: #edf6ff;
+  --shade2: #d9e4ee;
+  --shade3: #9fbad3;
+  --shade4: #6790ae;
+  --shade5: #3b6282;
+  --shade6: black;
+}
 
-/* gradient background across all pages */
+:root[theme='dark'] {
+  --shade1: #0f1832;
+  --shade2: #16213E;
+  --shade3: #0F3460;
+  --shade4: #E94560;
+  --shade5: #b5b5b5;
+  --shade6: white;
+}
+
+/* background across all pages */
 .global {
-  background: linear-gradient(180deg, var(--shade1), var(--shade2), var(--shade3), var(--shade4), var(--shade5), var(--shade6));
-  background-size: 100% 100%;
   min-height: 100vh;
   height: fit-content;
   font-family: var(--font);
   font-size: 100%;
+  color: var(--shade6);
+}
+
+/* gradient background  for original theme */
+html[theme='original'] .global {
+  background: linear-gradient(180deg, var(--shade1), var(--shade2), var(--shade3));
+  background-size: 100% 100%;
+}
+
+/* gradient background  for original theme */
+html[theme='light'] .global {
+  background-color: white;
+  background-size: 100% 100%;
+  border-bottom: solid 1em var(--shade5);
+}
+
+/* gradient background  for original theme */
+html[theme='dark'] .global {
+  background-color: var(--shade1);
+  background-size: 100% 100%;
 }

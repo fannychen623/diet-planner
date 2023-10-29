@@ -31,13 +31,12 @@
     padding: 2rem 1.5rem 2rem 1.5rem;
     margin-bottom: 2rem;
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
 /* add food button */
 .food-page .css-ez23ye:hover {
-    background-color: var(--shade3);
-    color: var(--shade5);
+    background-color: var(--shade4);
 }
 
 /* search bar */
@@ -57,16 +56,12 @@
 .food-page .css-zipzvv {
     width: 100rem;
     margin-bottom: 2rem;
-}
-
-/* table */
-.food-page .css-5605sr {
-    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--shade5);
 }
 
 /* table headers */
 .food-page .css-1zts0j {
-    color: white;
+    color: var(--shade1);
     background-color: var(--shade5);
     padding: 0;
 }
@@ -79,20 +74,30 @@
     padding: 1.5em 0.5em;
     border-radius: 0;
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
 /* table header buttons */
 .food-page .css-1f0rfxj:hover {
     background-color: var(--shade4);
 }
+html[theme='dark'] .food-page .css-1f0rfxj:hover {
+    background-color: var(--shade3);
+    color: var(--shade6);
+}
 
 /* table content */
 .food-page .css-xumdn4,
 .food-page .css-xumdn4[data-is-numeric=true] {
     text-align: center;
-    border-color: var(--shade4);
+    border-color: var(--shade5);
 }
+
+/* table row */
+html[theme='dark'] .food-page .css-crlss9:hover {
+    background-color: var(--shade3);
+}
+
 
 /* table items */
 .food-page .css-crlss9 {
@@ -102,6 +107,7 @@
 /* food edit and delete button */
 .food-page .css-fx3q01 {
     background-color: var(--trans);
+    color: var(--shade6);
     margin: 0em -1em 0em -1em;
 }
 
@@ -110,10 +116,15 @@
     background-color: var(--shade2);
 }
 
-/* edit food span */
-.edit-food span {
+/* edit food modal header span, delete food alert header span */
+.edit-food span,
+.delete-food span {
     margin-left: 0.5em;
     color: var(--shade5);
+}
+html[theme='dark'] .edit-food span,
+html[theme='dark'] .delete-food span {
+    color: var(--shade4);
 }
 
 /* edit food inputgroup container */
@@ -125,7 +136,7 @@
 .edit-food .css-127xmqf {
     width: 30%;
     background-color: var(--shade5);
-    color: var(--shade2);
+    color: var(--shade1);
     border-color: var(--shade5)
 }
 
@@ -154,32 +165,48 @@
     background-color: var(--shade2);
     border-color: var(--shade5);
 }
-
-/* edit food drawer footer */
-.edit-food .css-k0waxj {
-    justify-content: space-between;
+html[theme='dark'] .edit-food .css-1r6jmxn {
+    color: var(--shade5);
 }
 
-/* edit food submit button */
-.edit-food .css-ez23ye {
+/* edit food drawer footer, delete food alert footer */
+.edit-food .css-k0waxj,
+.delete-food .css-k0waxj {
+    justify-content: space-between;
+    padding-bottom: 1.5em;
+}
+
+/* edit food modal buttons, add food modal buttons, and delete food alert buttons */
+.edit-food .css-ez23ye,
+.add-food .css-ez23ye,
+.delete-food .css-ez23ye {
     background-color: var(--shade3);
 }
+html[theme='dark'] .edit-food .css-ez23ye,
+html[theme='dark'] .add-food .css-ez23ye,
+html[theme='dark'] .delete-food .css-ez23ye {
+    color: var(--shade6);
+}
 
-/* edit food submit button */
-.edit-food .css-ez23ye:hover {
+/* edit food modal buttons, add food modal buttons, and delete food alert buttons */
+.edit-food .css-ez23ye:hover,
+.add-food .css-ez23ye:hover,
+.delete-food .css-ez23ye:hover {
     background-color: var(--shade4);
 }
 
-/* add food modal container */
-.add-food {
-    min-width: 50rem;
-}
-
-/* add food modal header */
-.add-food .css-9fgtzh {
+/* add food modal header, delete food alert header */
+.add-food .css-9fgtzh,
+.delete-food .css-1x2vgm7 {
+    display: flex;
+    align-items: center;
     font-size: 1.75em;
     color: var(--shade5);
 }
+html[theme='dark'] .add-food .css-9fgtzh,
+html[theme='dark'] .delete-food .css-1x2vgm7 {
+    color: var(--shade4);
+} 
 
 /* add food input containers */
 .add-food .css-1y0e7gb {
@@ -201,6 +228,9 @@
     border-color: var(--shade5);
     border-left: none;
 }
+html[theme='dark'] .add-food .css-1r6jmxn {
+    color: var(--shade5);
+}
 
 /* add food input fields */
 .add-food .css-10wjqo2,
@@ -212,15 +242,6 @@
     border-color: var(--shade5);
 }
 
-/* add food modal buttons */
-.add-food .css-ez23ye {
-    background-color: var(--shade3);
-}
-
-/* add food modal buttons */
-.add-food .css-ez23ye:hover {
-    background-color: var(--shade4);
-}
 
 @media (max-width: 480px) {
 
@@ -250,21 +271,72 @@
         color: var(--shade5);
         padding-bottom: 0;
     }
-
-    /* food alert footer */
-    .food-alert .css-k0waxj {
-        justify-content: space-between;
+    html[theme='dark'] .food-alert .css-1x2vgm7 {
+        color: var(--shade4);
     }
 
     /* food alert buttons */
-    .food-alert .css-ez23ye,
-    .food-alert .css-ez23ye:hover {
+    .food-alert .css-i6ew5e,
+    .food-alert .css-i6ew5e:hover {
         background-color: var(--shade3);
+        color: var(--shade6);
     }
 
     /* food alert icons */
     .food-alert svg {
         margin-right: 0.5em;
+    }
+
+    /* food alert foot button group */
+    .food-alert .css-1ind3v2 {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    /* add food modal header */
+    .add-food .css-9fgtzh {
+        font-size: 1.5em;
+        padding-bottom: 0.25em;
+    }
+
+    /* add food name and serving size title */
+    .add-food .css-xi606m,
+    .add-food .css-d3ozfg {
+        border-top-left-radius: 0.375rem;
+        border-top-right-radius: 0.375rem;
+        background-color: var(--shade5);
+        color: var(--shade1);
+    }
+
+    /* add food name and serving size input */
+    .add-food .css-4uav1b,
+    .add-food .css-4uav1b:hover,
+    .add-food .css-r84t6h,
+    .add-food .css-r84t6h:hover {
+        border-color: var(--shade5);
+    }
+
+    /* add food serving size input */
+    .add-food .css-1qbkrx6,
+    .add-food .css-1qbkrx6:hover {
+        border-color: var(--shade5);
+        border-right: none;
+        margin-bottom: 1em;
+    }
+
+    /* add food inputleftaddon */
+    .add-food .css-127xmqf {
+        width: 6em;
+    }
+
+    /* add food inputrightaddon */
+    .add-food .css-1r6jmxn {
+        width: 4em;
+    }
+
+    /* add food footer */
+    .add-food .css-8xy72f {
+        padding-top: 0;
     }
 
     /* edit food modal header food title */
@@ -273,9 +345,13 @@
         font-size: 1.25em;
         color: var(--shade5);
     }
+    html[theme='dark'] .edit-food .css-9fgtzh {
+        color: var(--shade4);
+    }
 
     /* edit food name and serving size text heading */
-    .edit-food .css-xi606m, .edit-food .css-d3ozfg {
+    .edit-food .css-xi606m,
+    .edit-food .css-d3ozfg {
         border-top-left-radius: 0.375rem;
         border-top-right-radius: 0.375rem;
         background-color: var(--shade5);
@@ -283,7 +359,9 @@
     }
 
     /* edit food name and serving size inputs */
-    .edit-food .css-4uav1b, .edit-food .css-1qbkrx6, .edit-food .css-r84t6h {
+    .edit-food .css-4uav1b,
+    .edit-food .css-1qbkrx6,
+    .edit-food .css-r84t6h {
         border-color: var(--shade5);
     }
 
@@ -292,19 +370,19 @@
         margin: 0.75em 0em;
     }
 
-/* edit food inputleftaddon */
-.edit-food .css-127xmqf {
-    width: 40%;
-}
+    /* edit food inputleftaddon */
+    .edit-food .css-127xmqf {
+        width: 40%;
+    }
 
-/* edit food inputrightaddon */
-.edit-food .css-1r6jmxn {
-    width: 30%;
-}
+    /* edit food inputrightaddon */
+    .edit-food .css-1r6jmxn {
+        width: 30%;
+    }
 
-/* edit food footer */
-.edit-food .css-k0waxj {
-    padding-top: 0;
-}
+    /* edit food footer */
+    .edit-food .css-k0waxj {
+        padding-top: 0;
+    }
 
 }

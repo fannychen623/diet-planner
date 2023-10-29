@@ -8,6 +8,7 @@ export const QUERY_ME = gql`
       email
       profile {
         _id
+        theme
         age
         sex
         height
@@ -37,9 +38,7 @@ export const QUERY_ME = gql`
         numberOfServing
         content {
           servings
-          food {
-            _id
-          }
+          food
         }
       }
       planner {
@@ -51,9 +50,15 @@ export const QUERY_ME = gql`
           numberOfServing
           content {
             servings
-            food {
-              _id
-            }
+            title
+            servingSize
+            servingUnit
+            calories
+            carbs
+            fat
+            protein
+            sodium
+            sugar
           }
         }
         customDiet {

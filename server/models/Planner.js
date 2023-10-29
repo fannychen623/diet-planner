@@ -6,7 +6,7 @@ const plannerSchema = new Schema({
     type: Date,
     required: true,
     unique: true,
-    get: (date)=> format(date, 'MM/dd/yyyy')
+    get: (date) => format(date, 'MM/dd/yyyy')
   },
   diet: [
     {
@@ -23,51 +23,83 @@ const plannerSchema = new Schema({
       },
       content: [
         {
+          _id: false,
           servings: {
             type: Number,
             require: true,
           },
-          food: [
-            {
-              type: Schema.Types.ObjectId,
-              ref: 'Food',
-            }
-          ],
+          title: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+          servingSize: {
+            type: Number,
+            required: true,
+          },
+          servingUnit: {
+            type: String,
+            required: true,
+          },
+          calories: {
+            type: Number,
+            required: true,
+          },
+          carbs: {
+            type: Number,
+            required: false,
+          },
+          fat: {
+            type: Number,
+            required: false,
+          },
+          protein: {
+            type: Number,
+            required: false,
+          },
+          sodium: {
+            type: Number,
+            required: false,
+          },
+          sugar: {
+            type: Number,
+            required: false,
+          },
         },
       ],
     },
   ],
-  customDiet : [
+  customDiet: [
     {
       title: {
         type: String,
         required: true,
         trim: true,
-    },
-    calories: {
-        type: Number, 
+      },
+      calories: {
+        type: Number,
         required: true,
-    },
-    carbs: {
+      },
+      carbs: {
         type: Number,
         required: false,
-    },
-    fat: {
-        type: Number, 
-        required: false,
-    },
-    protein: {
+      },
+      fat: {
         type: Number,
         required: false,
-    },
-    sodium: {
-        type: Number, 
-        required: false,
-    },
-    sugar: {
+      },
+      protein: {
         type: Number,
         required: false,
-    },
+      },
+      sodium: {
+        type: Number,
+        required: false,
+      },
+      sugar: {
+        type: Number,
+        required: false,
+      },
     }
 
   ],

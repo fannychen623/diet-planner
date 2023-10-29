@@ -1,5 +1,6 @@
 // import packages
 import React, { useEffect, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 // importy query and mutation
 import { useQuery, useMutation } from '@apollo/client';
@@ -8,7 +9,7 @@ import { ADD_FOOD } from '../utils/mutations';
 
 // import package components
 import {
-  Box, SimpleGrid, Text, Button,
+  Box, SimpleGrid, Spacer, Text, Button,
   Input, InputGroup, InputLeftAddon, InputRightAddon,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton,
@@ -16,6 +17,9 @@ import {
   AlertDialogHeader, AlertDialogContent, AlertDialogOverlay,
   AlertDialogCloseButton, useDisclosure,
 } from '@chakra-ui/react'
+
+// import icons
+import { IoCloseOutline } from 'react-icons/io5';
 
 // import local style sheet
 import '../styles/Food.css';
@@ -33,6 +37,8 @@ function toTitleCase(str) {
 // functional component/modal to add food
 // pass in food information from search page if applicable and state of modal
 const AddFood = ({ addDetails, addOpenState }) => {
+
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -52,7 +58,7 @@ const AddFood = ({ addDetails, addOpenState }) => {
   // extract the foods from the query data
   const foods = data?.me.foods || []
   // map through data to get array of food titles
-  const foodTitles = foods.map(food => food.title)
+  const foodTitles = foods.map(food => food.title) || []
 
   // set modal open state, default false
   const [modalState, setModalState] = useState(false)
@@ -152,72 +158,102 @@ const AddFood = ({ addDetails, addOpenState }) => {
 
   return (
     <Box>
-      <Modal size='xl' isOpen={modalState} onClose={() => { setModalState(false) }} isCentered >
+      <Modal isOpen={modalState} onClose={() => { setModalState(false) }} isCentered >
         <ModalOverlay />
-        <ModalContent className='add-food' overflowY='auto' >
-          <ModalHeader>New Food</ModalHeader>
-          <ModalCloseButton />
+        <ModalContent className='add-food' overflowY='auto' maxW={isMobile ? '75%' : '50%'} >
+          <ModalHeader>New Food<Spacer /><IoCloseOutline onClick={() => { setModalState(false) }} /></ModalHeader>
           <ModalBody>
-            <Box>
-              <InputGroup>
-                <InputLeftAddon children='Name' />
-                <Input value={addState.title} onChange={(e) => { setAddState({ ...addState, title: toTitleCase(e.target.value) }) }} />
-              </InputGroup>
-              <SimpleGrid columns='2' spacingX='5'>
+            {isMobile ? (
+              <Box>
                 <Box>
-                  <InputGroup>
-                    <InputLeftAddon children='Serving Size' />
-                    <Input value={addState.servingSize} onChange={(e) => { setAddState({ ...addState, servingSize: e.target.value }) }} />
-                  </InputGroup>
+                  <Text textAlign='center'>Name</Text>
+                  <Input
+                    borderTopLeftRadius='0'
+                    borderTopRightRadius='0'
+                    value={addState.title}
+                    onChange={(e) => { setAddState({ ...addState, title: toTitleCase(e.target.value) }) }}
+                  />
                 </Box>
-                <Box>
-                  <Input placeholder='Unit' value={addState.servingUnit} onChange={(e) => { setAddState({ ...addState, servingUnit: e.target.value.toLowerCase() }) }} />
-                </Box>
-                <Box>
-                  <InputGroup>
-                    <InputLeftAddon children='Calories' />
-                    <Input value={addState.calories} onChange={(e) => { setAddState({ ...addState, calories: e.target.value }) }} />
-                    <InputRightAddon children='kcal' />
-                  </InputGroup>
-                </Box>
-                <Box>
-                  <InputGroup>
-                    <InputLeftAddon children='Carbs' />
-                    <Input value={addState.carbs} onChange={(e) => { setAddState({ ...addState, carbs: e.target.value }) }} />
-                    <InputRightAddon children='g' />
-                  </InputGroup>
-                </Box>
-                <Box>
-                  <InputGroup>
-                    <InputLeftAddon children='Fat' />
-                    <Input value={addState.fat} onChange={(e) => { setAddState({ ...addState, fat: e.target.value }) }} />
-                    <InputRightAddon children='g' />
-                  </InputGroup>
-                </Box>
-                <Box>
-                  <InputGroup>
-                    <InputLeftAddon children='Protein' />
-                    <Input value={addState.protein} onChange={(e) => { setAddState({ ...addState, protein: e.target.value }) }} />
-                    <InputRightAddon children='g' />
-                  </InputGroup>
-                </Box>
-                <Box>
-                  <InputGroup>
-                    <InputLeftAddon children='Sodium' />
-                    <Input value={addState.sodium} onChange={(e) => { setAddState({ ...addState, sodium: e.target.value }) }} />
-                    <InputRightAddon children='mg' />
-                  </InputGroup>
-                </Box>
-                <Box>
-                  <InputGroup>
-                    <InputLeftAddon children='Sugar' />
-                    <Input value={addState.sugar} onChange={(e) => { setAddState({ ...addState, sugar: e.target.value }) }} />
-                    <InputRightAddon children='g' />
-                  </InputGroup>
-                </Box>
-              </SimpleGrid>
-              <Text textAlign='center'>{errorMessage}</Text>
-            </Box>
+                <Text textAlign='center' marginTop='0.75em'>Serving Size</Text>
+                <InputGroup marginTop='0'>
+                  <Input
+                    borderRadius='0'
+                    borderBottomLeftRadius='0.375rem'
+                    value={addState.servingSize}
+                    onChange={(e) => { setAddState({ ...addState, servingSize: e.target.value }) }}
+                  />
+                  <Input
+                    borderRadius='0'
+                    borderBottomRightRadius='0.375rem'
+                    value={addState.servingUnit}
+                    onChange={(e) => { setAddState({ ...addState, servingUnit: e.target.value }) }}
+                  />
+                </InputGroup>
+              </Box>
+            ) : (
+              <Box>
+                <InputGroup>
+                  <InputLeftAddon children='Name' />
+                  <Input value={addState.title} onChange={(e) => { setAddState({ ...addState, title: toTitleCase(e.target.value) }) }} />
+                </InputGroup>
+                <SimpleGrid columns='2' spacingX='5'>
+                  <Box>
+                    <InputGroup>
+                      <InputLeftAddon children='Serving Size' />
+                      <Input value={addState.servingSize} onChange={(e) => { setAddState({ ...addState, servingSize: e.target.value }) }} />
+                    </InputGroup>
+                  </Box>
+                  <Box>
+                    <Input placeholder='Unit' value={addState.servingUnit} onChange={(e) => { setAddState({ ...addState, servingUnit: e.target.value.toLowerCase() }) }} />
+                  </Box>
+                </SimpleGrid>
+              </Box>
+            )}
+            <SimpleGrid columns={isMobile ? 1 : 2} spacingX='5'>
+              <Box>
+                <InputGroup>
+                  <InputLeftAddon children='Calories' />
+                  <Input value={addState.calories} onChange={(e) => { setAddState({ ...addState, calories: e.target.value }) }} />
+                  <InputRightAddon children='kcal' />
+                </InputGroup>
+              </Box>
+              <Box>
+                <InputGroup>
+                  <InputLeftAddon children='Carbs' />
+                  <Input value={addState.carbs} onChange={(e) => { setAddState({ ...addState, carbs: e.target.value }) }} />
+                  <InputRightAddon children='g' />
+                </InputGroup>
+              </Box>
+              <Box>
+                <InputGroup>
+                  <InputLeftAddon children='Fat' />
+                  <Input value={addState.fat} onChange={(e) => { setAddState({ ...addState, fat: e.target.value }) }} />
+                  <InputRightAddon children='g' />
+                </InputGroup>
+              </Box>
+              <Box>
+                <InputGroup>
+                  <InputLeftAddon children='Protein' />
+                  <Input value={addState.protein} onChange={(e) => { setAddState({ ...addState, protein: e.target.value }) }} />
+                  <InputRightAddon children='g' />
+                </InputGroup>
+              </Box>
+              <Box>
+                <InputGroup>
+                  <InputLeftAddon children='Sodium' />
+                  <Input value={addState.sodium} onChange={(e) => { setAddState({ ...addState, sodium: e.target.value }) }} />
+                  <InputRightAddon children='mg' />
+                </InputGroup>
+              </Box>
+              <Box>
+                <InputGroup>
+                  <InputLeftAddon children='Sugar' />
+                  <Input value={addState.sugar} onChange={(e) => { setAddState({ ...addState, sugar: e.target.value }) }} />
+                  <InputRightAddon children='g' />
+                </InputGroup>
+              </Box>
+            </SimpleGrid>
+            <Text textAlign='center'>{errorMessage}</Text>
           </ModalBody>
           <ModalFooter justifyContent='space-between'>
             <Button colorScheme='gray' onClick={() => { setModalState(false) }}>Cancel</Button>
@@ -250,7 +286,7 @@ const AddFood = ({ addDetails, addOpenState }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Box>
+    </Box >
   );
 }
 

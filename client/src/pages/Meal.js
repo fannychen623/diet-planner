@@ -1,6 +1,7 @@
 // import packages
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
+import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom'
 
 // importy query and mutation
@@ -13,19 +14,23 @@ import MealContent from '../components/MealContent';
 
 // import package components
 import {
-  Box, Flex, Spacer, Spinner, Heading, Button, IconButton,
+  Box, Spacer, Spinner, Heading, Text, Button, IconButton,
   InputGroup, InputLeftElement, Input,
   Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
+  AlertDialog, AlertDialogBody, AlertDialogFooter,
+  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, 
 } from '@chakra-ui/react'
 
 // import icons
-import { FiSearch, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiSearch, FiPlus, FiEdit, FiTrash2 } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/Meal.css';
 
 // functional component for the meal page
 const Meal = () => {
+
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -50,6 +55,7 @@ const Meal = () => {
   const [mealList, setMealList] = useState([...meals])
   const [displayState, setDisplayState] = useState(Array(mealList.length).fill(true))
   const [searchValue, setSearchValue] = useState('')
+  const [alertState, setAlertState] = useState({ open: false, id: '' })
 
   // navigate for the new meal button
   const navigate = useNavigate();
@@ -93,30 +99,24 @@ const Meal = () => {
   if (!meals.length) {
     return (
       <Box className='meal-page'>
-        <Flex>
-          <Box>
-            <Heading>No meals yet. Click [New Meal] to get started!</Heading>
-          </Box>
+        <Box display='flex'>
+          <Heading>No meals yet. Click [New Meal] to get started!</Heading>
           <Spacer />
-          <Box>
-            <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
-          </Box>
-        </Flex >
+          <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
+        </Box>
       </Box>
     );
   };
 
   return (
     <Box className='meal-page'>
-      <Flex>
-        <Box>
+      {isMobile ? (<></>) : (
+        <Box display='flex'>
           <Heading>Meals</Heading>
-        </Box>
-        <Spacer />
-        <Box>
+          <Spacer />
           <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
         </Box>
-      </Flex>
+      )}
       {loading ? (
         <Box textAlign='center'>
           <Spinner /> Loading...
@@ -131,32 +131,84 @@ const Meal = () => {
               <Input onChange={(e) => { setSearchValue(e.target.value) }} />
             </InputGroup>
           </Box>
+          {isMobile ? (
+            <Box display='flex'>
+              <Text>MEALS</Text>
+              <Spacer />
+              <Link to='/meal/new'><IconButton icon={<FiPlus strokeWidth='3' p='100%' />} /></Link>
+            </Box>
+          ) : (<></>)}
           {mealList.map((meal, index) => (
             <div key={meal._id}>
               {displayState[`${index}`] ? (
                 <Accordion key={meal._id} allowMultiple className='accordian'>
-                  <AccordionItem>
-                    <Box display='flex' alignItems='center'>
-                      <AccordionButton justifyContent='spaced-between'>
-                        {meal.title}
-                        <Spacer />
-                      </AccordionButton>
-                      <Box display='flex'>
-                        <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit p='100%' />} />
-                        <IconButton onClick={() => { handleRemoveMeal(`${meal._id}`) }} size='md' icon={<FiTrash2 p='100%' />} />
+                  {isMobile ? (
+                    <AccordionItem>
+                      <Box display='flex' alignItems='center'>
+                        <AccordionButton justifyContent='spaced-between'>
+                          {meal.title}
+                          <Spacer />
+                          <AccordionIcon />
+                        </AccordionButton>
                       </Box>
-                      <AccordionIcon />
-                    </Box>
-                    <AccordionPanel>
-                      <MealContent contents={meal.content} foods={foods} />
-                    </AccordionPanel>
-                  </AccordionItem>
+                      <AccordionPanel>
+                        <MealContent contents={meal.content} foods={foods} />
+                        <Box display='flex' justifyContent='space-between'>
+                          <Button onClick={() => { navigate(`/meal/edit/${meal._id}`) }}><FiEdit />Edit</Button>
+                          <Button onClick={() => { setAlertState({ ...alertState, open: true, id: meal._id }) }}><FiTrash2 />Delete</Button>
+                        </Box>
+                      </AccordionPanel>
+                    </AccordionItem>
+                  ) : (
+                    <AccordionItem>
+                      <Box display='flex' alignItems='center'>
+                        <AccordionButton justifyContent='spaced-between'>
+                          {meal.title}
+                          <Spacer />
+                        </AccordionButton>
+                        <Box display='flex'>
+                          <IconButton onClick={() => { navigate(`/meal/edit/${meal._id}`) }} size='md' icon={<FiEdit p='100%' />} />
+                          <IconButton onClick={() => { setAlertState({ ...alertState, open: true, id: meal._id }) }} size='md' icon={<FiTrash2 p='100%' />} />
+                        </Box>
+                        <AccordionIcon />
+                      </Box>
+                      <AccordionPanel>
+                        <MealContent contents={meal.content} foods={foods} />
+                      </AccordionPanel>
+                    </AccordionItem>
+                  )}
                 </Accordion>
               ) : (
                 <></>
               )}
             </div>
           ))}
+          <AlertDialog
+            isOpen={alertState.open}
+            onClose={() => { setAlertState({ ...alertState, open: false }) }}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent className='meal-alert' maxW={isMobile ? '75%' : '30%'}>
+                <AlertDialogHeader>
+                  Confirm Delete
+                </AlertDialogHeader>
+                <AlertDialogBody>
+                  {alertState.id !== '' ?
+                    meals[meals.findIndex((meal) => meal._id === alertState.id)].title
+                    : ''}
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button onClick={() => { setAlertState({ ...alertState, open: false }) }}>
+                    Cancel
+                  </Button>
+                  <Button onClick={() => { handleRemoveMeal(alertState.id) }}>
+                    Delete
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
         </Box>
       )}
     </Box>

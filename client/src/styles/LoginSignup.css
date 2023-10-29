@@ -1,72 +1,58 @@
-/* styling for the Routine page */
-.login-signup-modal {
+/* styling for the login signup page */
+.login-signup {
     font-family: var(--font);
 }
 
+/* login and signup heading */
+.login-signup .css-1dklj6k {
+    font-size: 2.5em;
+    color: var(--shade5);
+}
+
 /* loading text container */
-.login-modal .css-xi606m, .signup-modal .css-xi606m {
+.login-signup .css-xi606m {
+    font-size: 1.5em;
     margin: 2em 0em;
 }
 
 /* loading spinner */
-.login-modal .css-nkpswe, .signup-modal .css-nkpswe {
+.login-signup .css-nkpswe {
     margin-right: 0.5em;
 }
 
-/* login signup tab unselected */
-.login-signup-modal .css-edw2yw[aria-selected=false] {
-    border-color: var(--shade5);
-    border-top: none;
-    border-left: none;
-    border-right: none;
+/* navigate to login or signup button */
+#navigate-login,
+#navigate-signup {
+    font-size: 1.45em;
+    padding: 5%;
+    margin-top: -3.5em;
+    border-bottom: 0.15em solid var(--shade3);
 }
 
-/* login signup tab selected */
-.login-signup-modal .css-edw2yw[aria-selected=true], .login-signup-modal .css-edw2yw[data-selected] {
-    border-color: var(--shade5);
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    background-color: var(--shade2);
-    color: var(--shade6);
-    font-weight: bold;
+#navigate-login,
+#navigate-signup svg {
+    margin-left: 0.5em;
 }
 
-/* login signup modal container */
-.login-signup-modal .css-a5mhaz {
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-/* login signup modal header */
-.login-signup-modal .css-9fgtzh {
-    padding-bottom: 0;
-}
-
-/* login signup modal footer */
-.login-signup-modal .css-k0waxj {
-    padding-top: 0;
-    justify-content: space-between;
-}
-
-/* login signup footer buttons */
-.login-signup-modal .css-ez23ye {
+/* login and signup button */
+.login-signup .css-ez23ye {
+    font-size: 1.45em;
+    padding: 5%;
     background-color: var(--shade3);
 }
 
-/* login signup footer buttons */
-.login-signup-modal .css-ez23ye:hover {
+/* login and signup button */
+.login-signup .css-ez23ye:hover {
     background-color: var(--shade4);
 }
 
-
 /* email and password inputs containers */
-.login-modal .css-1y0e7gb, .signup-modal .css-1y0e7gb {
+.login-signup .css-1y0e7gb {
     margin: 2em 0em;
 }
 
 /* inputleftaddon */
-.login-modal .css-127xmqf, .signup-modal .css-127xmqf{
+.login-signup .css-127xmqf {
     background-color: var(--shade5);
     color: var(--shade2);
     border-color: var(--shade5);
@@ -75,47 +61,77 @@
 }
 
 /* inputleftaddon * span */
-.login-modal span, .signup-modal span {
+.login-signup span {
     margin-right: 0.5em;
 }
 
 /* input */
-.login-modal .css-jn9it7, .login-modal .css-jn9it7:hover,
-.signup-modal .css-jn9it7, .signup-modal .css-jn9it7:hover {
+.login-signup .css-jn9it7,
+.login-signup .css-jn9it7:hover {
     border-color: var(--shade5);
 }
 
 /* view password button */
-.login-modal .css-wubf5g, .login-modal .css-wubf5g:hover,
-.signup-modal .css-wubf5g, .signup-modal .css-wubf5g:hover {
+.login-signup .css-wubf5g,
+.login-signup .css-wubf5g:hover {
     min-width: unset;
     background-color: var(--trans);
 }
 
 /* error message */
-.login-modal .login-error, .signup-modal .signup-error {
+.login-signup .login-signup-error {
     margin-top: -0.75em;
     margin-bottom: 1em;
 }
 
 @media (max-width: 480px) {
 
-/* inputleftelement */
-.login-modal .css-j2xror, .signup-modal .css-j2xror {
-    left: 0.5em;
-}
+    /* login and signup page logo gif */
+    .login-signup img {
+        margin-top: -2em;
+    }
 
-/* input field */
-.login-modal .css-qluo93, .login-modal .css-ffroc,
-.signup-modal .css-qluo93, .signup-modal .css-ffroc {
-    padding-left: 3.5em;
-    border-color: var(--shade5);
-}
+    /* login and signup heading */
+    .login-signup .css-1dklj6k {
+        text-align: center;
+        font-size: 1.5em;
+        margin-bottom: -0.5em;
+        text-align: center;
+    }
 
-/* view password icon button */
-.login-modal .css-15bt6gt:hover, .login-modal .css-15bt6gt[data-hover],
-.signup-modal .css-15bt6gt:hover, .signup-modal .css-15bt6gt[data-hover] {
-    background: var(--trans);
-}
+    /* loading text container */
+    .login-signup .css-xi606m {
+        font-size: 1.25em;
+    }
+
+    /* navigate to login or signup button */
+    #navigate-login,
+    #navigate-signup {
+        font-size: 1em;
+        margin-top: -4.25em;
+    }
+
+    /* login and signup button */
+    .login-signup .css-ez23ye {
+        font-size: 1em;
+    }
+
+    /* inputleftelement */
+    .login-signup .css-j2xror {
+        left: 0.5em;
+    }
+
+    /* input field */
+    .login-signup .css-qluo93,
+    .login-signup .css-ffroc {
+        padding-left: 3.5em;
+        border-color: var(--shade5);
+    }
+
+    /* view password icon button */
+    .login-signup .css-15bt6gt:hover,
+    .login-signup .css-15bt6gt[data-hover] {
+        background: var(--trans);
+    }
 
 }

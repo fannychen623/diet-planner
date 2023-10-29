@@ -1,5 +1,6 @@
 /* styling for the Routine page */
-.meal-page, .new-meal-page {
+.meal-page,
+.new-meal-page {
     font-family: var(--font);
     min-height: 100vh;
     height: fit-content;
@@ -31,13 +32,12 @@
     padding: 2rem 1.5rem 2rem 1.5rem;
     margin-bottom: 2rem;
     background-color: var(--shade5);
-    color: white;
+    color: var(--shade1);
 }
 
 /* new meal button */
 .meal-page .css-ez23ye:hover {
-    background-color: var(--shade3);
-    color: var(--shade5);
+    background-color: var(--shade4);
 }
 
 /* search bar */
@@ -55,19 +55,21 @@
 
 /* accordian component */
 .meal-page .accordian {
-    background-color: rgba(255, 255, 255, 0.5);
     margin-bottom: 1em;
+    border: solid var(--shade5);
 }
 
 /* accordian button container */
-.meal-page .css-70qvj9, .meal-page .css-70qvj9::before, .meal-page .css-70qvj9::after {
+.meal-page .css-70qvj9 {
     padding: 1em;
-    border-color: var(--shade2);
 }
 
 /* accordian button container */
 .meal-page .css-70qvj9:hover {
     background-color: var(--shade4);
+}
+html[theme='dark'] .meal-page .css-70qvj9:hover {
+    background-color: var(--shade3);
 }
 
 /* accordian button */
@@ -83,7 +85,8 @@
 }
 
 /* accordian button */
-.meal-page .css-1aeclw8:hover, .meal-page .css-1aeclw8[data-hover] {
+.meal-page .css-1aeclw8:hover,
+.meal-page .css-1aeclw8[data-hover] {
     background: none;
 }
 
@@ -105,11 +108,18 @@
     background-color: var(--shade2);
 }
 
+/* accordian content container */
+.meal-page .css-mxa4qn {
+    border-top: 0.5em solid var(--shade5);
+    padding:0;
+    padding-top: 0.25em;
+}
+
 /* table headers */
 .meal-page .css-15wjwcp {
     text-align: center;
-    background-color: var(--shade6);
-    color: white;
+    border-bottom: 0.25em double var(--shade5);
+    color: var(--shade6);
     padding: 1% 0%;
 }
 
@@ -118,6 +128,135 @@
     text-align: center;
 }
 
-@media (max-width: 768px) {
+/* delete alert container */
+.meal-alert {
+    text-align: center;
+}
+
+/* delete alert header */
+.meal-alert .css-9fgtzh {
+    color: var(--shade5);
+}
+
+/* delete alert footer */
+.meal-alert .css-k0waxj {
+    justify-content: space-between;
+    margin-top: 0.5em;
+}
+
+/* delete alert buttons */
+.meal-alert .css-ez23ye,
+.meal-alert .css-ez23ye:hover {
+    background-color: var(--shade5);
+    color: var(--shade1);
+}
+
+@media (max-width: 480px) {
+
+    /* search bar container*/
+    .meal-page .css-1y0e7gb {
+        margin-top: -0.5em;
+    }
+
+    /* meal heading and add iconbutton container */
+    .meal-page .css-k008qs {
+        align-items: center;
+        padding: 0.5em 0em 0.5em 1.25em;
+        font-size: 1em;
+        font-weight: bolder;
+        background-color: var(--shade5);
+        color: var(--shade1);
+    }
+
+    /* add meal icon button */
+    .meal-page .css-22xpxh {
+        margin-right: 0.25em;
+        color: var(--shade1);
+    }
+
+    /* accordian component */
+    .meal-page .accordian {
+        margin-bottom: 0;
+        border: none;
+        border-bottom: solid var(--shade5);
+    }
+
+    /* accordian container */
+    .meal-page .css-17mg6aq {
+        border: none;
+    }
+
+    /* accordian button container */
+    .meal-page .css-70qvj9 {
+        padding: 0em;
+    }
+
+    /* accordian button */
+    .meal-page .css-1aeclw8 {
+        padding: 0.75em 1em;
+        font-size: 1em;
+        text-align: left;
+    }
+
+    /* accordian button expanded */
+    .meal-page .css-1aeclw8[aria-expanded=true] {
+        font-weight: bolder;
+        border-left: none;
+        background-color: var(--shade6);
+        color: var(--shade1);
+    }
+
+    /* accordian content container */
+    .meal-page .css-mxa4qn {
+        border-top: none;
+        padding-top: 0;
+        padding-bottom: 1em;
+    }
+
+    /* table headers */
+    .meal-page .css-15wjwcp {
+        padding: 1em 0em;
+    }
+
+    /* table rows */
+    .meal-page .css-1vmvwla {
+        padding: 0.5em 0em;
+    }
+
+    /* accordian content table total row */
+    .meal-page .total {
+        background-color: var(--shade3);
+        color: var(--shade6);
+    }
+
+    /* edit and delete meal button */
+    .meal-page .css-ez23ye,
+    .meal-page .css-ez23ye:hover {
+        align-items: flex-start;
+        font-size: 0.8em;
+        padding: 1em 1em 2em 1em;
+        margin: 1em 0em 0em 0em;
+        background-color: var(--shade5);
+        color: var(--shade1);
+    }
+
+    /* edit and delete button icons */
+    .meal-page .css-ez23ye svg {
+        margin-right: 0.5em;
+    }
+
+    /* food popover */
+    .meal-page .css-sjj62m {
+        max-width: fit-content;
+        margin: auto;
+        margin-top: -0.5em;
+        border-radius: 0.5em;
+        padding: 0.3em;
+        border: solid var(--shade5);
+        color: var(--shade6);
+    }
+    html[theme='dark'] .meal-page .css-sjj62m {
+        color: var(--shade1);
+    }
 
 }

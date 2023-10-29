@@ -2,13 +2,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 // import local components
 import Header from "./components/Header";
 import HeaderMobile from "./components/Header_mobile";
-import LoginSignup from "./pages/LoginSignup";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Food from "./pages/Food";
@@ -20,16 +19,6 @@ import Search from "./pages/Search";
 import Calendar from "./pages/Calendar";
 import EditPlannerMeal from "./pages/EditPlannerMeal";
 import Progress from "./pages/Progress";
-
-import {
-  Drawer,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-} from '@chakra-ui/react'
 
 // import local global style sheet
 import './styles/Global.css';
@@ -70,7 +59,6 @@ function App() {
           <div>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/loginSignup" element={<LoginSignup />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/food" element={isMobile ? <FoodMobile /> : <Food />} />
               <Route path="/meal" element={<Meal />} />
