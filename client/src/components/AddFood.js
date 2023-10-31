@@ -12,7 +12,7 @@ import {
   Box, SimpleGrid, Spacer, Text, Button,
   Input, InputGroup, InputLeftAddon, InputRightAddon,
   Modal, ModalOverlay, ModalContent, ModalHeader,
-  ModalFooter, ModalBody, ModalCloseButton,
+  ModalFooter, ModalBody,
   AlertDialog, AlertDialogBody, AlertDialogFooter,
   AlertDialogHeader, AlertDialogContent, AlertDialogOverlay,
   AlertDialogCloseButton, useDisclosure,
@@ -270,15 +270,15 @@ const AddFood = ({ addDetails, addOpenState }) => {
         isCentered
       >
         <AlertDialogOverlay />
-        <AlertDialogContent>
+        <AlertDialogContent className='add-food-alert' maxW={isMobile ? '75%' : '30%'} >
           <AlertDialogHeader>Food Added</AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
             Continue search or view foods?
           </AlertDialogBody>
-          <AlertDialogFooter>
+          <AlertDialogFooter justifyContent='space-between'>
             <Button onClick={onClose}>
-              Continue Search
+              Continue
             </Button>
             <Button onClick={() => { window.location.assign('/food') }}>
               View Foods

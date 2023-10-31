@@ -24,7 +24,7 @@ import {
 import {
   IoMenuOutline, IoNutritionOutline, IoFastFoodOutline, IoSearchOutline,
   IoRepeatSharp, IoCalendarNumberOutline, IoBarChartOutline,
-  IoFitnessOutline, IoEnterOutline, IoExitOutline, IoCloseOutline,
+  IoFitnessOutline, IoExitOutline, IoCloseOutline,
 } from 'react-icons/io5';
 
 // import local style sheet

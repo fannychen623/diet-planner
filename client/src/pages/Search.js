@@ -11,7 +11,7 @@ import {
   Box, SimpleGrid, Heading, Text, Button, IconButton,
   Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody,
   Input, InputGroup, InputLeftElement, InputRightElement,
-  Card, CardHeader, CardBody, CardFooter, Tooltip,
+  Card, CardHeader, CardBody, CardFooter,
 } from '@chakra-ui/react'
 
 // import icons
@@ -144,8 +144,8 @@ const Search = () => {
   const handleKeyDown = (event) => {
     const { keyCode } = event
     if (keyCode === 13) {
-      event.preventDefault()
-      searchFood()
+      event.preventDefault();
+      searchFood();
     }
   }
 

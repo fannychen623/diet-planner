@@ -3,6 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import Chart from 'react-apexcharts'
 
+// import package components
+import {
+	Box, SimpleGrid, Center, Text
+} from '@chakra-ui/react'
+
 // functional component of graphs to be rendered on the progress page
 // pass in data, date and graph type information
 const Graph = ({ data, date, graphType }) => {
@@ -38,31 +43,86 @@ const Graph = ({ data, date, graphType }) => {
 				weight.push({ date: entry.date, weight: entry.weight })
 			}
 		})
-		let nutrition = []
+		let calories = []
+		let carbs = []
+		let fat = []
+		let protein = []
+		let sodium = []
+		let sugar = []
 		convertDates().nutrition.forEach((entry) => {
 			if (entry.date >= dateRange.start && entry.date <= dateRange.end) {
-				nutrition.push({
-					date: entry.date,
-					calories: entry.calories,
-					carbs: entry.carbs,
-					fat: entry.fat,
-					protein: entry.protein,
-					sodium: entry.sodium,
-					sugar: entry.sugar
-				})
+				if (!isNaN(entry.calories)) { calories.push({ date: entry.date, calories: entry.calories }) }
+				if (!isNaN(entry.carbs)) { carbs.push({ date: entry.date, carbs: entry.carbs }) }
+				if (!isNaN(entry.fat)) { fat.push({ date: entry.date, fat: entry.fat }) }
+				if (!isNaN(entry.protein)) { protein.push({ date: entry.date, protein: entry.protein }) }
+				if (!isNaN(entry.sodium)) { sodium.push({ date: entry.date, sodium: entry.sodium }) }
+				if (!isNaN(entry.sugar)) { sugar.push({ date: entry.date, sugar: entry.sugar }) }
 			}
 		})
-		return { weight, nutrition };
+		return { weight, calories, carbs, fat, protein, sodium, sugar };
 	}
 
 	// set array of filtered weight and nutrition data
 	const [weightData, setWeightData] = useState(filterData().weight)
-	const [nutritionData, setNutritionData] = useState(filterData().nutrition)
+	const [caloriesData, setCaloriesData] = useState(filterData().calories)
+	const [carbsData, setCarbsData] = useState(filterData().carbs)
+	const [fatData, setFatData] = useState(filterData().fat)
+	const [proteinData, setProteinData] = useState(filterData().protein)
+	const [sodiumData, setSodiumData] = useState(filterData().sodium)
+	const [sugarData, setSugarData] = useState(filterData().sugar)
 
 	// function to calculate the average over the date range
 	const calculateAverage = () => {
-		
+		let totalWeight = 0
+		let totalNutrition = { calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+		let averageData = { weight: 0, calories: 0, carbs: 0, fat: 0, protein: 0, sodium: 0, sugar: 0 }
+		if (weightData.length !== 0) {
+			weightData.forEach((entry) => {
+				totalWeight += entry.weight
+			})
+			averageData.weight = (totalWeight / weightData.length).toFixed(2)
+		}
+		if (caloriesData.length !== 0) {
+			caloriesData.forEach((entry) => {
+				totalNutrition.calories += entry.calories
+			})
+			averageData.calories = (totalNutrition.calories / caloriesData.length).toFixed(2)
+		}
+		if (carbsData.length !== 0) {
+			carbsData.forEach((entry) => {
+				totalNutrition.carbs += entry.carbs
+			})
+			averageData.carbs = (totalNutrition.carbs / carbsData.length).toFixed(2)
+		}
+		if (fatData.length !== 0) {
+			fatData.forEach((entry) => {
+				totalNutrition.fat += entry.fat
+			})
+			averageData.fat = (totalNutrition.fat / fatData.length).toFixed(2)
+		}
+		if (proteinData.length !== 0) {
+			proteinData.forEach((entry) => {
+				totalNutrition.protein += entry.protein
+			})
+			averageData.protein = (totalNutrition.protein / proteinData.length).toFixed(2)
+		}
+		if (sodiumData.length !== 0) {
+			sodiumData.forEach((entry) => {
+				totalNutrition.sodium += entry.sodium
+			})
+			averageData.sodium = (totalNutrition.sodium / sodiumData.length).toFixed(2)
+		}
+		if (sugarData.length !== 0) {
+			sugarData.forEach((entry) => {
+				totalNutrition.sugar += entry.sugar
+			})
+			averageData.sugar = (totalNutrition.sugar / sugarData.length).toFixed(2)
+		}
+		return averageData
 	}
+
+	// set array of average of data
+	const [averageData, setAverageData] = useState(calculateAverage())
 
 	// define the different combination of data series
 	// blank series on initial render or incomplete variables
@@ -81,37 +141,37 @@ const Graph = ({ data, date, graphType }) => {
 	const calorieSeries = [{
 		type: 'line',
 		name: 'Calorie',
-		data: nutritionData.map(entry => ({ x: entry.date, y: entry.calories }))
+		data: caloriesData.map(entry => ({ x: entry.date, y: entry.calories }))
 	}]
 
 	const carbsSeries = [{
 		type: 'line',
 		name: 'Carbohydrate',
-		data: nutritionData.map(entry => ({ x: entry.date, y: entry.carbs }))
+		data: carbsData.map(entry => ({ x: entry.date, y: entry.carbs }))
 	}]
 
 	const fatSeries = [{
 		type: 'line',
 		name: 'Fat',
-		data: nutritionData.map(entry => ({ x: entry.date, y: entry.fat }))
+		data: fatData.map(entry => ({ x: entry.date, y: entry.fat }))
 	}]
 
 	const proteinSeries = [{
 		type: 'line',
 		name: 'Protein',
-		data: nutritionData.map(entry => ({ x: entry.date, y: entry.protein }))
+		data: proteinData.map(entry => ({ x: entry.date, y: entry.protein }))
 	}]
 
 	const sodiumSeries = [{
 		type: 'line',
 		name: 'Sodium',
-		data: nutritionData.map(entry => ({ x: entry.date, y: entry.sodium }))
+		data: sodiumData.map(entry => ({ x: entry.date, y: entry.sodium }))
 	}]
 
 	const sugarSeries = [{
 		type: 'line',
 		name: 'Sugar',
-		data: nutritionData.map(entry => ({ x: entry.date, y: entry.sugar }))
+		data: sugarData.map(entry => ({ x: entry.date, y: entry.sugar }))
 	}]
 
 	const weightCalorieSeries = [
@@ -123,7 +183,7 @@ const Graph = ({ data, date, graphType }) => {
 		{
 			type: 'column',
 			name: 'Calorie',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.calories }))
+			data: caloriesData.map(entry => ({ x: entry.date, y: entry.calories }))
 		}
 	]
 
@@ -136,17 +196,17 @@ const Graph = ({ data, date, graphType }) => {
 		{
 			type: 'line',
 			name: 'Carbohydrate',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.carbs }))
+			data: carbsData.map(entry => ({ x: entry.date, y: entry.carbs }))
 		},
 		{
 			type: 'line',
 			name: 'Fat',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.fat }))
+			data: fatData.map(entry => ({ x: entry.date, y: entry.fat }))
 		},
 		{
 			type: 'line',
 			name: 'Protein',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.protein }))
+			data: proteinData.map(entry => ({ x: entry.date, y: entry.protein }))
 		}
 	]
 
@@ -154,22 +214,22 @@ const Graph = ({ data, date, graphType }) => {
 		{
 			type: 'column',
 			name: 'Calorie',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.calories }))
+			data: caloriesData.map(entry => ({ x: entry.date, y: entry.calories }))
 		},
 		{
 			type: 'line',
 			name: 'Carbohydrate',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.carbs }))
+			data: carbsData.map(entry => ({ x: entry.date, y: entry.carbs }))
 		},
 		{
 			type: 'line',
 			name: 'Fat',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.fat }))
+			data: fatData.map(entry => ({ x: entry.date, y: entry.fat }))
 		},
 		{
 			type: 'line',
 			name: 'Protein',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.protein }))
+			data: proteinData.map(entry => ({ x: entry.date, y: entry.protein }))
 		}
 	]
 
@@ -177,17 +237,17 @@ const Graph = ({ data, date, graphType }) => {
 		{
 			type: 'line',
 			name: 'Carbohydrate',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.carbs }))
+			data: carbsData.map(entry => ({ x: entry.date, y: entry.carbs }))
 		},
 		{
 			type: 'line',
 			name: 'Fat',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.fat }))
+			data: fatData.map(entry => ({ x: entry.date, y: entry.fat }))
 		},
 		{
 			type: 'line',
 			name: 'Protein',
-			data: nutritionData.map(entry => ({ x: entry.date, y: entry.protein }))
+			data: proteinData.map(entry => ({ x: entry.date, y: entry.protein }))
 		}
 	]
 
@@ -215,7 +275,8 @@ const Graph = ({ data, date, graphType }) => {
 		labels: {
 			formatter: function (val) {
 				return val.toFixed(0);
-			}
+			},
+			style: { colors: 'var(--shade6)' }
 		},
 		axisBorder: {
 			show: true,
@@ -235,7 +296,8 @@ const Graph = ({ data, date, graphType }) => {
 		labels: {
 			formatter: function (val) {
 				return val.toFixed(0);
-			}
+			},
+			style: { colors: 'var(--shade6)' }
 		},
 		axisBorder: {
 			show: true,
@@ -275,7 +337,7 @@ const Graph = ({ data, date, graphType }) => {
 			offsetY: 30,
 			floating: false,
 			style: {
-				fontSize: '2rem',
+				fontSize: isMobile ? '1em' : '2em',
 				fontWeight: 'bold',
 				color: 'var(--shade5)',
 			},
@@ -286,14 +348,17 @@ const Graph = ({ data, date, graphType }) => {
 			offsetX: 15,
 			offsetY: 80,
 			style: {
-				fontSize: '1rem',
+				fontSize: isMobile ? '1em' : '1.5em',
 				fontWeight: 'bold',
 				color: 'var(--shade4)',
 			},
 		},
+		stroke: {
+			curve: 'smooth',
+		},
 		xaxis: {
 			type: 'datetime',
-			labels: { format: graphDetails.format },
+			labels: { format: graphDetails.format, style: { colors: 'var(--shade6)' } },
 			title: {
 				text: 'Date',
 				style: {
@@ -364,7 +429,7 @@ const Graph = ({ data, date, graphType }) => {
 			verticalAlign: 'middle',
 			style: {
 				color: 'var(--shade5)',
-				fontSize: '2rem',
+				fontSize: isMobile ? '1em' : '2em',
 			}
 		}
 	};
@@ -376,7 +441,13 @@ const Graph = ({ data, date, graphType }) => {
 		// if all variables available, set data and graph details based on variables
 		if (!isNaN(dateRange.start) && !isNaN(dateRange.end) && graphType !== '') {
 			setWeightData(filterData().weight)
-			setNutritionData(filterData().nutrition)
+			setCaloriesData(filterData().calories)
+			setCarbsData(filterData().carbs)
+			setFatData(filterData().fat)
+			setProteinData(filterData().protein)
+			setSodiumData(filterData().sodium)
+			setSugarData(filterData().sugar)
+			setAverageData(calculateAverage())
 			if (new Date(dateRange.end - dateRange.start).getDate() > 60) {
 				setGraphDetails({ ...graphDetails, format: 'M/d/yy' })
 			} else if (new Date(dateRange.end - dateRange.start).getDate() > 30) {
@@ -492,12 +563,58 @@ const Graph = ({ data, date, graphType }) => {
 	}, [data, date, graphType])
 
 	return (
-		<Chart
-			options={options}
-			series={graphType ? (graphDetails.series) : ([])}
-			width={isMobile ? '100%': '90%'}
-			height={isMobile ? '50%': '80%'}
-		/>
+		<Box>
+			{!isNaN(dateRange.start) && !isNaN(dateRange.end) && graphType !== '' ? (
+				<>
+					{isMobile ? (
+						<SimpleGrid columns='2'>
+							<Center bg='var(--shade5)'></Center>
+							<Center as='b' bg='var(--shade5)'>Average</Center>
+							<Center as='b' bg='var(--shade5)'>Weight</Center>
+							<Center>{averageData.weight}</Center>
+							<Center as='b' bg='var(--shade5)'>Calories</Center>
+							<Center>{averageData.calories}</Center>
+							<Center as='b' bg='var(--shade5)'>Carbs</Center>
+							<Center>{averageData.carbs}</Center>
+							<Center as='b' bg='var(--shade5)'>Fat</Center>
+							<Center>{averageData.fat}</Center>
+							<Center as='b' bg='var(--shade5)'>Protein</Center>
+							<Center>{averageData.protein}</Center>
+							<Center as='b' bg='var(--shade5)'>Sodium</Center>
+							<Center>{averageData.sodium}</Center>
+							<Center as='b' bg='var(--shade5)'>Sugar</Center>
+							<Center>{averageData.sugar}</Center>
+						</SimpleGrid>
+					) : (
+						<SimpleGrid columns='8'>
+							<Center bg='var(--shade5)'></Center>
+							<Center as='b' bg='var(--shade5)'>Weight</Center>
+							<Center as='b' bg='var(--shade5)'>Calories</Center>
+							<Center as='b' bg='var(--shade5)'>Carbs</Center>
+							<Center as='b' bg='var(--shade5)'>Fat</Center>
+							<Center as='b' bg='var(--shade5)'>Protein</Center>
+							<Center as='b' bg='var(--shade5)'>Sodium</Center>
+							<Center as='b' bg='var(--shade5)'>Sugar</Center>
+							<Center as='b' bg='var(--shade5)'>Average</Center>
+							<Center>{averageData.weight}</Center>
+							<Center>{averageData.calories}</Center>
+							<Center>{averageData.carbs}</Center>
+							<Center>{averageData.fat}</Center>
+							<Center>{averageData.protein}</Center>
+							<Center>{averageData.sodium}</Center>
+							<Center>{averageData.sugar}</Center>
+						</SimpleGrid>
+					)}
+				</>
+			) : (<></>)}
+			<Chart
+				options={options}
+				series={graphType ? (graphDetails.series) : ([])}
+				width={isMobile ? '100%' : '95%'}
+				height={isMobile ? '70%' : '175%'}
+			/>
+			{isMobile ? (<Text>View on desktop for optimal graph visuals</Text>):(<></>)}
+		</Box>
 	);
 };
 

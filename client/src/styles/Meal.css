@@ -68,6 +68,7 @@
 .meal-page .css-70qvj9:hover {
     background-color: var(--shade4);
 }
+
 html[theme='dark'] .meal-page .css-70qvj9:hover,
 html[theme='dark-invert'] .meal-page .css-70qvj9:hover {
     background-color: var(--shade3);
@@ -112,7 +113,7 @@ html[theme='dark-invert'] .meal-page .css-70qvj9:hover {
 /* accordian content container */
 .meal-page .css-mxa4qn {
     border-top: 0.5em solid var(--shade5);
-    padding:0;
+    padding: 0;
     padding-top: 0.25em;
 }
 
@@ -133,6 +134,13 @@ html[theme='dark-invert'] .meal-page .css-70qvj9:hover {
 .meal-alert {
     text-align: center;
 }
+
+html[theme='original-invert'] .meal-alert,
+html[theme='light-invert'] .meal-alert,
+html[theme='dark-invert'] .meal-alert {
+    filter: invert(100%);
+}
+
 html[theme='dark'] .meal-alert,
 html[theme='dark-invert'] .meal-alert {
     background-color: var(--shade5);
@@ -142,6 +150,7 @@ html[theme='dark-invert'] .meal-alert {
 .meal-alert .css-9fgtzh {
     color: var(--shade5);
 }
+
 html[theme='dark'] .meal-alert .css-9fgtzh,
 html[theme='dark-invert'] .meal-alert .css-9fgtzh {
     color: var(--shade4);
@@ -157,6 +166,7 @@ html[theme='dark-invert'] .meal-alert .css-9fgtzh {
 .meal-alert .css-ez23ye {
     background-color: var(--shade3);
 }
+
 html[theme='dark'] .meal-alert .css-ez23ye,
 html[theme='dark-invert'] .meal-alert .css-ez23ye {
     color: var(--shade6);
@@ -168,6 +178,13 @@ html[theme='dark-invert'] .meal-alert .css-ez23ye {
 }
 
 @media (max-width: 480px) {
+
+    /* page title */
+    .meal-page .css-1dklj6k {
+        text-align: center;
+        font-size: 1.25em;
+        margin-top: 0.75em;
+    }
 
     /* search bar container*/
     .meal-page .css-1y0e7gb {
@@ -261,6 +278,30 @@ html[theme='dark-invert'] .meal-alert .css-ez23ye {
         margin-right: 0.5em;
     }
 
+    /* meal food alert header */
+    .meal-content-alert .css-9fgtzh {
+        background-color: var(--shade3);
+        color: var(--shade6);
+    }
+
+    /* meal food alert body */
+    .meal-content-alert .css-5io1un {
+        margin-top: -1em;
+        padding-bottom: 1em;
+        background-color: var(--shade3);
+        color: var(--shade6);
+    }
+
+    /* filter color for inverted themes */
+    html[theme='original-invert'] .meal-content-alert .css-9fgtzh,
+    html[theme='original-invert'] .meal-content-alert .css-5io1un, 
+    html[theme='light-invert'] .meal-content-alert .css-9fgtzh,
+    html[theme='light-invert'] .meal-content-alert .css-5io1un,
+    html[theme='dark-invert'] .meal-content-alert .css-9fgtzh,
+    html[theme='dark-invert'] .meal-content-alert .css-5io1un {
+        filter: invert(100%);
+    }
+
     /* food popover */
     .meal-page .css-sjj62m {
         max-width: fit-content;
@@ -271,6 +312,7 @@ html[theme='dark-invert'] .meal-alert .css-ez23ye {
         border: solid var(--shade5);
         color: var(--shade6);
     }
+
     html[theme='dark'] .meal-page .css-sjj62m,
     html[theme='dark-invert'] .meal-page .css-sjj62m {
         color: var(--shade1);

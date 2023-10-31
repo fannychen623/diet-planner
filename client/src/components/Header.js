@@ -23,10 +23,33 @@ import {
 import {
   IoNutritionOutline, IoFastFoodOutline, IoSearchOutline, IoRepeatSharp,
   IoCalendarNumberOutline, IoBarChartOutline, IoFitnessOutline, IoExitOutline,
+  IoArrowUpOutline,
 } from 'react-icons/io5';
 
 // import local style sheet
 import '../styles/Header.css';
+
+// show scroll to top button when paged is scrolled past 40px
+window.onscroll = function () { scrollFunction() };
+
+function scrollFunction() {
+  let scrollTopButton = document.getElementById('scroll-top');
+  if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+    if (document.body.clientWidth > 480) {
+      scrollTopButton.style.visibility = 'visible';
+    }
+  } else {
+    if (document.body.clientWidth > 480) {
+      scrollTopButton.style.visibility = 'hidden';
+    }
+  }
+}
+
+// function to scroll to the top of the page
+function topFunction() {
+  document.body.scrollTop = 0; // For Safari
+  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
 
 // page header/navigation bar
 function Header() {
@@ -110,6 +133,7 @@ function Header() {
               <IconButton variant='link' aria-label='Logout' icon={<IoExitOutline p='100%' />} onClick={logout} />
             </Tooltip>
           </Box>
+          <IconButton id='scroll-top' icon={<IoArrowUpOutline />} onClick={topFunction} />
         </Box>
       ) : (
         // if user is not logged in or token is expired

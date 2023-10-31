@@ -119,20 +119,25 @@ html[theme='dark-invert'] .food-page .css-crlss9:hover {
 
 /* food alert container */
 html[theme='dark'] .add-food,
+html[theme='dark'] .add-food-alert,
 html[theme='dark'] .edit-food,
 html[theme='dark'] .delete-food,
 html[theme='dark-invert'] .add-food,
+html[theme='dark-invert'] .add-food-alert,
 html[theme='dark-invert'] .edit-food,
 html[theme='dark-invert'] .delete-food {
     background-color: var(--shade5);
 }
 html[theme='original-invert'] .add-food,
+html[theme='original-invert'] .add-food-alert,
 html[theme='original-invert'] .edit-food,
 html[theme='original-invert'] .delete-food,
 html[theme='light-invert'] .add-food,
+html[theme='light-invert'] .add-food-alert,
 html[theme='light-invert'] .edit-food,
 html[theme='light-invert'] .delete-food,
 html[theme='dark-invert'] .add-food,
+html[theme='dark-invert'] .add-food-alert,
 html[theme='dark-invert'] .edit-food,
 html[theme='dark-invert'] .delete-food {
     filter: invert(100%);
@@ -229,13 +234,16 @@ html[theme='dark-invert'] .edit-food .css-1r6jmxn {
 /* edit food modal buttons, add food modal buttons, and delete food alert buttons */
 .edit-food .css-ez23ye,
 .add-food .css-ez23ye,
+.add-food-alert .css-ez23ye,
 .delete-food .css-ez23ye {
     background-color: var(--shade3);
 }
 html[theme='dark'] .edit-food .css-ez23ye,
 html[theme='dark'] .add-food .css-ez23ye,
+html[theme='dark'] .add-food-alert .css-ez23ye,
 html[theme='dark'] .delete-food .css-ez23ye,
 html[theme='dark-invert'] .edit-food .css-ez23ye,
+html[theme='dark-invert'] .add-food .css-ez23ye,
 html[theme='dark-invert'] .add-food .css-ez23ye,
 html[theme='dark-invert'] .delete-food .css-ez23ye {
     color: var(--shade6);
@@ -244,12 +252,14 @@ html[theme='dark-invert'] .delete-food .css-ez23ye {
 /* edit food modal buttons, add food modal buttons, and delete food alert buttons */
 .edit-food .css-ez23ye:hover,
 .add-food .css-ez23ye:hover,
+.add-food-alert .css-ez23ye:hover,
 .delete-food .css-ez23ye:hover {
     background-color: var(--shade4);
 }
 
 /* add food modal header, delete food alert header */
 .add-food .css-9fgtzh,
+.add-food-alert .css-9fgtzh,
 .delete-food .css-1x2vgm7 {
     display: flex;
     align-items: center;
@@ -257,8 +267,10 @@ html[theme='dark-invert'] .delete-food .css-ez23ye {
     color: var(--shade5);
 }
 html[theme='dark'] .add-food .css-9fgtzh,
+html[theme='dark'] .add-food-alert .css-9fgtzh,
 html[theme='dark'] .delete-food .css-1x2vgm7,
 html[theme='dark-invert'] .add-food .css-9fgtzh,
+html[theme='dark-invert'] .add-food-alert .css-9fgtzh,
 html[theme='dark-invert'] .delete-food .css-1x2vgm7 {
     color: var(--shade4);
 } 
@@ -320,8 +332,14 @@ html[theme='dark-invert'] .add-food .css-uhk8uw:hover {
     border-color: var(--shade2);
 }
 
-
 @media (max-width: 480px) {
+
+    /* page title */
+    .food-page .css-1dklj6k {
+        text-align: center;
+        font-size: 1.25em;
+        margin-top: -1em;
+    }
 
     /* table header */
     .food-page .css-1zts0j {

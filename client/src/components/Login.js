@@ -1,6 +1,5 @@
 // import packages and local auth
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import Auth from '../utils/auth';
 
@@ -60,13 +59,17 @@ const Login = () => {
     });
   };
 
-  // navigate to home page on close
-  const navigate = useNavigate();
-
-  const returnToHome = () => navigate('/');
   // set state of show password as text
-
   const [show, setShow] = useState(false)
+
+  // function to call login when the enter key is pressed from the password input field
+  const handleKeyDown = (event) => {
+    const { keyCode } = event
+    if (keyCode === 13) {
+      event.preventDefault();
+      handleFormSubmit(event);
+    }
+  }
 
   return (
     <Box m='auto'>
@@ -102,6 +105,7 @@ const Login = () => {
                   name='password'
                   placeholder='password'
                   value={formState.password}
+                  onKeyDown={handleKeyDown}
                   onChange={handleChange}
                 />
                 <InputRightElement>
@@ -139,6 +143,7 @@ const Login = () => {
                   type={show ? 'text' : 'password'}
                   name='password'
                   value={formState.password}
+                  onKeyDown={handleKeyDown}
                   onChange={handleChange}
                 />
                 <InputRightElement>

@@ -1,5 +1,5 @@
 // import packages
-import React, { useEffect, useMemo, useState, Fragment } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import { format } from 'date-fns';
@@ -113,7 +113,7 @@ const CalendarPage = () => {
   const [foodPreview, setFoodPreview] = useState('')
   const [editCustom, setEditCustom] = useState('')
   const [customDiet, setCustomDiet] = useState({
-    name: '',
+    title: '',
     calories: '',
     carbs: '',
     fat: '',
@@ -232,6 +232,13 @@ const CalendarPage = () => {
       mealTotal.sugar += foods[foods.findIndex(food => food._id === meals[index].content[i].food)].sugar * meals[index].content[i].servings
     }
 
+    mealTotal.calories = +parseFloat(mealTotal.calories).toFixed(2)
+    mealTotal.carbs = +parseFloat(mealTotal.carbs).toFixed(2)
+    mealTotal.fat = +parseFloat(mealTotal.fat).toFixed(2)
+    mealTotal.protein = +parseFloat(mealTotal.protein).toFixed(2)
+    mealTotal.sodium = +parseFloat(mealTotal.sodium).toFixed(2)
+    mealTotal.sugar = +parseFloat(mealTotal.sugar).toFixed(2)
+
     setMealPreview(
       'Serving Size: ' + meals[index].numberOfServing + '\n' +
       'Calories (kcal): ' + mealTotal.calories + '\n' +
@@ -333,7 +340,6 @@ const CalendarPage = () => {
       }
     }
   }
-
 
   // mutation and function to add planner
   const [addPlanner, { plannerData }] = useMutation(ADD_PLANNER);
@@ -533,7 +539,7 @@ const CalendarPage = () => {
       }
       setCustomDiet({
         ...customDiet,
-        name: '',
+        title: '',
         calories: '',
         carbs: '',
         fat: '',
@@ -570,7 +576,7 @@ const CalendarPage = () => {
             setEditCustom('');
             setCustomDiet({
               ...customDiet,
-              name: '',
+              title: '',
               calories: '',
               carbs: '',
               fat: '',
@@ -744,8 +750,15 @@ const CalendarPage = () => {
                 </Box>
               ) : (
                 <Box>
-                  {currentPlannerDiet.length <= 0 ? (
-                    <Box></Box>
+                  {currentPlannerDiet.length <= 0 && currentPlannerCustomDiet.length <= 0 ? (
+                    <Box display='flex' justifyContent='space-between' alignItems='center' width='100%'>
+                    Meal
+                    <IconButton
+                      size='md'
+                      icon={<FiPlus p='100%' />}
+                      onClick={onOpen}
+                    />
+                  </Box>
                   ) : (
                     <Box>
                       <Accordion allowToggle>

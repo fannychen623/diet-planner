@@ -6,10 +6,10 @@ import { useMediaQuery } from 'react-responsive';
 import {
     Box, Popover, PopoverTrigger, PopoverContent, PopoverBody,
     Table, Thead, Tbody, Tr, Th, Td, TableContainer,
+    AlertDialog, AlertDialogBody, AlertDialogFooter,
+    AlertDialogHeader, AlertDialogContent, AlertDialogOverlay,
+    AlertDialogCloseButton, useDisclosure,
 } from '@chakra-ui/react'
-
-// import icons
-import { FiInfo } from 'react-icons/fi';
 
 // import local style sheet
 import '../styles/Meal.css';
@@ -20,7 +20,12 @@ const MealContent = ({ contents, foods }) => {
 
     const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
-    const [foodPreview, setFoodPreview] = useState('')
+    // functions to toggle the alert dialog
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    // set the state of the food preview, default empty
+    const [foodTitle, setFoodTitle] = useState('')
+    const [foodDetail, setFoodDetail] = useState('')
 
     // function to get food information for each meal content
     const foodInfo = (id, servings) => {
@@ -66,7 +71,9 @@ const MealContent = ({ contents, foods }) => {
     // function to get food preview viewd in modal
     const getFoodPreview = (id) => {
         let index = foods.findIndex((food) => food._id === id)
-        setFoodPreview(
+        setFoodTitle(foods[index].title)
+        setFoodDetail(
+            'Number of Serving: ' + contents[contents.findIndex((content) => content.food === id)].servings + '\n' +
             'Serving Size: ' + foods[index].servingSize + ' ' + foods[index].servingUnit + '\n' +
             'Calories: ' + foods[index].calories + ' kcal \n' +
             'Carbs: ' + foods[index].carbs + ' g \n' +
@@ -75,7 +82,7 @@ const MealContent = ({ contents, foods }) => {
             'Sodium: ' + foods[index].sodium + ' mg \n' +
             'Sugar: ' + foods[index].sugar + ' g'
         )
-        return foodPreview
+        return foodDetail
     };
 
     // function to calculate the total nutritional value
@@ -95,51 +102,35 @@ const MealContent = ({ contents, foods }) => {
         total.protein = +parseFloat(total.protein).toFixed(2)
         total.sodium = +parseFloat(total.sodium).toFixed(2)
         total.sugar = +parseFloat(total.sugar).toFixed(2)
-        let totalText =
+        setFoodTitle('Total Nutrition')
+        setFoodDetail(
             'Calories: ' + total.calories + ' kcal \n' +
             'Carbs: ' + total.carbs + ' g \n' +
             'Fat: ' + total.fat + ' g \n' +
             'Protein: ' + total.protein + ' g \n' +
             'Sodium: ' + total.sodium + ' mg \n' +
             'Sugar: ' + total.sugar + ' g'
-
-        return (
-            <Tr className='total'>
-                <Popover isLazy>
-                    <PopoverTrigger>
-                        <Td>View Total</Td>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                        <PopoverBody whiteSpace='pre-line' zIndex='999'>
-                            {totalText}
-                        </PopoverBody>
-                    </PopoverContent>
-                </Popover>
-            </Tr>
         )
+
+        return foodDetail
     }
 
     return (
-        <Box>
+        <Box className='meal-content'>
             {isMobile ? (
                 <TableContainer width='100%' m='auto'>
                     <Table variant='unstyled' size='md'>
                         <Tbody>
                             {/* map through content, add a table line for each food */}
-                            {contents.map((content) => (
-                                <Tr key={content.food}>
-                                    <Popover isLazy trigger='hover' onOpen={() => { getFoodPreview(content.food) }}>
-                                        <PopoverTrigger>
-                                            <Td>{foodInfo(content.food, content.servings).title}</Td>
-                                        </PopoverTrigger>
-                                        <PopoverContent>
-                                            <PopoverBody whiteSpace='pre-line'>{foodPreview}</PopoverBody>
-                                        </PopoverContent>
-                                    </Popover>
+                            {contents.map((content, index) => (
+                                <Tr key={index} onClick={() => { getFoodPreview(content.food); onOpen() }}>
+                                    <Td>{foodInfo(content.food, content.servings).title}</Td>
                                 </Tr>
                             ))}
                             {/* calculate and render the total nutritional value */}
-                            {getTotalMobile()}
+                            <Tr onClick={() => { getTotalMobile(); onOpen() }} bg='var(--shade3)'>
+                                <Td><b>Total Nutrition</b></Td>
+                            </Tr>
                         </Tbody>
                     </Table>
                 </TableContainer>
@@ -180,6 +171,20 @@ const MealContent = ({ contents, foods }) => {
                     </Table>
                 </TableContainer>
             )}
+            <AlertDialog
+                motionPreset='slideInBottom'
+                onClose={onClose}
+                isOpen={isOpen}
+                isCentered
+            >
+                <AlertDialogOverlay />
+                <AlertDialogContent className='meal-content-alert' maxW='fit-content' textAlign='center'>
+                    <AlertDialogHeader>{foodTitle}</AlertDialogHeader>
+                    <AlertDialogBody whiteSpace='pre-line'>
+                        {foodDetail}
+                    </AlertDialogBody>
+                </AlertDialogContent>
+            </AlertDialog>
         </Box>
     );
 };

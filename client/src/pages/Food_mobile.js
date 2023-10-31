@@ -4,14 +4,14 @@ import React, { useEffect, useState, Fragment } from 'react';
 // importy query and mutations
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
-import { UPDATE_FOOD, REMOVE_FOOD } from '../utils/mutations';
+import { UPDATE_FOOD, REMOVE_FOOD, REMOVE_MEAL_FOOD } from '../utils/mutations';
 
 // import local component
 import AddFood from '../components/AddFood';
 
 // import package components
 import {
-  Box, Flex, Spacer, Spinner, Heading, Text, ButtonGroup, Button, IconButton,
+  Box, Spacer, Spinner, Heading, Text, ButtonGroup, Button, IconButton,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon,
   Modal, ModalOverlay, ModalContent, ModalHeader,
@@ -65,7 +65,7 @@ const Food = () => {
   const [editState, setEditState] = useState({ open: false, index: 0 })
   const [alertState, setAlertState] = useState({ open: false, index: 0 })
   const [deleteState, setDeleteState] = useState(false)
-  const [associateMeal, setAssociateMeal] = useState([])
+  const [associatedMeal, setAssociateMeal] = useState([])
   const [deleteMessage, setDeleteMessage] = useState('')
   const [displayState, setDisplayState] = useState(Array(foodList.length).fill(true))
   const [searchValue, setSearchValue] = useState('')
@@ -98,11 +98,11 @@ const Food = () => {
     if (affectedMeals.length !== 0) {
       setAssociateMeal(associatedMealIds)
       response =
-        'The food will be removed from the following meal(s) and any associated diary entries.\n\n ' + affectedMeals.join('\n')
+        'The food will be removed from the following meal(s):\n\n ' + affectedMeals.join('\n')
       setDeleteMessage(response)
       } else {
       setAssociateMeal([])
-      response = 'The food will be removed from any associated diary entries.\n\n'
+      response = 'You can not undo this action afterwards.'
       setDeleteMessage(response)
     }
   }
@@ -168,6 +168,26 @@ const Food = () => {
   };
 
   // mutation and function to remove food
+  const [removeMealFood, { removeMealFoodError, removeMealFoodData }] = useMutation(REMOVE_MEAL_FOOD);
+  const handleRemoveMealFood = () => {
+    if (associatedMeal.length !== 0) {
+      associatedMeal.forEach((meal) => {
+        try {
+          const { removeMealFoodData } = removeMealFood({
+            variables: { mealId: meal, foodId: foods[alertState.index]._id },
+          });
+
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      handleRemoveFood(foods[alertState.index]._id)
+    } else {
+      handleRemoveFood(foods[alertState.index]._id)
+    }
+  };
+
+  // mutation and function to remove food
   const [removeFood, { removeError, removeData }] = useMutation(REMOVE_FOOD);
   const handleRemoveFood = async (id) => {
     if (id !== '') {
@@ -175,6 +195,7 @@ const Food = () => {
         const { removeData } = await removeFood({
           variables: { foodId: id },
         });
+        setAlertState({ ...alertState, open: false });
         refetch();
       } catch (e) {
         console.error(e);
@@ -186,26 +207,28 @@ const Food = () => {
   if (!foods.length) {
     return (
       <Box className='food-page'>
-        <Flex>
-          <Box>
-            <Heading>No food yet. Click [Add Food] to get started!</Heading>
-          </Box>
-          <Spacer />
-          <Box>
-            <Button
-              variant='solid'
-              onClick={() => {
-                setModalState(true);
-                setTimeout(
-                  function () {
-                    setModalState(false)
-                  }, 1000);
-              }}
-            >
-              Add Food
-            </Button>
-          </Box>
-        </Flex >
+        <TableContainer>
+            <Table variant='simple'>
+              <Thead>
+                <Tr>
+                  <Th>
+                    Foods
+                    <IconButton
+                      icon={<FiPlus strokeWidth='3' p='100%' />}
+                      onClick={() => {
+                        setModalState(true);
+                        setTimeout(
+                          function () {
+                            setModalState(false)
+                          }, 1000);
+                      }}
+                    />
+                  </Th>
+                </Tr>
+              </Thead>
+            </Table>
+          </TableContainer>
+          <Heading>No food yet. Click [ + ] to get started!</Heading>
       </Box>
     );
   };
@@ -273,7 +296,7 @@ const Food = () => {
                 <AlertDialogHeader fontSize='lg' fontWeight='bold'>
                   {foods[alertState.index].title}
                 </AlertDialogHeader>
-                <AlertDialogBody>
+                <AlertDialogBody whiteSpace='pre-line'>
                   {deleteState ? deleteMessage : (
                     <Box>
                       <Box display='flex' justifyContent='space-between'>
@@ -326,7 +349,7 @@ const Food = () => {
                       >
                         <FiX /> Cancel
                       </Button>
-                      <Button onClick={() => { handleRemoveFood(foods[alertState.index]._id) }}>
+                      <Button onClick={() => { handleRemoveMealFood() }}>
                         <FiTrash2 />Delete
                       </Button>
                       </ButtonGroup>

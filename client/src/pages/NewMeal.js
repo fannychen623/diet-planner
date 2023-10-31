@@ -1,5 +1,5 @@
 // import package
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, Fragment } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
 // importy query and mutations
@@ -315,7 +315,7 @@ const NewMeal = () => {
           >
             <GridItem colSpan='5' textAlign='center'>Food</GridItem>
             {foodAdded.map((addFood, index) => (
-              <GridItem colSpan='5' key={index}>
+              <GridItem colSpan='5' key={addFood.id}>
                 <Grid
                   templateRows='repeat(2, 1fr)'
                   templateColumns='repeat(5, 1fr)'
@@ -412,7 +412,7 @@ const NewMeal = () => {
               </Thead>
               <Tbody>
                 {foodAdded.map((addFood, index) => (
-                  <Tr key={index}>
+                  <Tr key={addFood.id}>
                     <Td>
                       <IconButton
                         size='md'
@@ -496,7 +496,7 @@ const NewMeal = () => {
           <ModalCloseButton />
           <ModalBody overflowY='auto' maxHeight='50vh' >
             {foodsList.map((food, index) => (
-              <>
+              <Fragment key={food._id}>
                 {displayState[`${index}`] ? (
                   <Flex key={food._id}
                     justifyContent='space-between'
@@ -528,7 +528,7 @@ const NewMeal = () => {
                 ) : (
                   <></>
                 )}
-              </>
+              </Fragment>
             ))}
           </ModalBody>
           <ModalFooter justifyContent='spaced-between'>

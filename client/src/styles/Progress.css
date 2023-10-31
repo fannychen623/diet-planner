@@ -12,7 +12,8 @@
 }
 
 /* date range and graph selector */
-.progress-page .css-1ophand, .progress-page .css-1ophand:hover {
+.progress-page .css-1ophand,
+.progress-page .css-1ophand:hover {
     border-color: var(--shade5);
     width: 20em;
 }
@@ -20,7 +21,7 @@
 /* date inputlefftaddon */
 .progress-page .css-127xmqf {
     border-color: var(--shade5);
-    background-color: var(--shade6);
+    background-color: var(--shade5);
     color: var(--shade1);
     margin-left: 0.5em;
 }
@@ -36,33 +37,67 @@
     border-color: var(--shade4);
 }
 
+/* date picker icon */
+html[theme='dark'] ::-webkit-calendar-picker-indicator,
+html[theme='dark-invert'] ::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
 /* progress chart canvas */
 .progress-page .apexcharts-canvas {
     background-color: var(--shade1);
     margin: auto;
+    margin-bottom: 1em;
+}
+
+/* average table container */
+.progress-page .css-fqxj1a {
+    margin: auto;
+    margin-top: -0.5em;
+    margin-bottom: 1.25em;
+    font-size: 1.5em;
+    width: 95%;
+    border: 0.25em solid var(--shade5);
+}
+
+/* average table header cells */
+.progress-page .css-4qyv4s {
+    color: var(--shade1);
+    padding: 0.5em 0em;
+}
+
+/* average table value cells */
+.progress-page .css-gmuwbf {
+    border: 0.1em solid var(--shade5);
 }
 
 @media (max-width: 480px) {
 
-/* date range and graph selector container */
-.progress-page .css-42b2qy {
-    margin-bottom: 1em;
-}
+    /* date range and graph selector container */
+    .progress-page .css-42b2qy {
+        margin-bottom: 1em;
+    }
 
-/* date range and graph selector */
-.progress-page .css-1ophand {
-    width: 100%;
-}
+    /* date range and graph selector */
+    .progress-page .css-1ophand {
+        width: 100%;
+    }
 
-/* date inputlefftaddon */
-.progress-page .css-127xmqf {
-    margin: 0em 0em 1em 0em;
-}
+    /* date inputlefftaddon */
+    .progress-page .css-127xmqf {
+        margin: 0em 0em 1em 0em;
+    }
 
-/* date input field */
-.progress-page .css-10wjqo2 {
-    margin-bottom: 0.5em;
-    width: 100%;
-}
+    /* date input field */
+    .progress-page .css-10wjqo2 {
+        margin-bottom: 0.5em;
+        width: 100%;
+    }
+
+    /* average table container */
+    .progress-page .css-1szs79 {
+        margin: auto;
+        margin-bottom: 1em;
+    }
 
 }

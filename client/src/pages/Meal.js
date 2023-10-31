@@ -18,7 +18,7 @@ import {
   InputGroup, InputLeftElement, Input,
   Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
   AlertDialog, AlertDialogBody, AlertDialogFooter,
-  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, 
+  AlertDialogHeader, AlertDialogContent, AlertDialogOverlay,
 } from '@chakra-ui/react'
 
 // import icons
@@ -99,11 +99,22 @@ const Meal = () => {
   if (!meals.length) {
     return (
       <Box className='meal-page'>
-        <Box display='flex'>
-          <Heading>No meals yet. Click [New Meal] to get started!</Heading>
-          <Spacer />
-          <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
-        </Box>
+        {isMobile ? (
+          <Box>
+            <Box display='flex'>
+              <Text>MEALS</Text>
+              <Spacer />
+              <Link to='/meal/new'><IconButton icon={<FiPlus strokeWidth='3' p='100%' />} /></Link>
+            </Box>
+            <Heading>No meals yet. Click [ + ] to get started!</Heading>
+          </Box>
+        ) : (
+          <Box display='flex'>
+            <Heading>No meals yet. Click [New Meal] to get started!</Heading>
+            <Spacer />
+            <Button variant='solid'><Link to='/meal/new'>New Meal</Link></Button>
+          </Box>
+        )}
       </Box>
     );
   };
@@ -184,6 +195,7 @@ const Meal = () => {
             </div>
           ))}
           <AlertDialog
+            isCentered
             isOpen={alertState.open}
             onClose={() => { setAlertState({ ...alertState, open: false }) }}
           >
