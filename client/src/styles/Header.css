@@ -4,8 +4,11 @@
     height: fit-content;
     font-family: var(--font);
     padding: 1em 1em;
-    border-bottom: 0.75em solid var(--shade5)
+    border-bottom: 0.75em solid var(--shade5);
+    z-index: 2;
 }
+
+/* custom background color for light theme */
 html[theme='light'] .nav-bar {
     background-color: white;
 }
@@ -14,6 +17,7 @@ html[theme='light'] .nav-bar {
 .nav-bar img {
     width: 10em;
     height: auto;
+    margin-left: 0.5em;
     margin-right: 2em;
 }
 
@@ -36,6 +40,18 @@ html[theme='light'] .nav-bar {
         font-size: 2em;
     }
 
+    /* header drawer container */
+    html[theme='dark'] .header-drawer,
+    html[theme='dark-invert'] .header-drawer  {
+        color: var(--shade1);
+        background-color: var(--shade5);
+    }
+    html[theme='original-invert'] .header-drawer,
+    html[theme='light-invert'] .header-drawer,
+    html[theme='dark-invert'] .header-drawer  {
+        filter: invert(100%);
+    }
+
     /* drawer header */
     .header-drawer .css-9fgtzh {
         display: flex;
@@ -45,8 +61,9 @@ html[theme='light'] .nav-bar {
         font-size: 1.75em;
         color: var(--shade5);
     }
-    html[theme='dark'] .header-drawer .css-9fgtzh {
-        color: var(--shade1);
+    html[theme='dark'] .header-drawer .css-9fgtzh,
+    html[theme='dark-invert'] .header-drawer .css-9fgtzh {
+        color: var(--shade3);
     }
 
     /* drawer menu link container */

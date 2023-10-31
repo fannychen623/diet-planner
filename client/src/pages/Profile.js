@@ -260,9 +260,12 @@ const Profile = () => {
                     value={formState.theme}
                     onChange={(e) => { handleChange(e.target.name, e.target.value) }}
                   >
-                    <option value='original'>Original</option>
-                    <option value='light'>Light</option>
-                    <option value='dark'>Dark</option>
+                    <option value='original'>Original / Green</option>
+                    <option value='light'>White / Blue</option>
+                    <option value='dark'>Blue / Gray</option>
+                    <option value='original-invert'>Black / Purple</option>
+                    <option value='light-invert'>Brown / Gold</option>
+                    <option value='dark-invert'>Tan / Teal</option>
                   </Select>
                 </InputGroup>
               </Box>

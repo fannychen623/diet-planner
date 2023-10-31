@@ -1,7 +1,7 @@
 /* styling for the Routine page */
 .new-meal-page,
 .edit-meal-page,
-edit-planner-page {
+.edit-planner-page {
     font-family: var(--font);
     min-height: 100vh;
     height: fit-content;
@@ -64,9 +64,13 @@ edit-planner-page {
 .edit-planner-page .css-1m5jnul {
     border-color: var(--shade5);
 }
+
 html[theme='dark'] .new-meal-page .css-1m5jnul,
 html[theme='dark'] .edit-meal-page .css-1m5jnul,
-html[theme='dark'] .edit-planner-page .css-1m5jnul {
+html[theme='dark'] .edit-planner-page .css-1m5jnul,
+html[theme='dark-invert'] .new-meal-page .css-1m5jnul,
+html[theme='dark-invert'] .edit-meal-page .css-1m5jnul,
+html[theme='dark-invert'] .edit-planner-page .css-1m5jnul {
     color: var(--shade5);
 }
 
@@ -103,6 +107,7 @@ html[theme='dark'] .edit-planner-page .css-1m5jnul {
 .edit-meal-page .css-xumdn4[data-is-numeric=true],
 .edit-planner-page .css-xumdn4[data-is-numeric=true] {
     text-align: center;
+    border-bottom: 0.15em solid var(--shade3);
 }
 
 /* meal total row */
@@ -152,22 +157,50 @@ html[theme='dark'] .edit-planner-page .css-1m5jnul {
     background-color: var(--shade4);
 }
 
+/* meal modal container */
+html[theme='dark'] .meal-modal,
+html[theme='dark-invert'] .meal-modal {
+    background-color: var(--shade5);
+}
+
 /* modal title */
 .meal-modal .css-9fgtzh {
     font-size: 1.75em;
     color: var(--shade5)
 }
-html[theme='dark'] .meal-modal .css-9fgtzh {
+
+html[theme='dark'] .meal-modal .css-9fgtzh,
+html[theme='dark-invert'] .meal-modal .css-9fgtzh {
     color: var(--shade4);
 }
 
-/* modal search input */
+/* modal search input container */
 .meal-modal .css-1y0e7gb {
     margin-top: 0.5em;
     border-color: var(--shade4);
     color: var(--shade6);
 }
-html[theme='dark'] .meal-modal .css-1y0e7gb {
+html[theme='dark'] .meal-modal .css-1y0e7gb,
+html[theme='dark-invert'] .meal-modal .css-1y0e7gb {
+    border-color: var(--shade2);
+}
+
+/* modal search inputleftelement */
+.meal-modal .css-gv1iwz svg {
+    color: var(--shade5);
+}
+html[theme='dark'] .meal-modal .css-gv1iwz svg,
+html[theme='dark-invert'] .meal-modal .css-gv1iwz svg {
+    color: var(--shade2);
+}
+
+/* modal search input field */
+.meal-modal .css-qluo93 {
+    background-color: rgba(255, 255, 255, 0.55);
+}
+
+html[theme='dark'] .meal-modal .css-1y0e7gb,
+html[theme='dark-invert'] .meal-modal .css-1y0e7gb {
     color: var(--shade1);
 }
 
@@ -192,7 +225,9 @@ html[theme='dark'] .meal-modal .css-1y0e7gb {
 .meal-modal .css-22xpxh {
     background-color: var(--shade3);
 }
-html[theme='dark'] .meal-modal .css-22xpxh {
+
+html[theme='dark'] .meal-modal .css-22xpxh,
+html[theme='dark-invert'] .meal-modal .css-22xpxh {
     color: var(--shade6);
 }
 
@@ -203,7 +238,9 @@ html[theme='dark'] .meal-modal .css-22xpxh {
     border-radius: 0.5em;
     padding: 0.5em;
 }
-html[theme='dark'] .meal-modal .css-1cj2wja {
+
+html[theme='dark'] .meal-modal .css-1cj2wja,
+html[theme='dark-invert'] .meal-modal .css-1cj2wja {
     color: var(--shade6);
 }
 
@@ -224,4 +261,123 @@ html[theme='dark'] .meal-modal .css-1cj2wja {
     color: var(--shade1);
 }
 
-@media (max-width: 768px) {}
+html[theme='dark-invert'] .meal-modal {
+    filter: invert(100%);
+}
+
+@media (max-width: 480px) {
+
+    /* page title */
+    .new-meal-page .css-1dklj6k,
+    .edit-meal-page .css-1dklj6k{
+        font-size: 1.75em;
+    }
+    .edit-planner-page .css-1dklj6k {
+        font-size: 1.45em;
+    }
+
+    /* meal name and number of servings input container */
+    .new-meal-page .css-1y0e7gb,
+    .edit-meal-page .css-1y0e7gb,
+    .edit-planner-page .css-1y0e7gb {
+        margin: 1.5em 0em;
+    }
+
+    /* number of serving input */
+    .new-meal-page .css-1g0mrv8,
+    .edit-meal-page .css-1g0mrv8,
+    .edit-planner-page .css-1g0mrv8 {
+        width: 100%;
+    }
+
+    /* grid header row */
+    .new-meal-page .css-1nno5ms,
+    .edit-meal-page .css-1nno5ms,
+    .edit-planner-page .css-1nno5ms {
+        font-size: 1.25em;
+        font-weight: bolder;
+        padding: 0.5em 0em;
+        background-color: var(--shade5);
+        color: var(--shade1);
+    }
+
+    /* grid row container */
+    .new-meal-page .css-1y8gkv7,
+    .new-meal-page .css-zd4of5,
+    .new-meal-page .css-vmmjg9,
+    .edit-meal-page .css-1y8gkv7,
+    .edit-meal-page .css-zd4of5,
+    .edit-meal-page .css-vmmjg9,
+    .edit-planner-page .css-1y8gkv7,
+    .edit-planner-page .css-zd4of5,
+    .edit-planner-page .css-vmmjg9 {
+        padding: 1em 0em;
+        border-bottom: 0.15em solid var(--shade5);
+    }
+
+    /* grid food serving size container */
+    .new-meal-page .css-1y8gkv7 .css-1y0e7gb,
+    .edit-meal-page .css-1y8gkv7 .css-1y0e7gb,
+    .edit-planner-page .css-1y8gkv7 .css-1y0e7gb {
+        width: fit-content;
+        margin: 0;
+    }
+
+    /* grid food serving size input field*/
+    .new-meal-page .css-7eqg8e,
+    .edit-meal-page .css-7eqg8e,
+    .edit-planner-page .css-7eqg8e {
+        width: 5em;
+        border-top-right-radius: 0.375rem;
+        border-bottom-right-radius: 0.375rem;
+        border-color: var(--shade5);
+    }
+
+    /* grid food serving size info inputrightaddon */
+    .new-meal-page .css-1r6jmxn,
+    .edit-meal-page .css-1r6jmxn,
+    .edit-planner-page .css-1r6jmxn {
+        background-color: var(--trans);
+        border: none;
+    }
+
+    /* grid food info popover */
+    .new-meal-page .css-sjj62m,
+    .edit-meal-page .css-sjj62m,
+    .edit-planner-page .css-sjj62m {
+        width: fit-content;
+        border: none;
+        margin-right: -0.75em;
+        background-color: var(--shade3);
+        color: var(--shade6);
+    }
+
+    /* total heading */
+    .new-meal-page .css-42igfv,
+    .edit-meal-page .css-42igfv,
+    .edit-planner-page .css-42igfv {
+        text-align: center;
+        padding: 0.5em 0em;
+        background-color: var(--shade5);
+        color: var(--shade1);
+    }
+
+    /* total simplegrid container */
+    .new-meal-page .css-1szs79,
+    .edit-meal-page .css-1szs79,
+    .edit-planner-page .css-1szs79 {
+        padding: 1em;
+        margin-bottom: 1em;
+        border: 0.15em solid var(--shade5);
+    }
+
+    /* add meal button */
+    .new-meal-page .css-ez23ye,
+    .edit-meal-page .css-ez23ye,
+    .edit-planner-page .css-ez23ye {
+        font-size: 1.5rem;
+        padding: 1.25em 1em;
+        margin-top: 1em;
+    }
+
+}

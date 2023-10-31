@@ -1,5 +1,6 @@
 // import package
 import React, { useEffect, useMemo, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 // importy query and mutations
 import { useQuery, useMutation } from '@apollo/client';
@@ -8,9 +9,9 @@ import { ADD_MEAL, ADD_MEAL_FOOD } from '../utils/mutations';
 
 // import package components
 import {
-  Box, Flex, Spacer, Heading, Text, Button, IconButton,
-  Input, InputGroup, InputLeftElement, InputLeftAddon,
-  Checkbox, NumberInput, NumberInputField,
+  Box, Flex, Spacer, Grid, GridItem, SimpleGrid, Heading, Text, 
+  Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon,
+  Button, IconButton, Checkbox, NumberInput, NumberInputField,
   NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
   Popover, PopoverTrigger, PopoverContent, PopoverBody,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
@@ -36,6 +37,9 @@ function toTitleCase(str) {
 
 // functional component for the new meal page
 const NewMeal = () => {
+
+  // determine if the viewport size is mobile
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -250,7 +254,7 @@ const NewMeal = () => {
     }
   };
 
-// mutation and function to add meal food
+  // mutation and function to add meal food
   const [addMealFood, { mealFoodError, mealFoodData }] = useMutation(ADD_MEAL_FOOD);
   const handleAddMealFood = async (mealId) => {
     for (let i = 0; i < foodAdded.length; i++) {
@@ -271,7 +275,7 @@ const NewMeal = () => {
   return (
     <Box className='new-meal-page'>
       <Heading>Create a New Meal</Heading>
-      <Flex>
+      <Box display={isMobile ? 'block' : 'flex'} justifyContent='space-between'>
         <Box>
           <InputGroup>
             <InputLeftAddon children='Meal Name' />
@@ -283,7 +287,7 @@ const NewMeal = () => {
             />
           </InputGroup>
         </Box>
-        <Spacer />
+        {isMobile ? (<></>) : (<Spacer />)}
         <Box>
           <InputGroup>
             <InputLeftAddon children='Number of Serving' />
@@ -303,101 +307,187 @@ const NewMeal = () => {
             </NumberInput>
           </InputGroup>
         </Box>
-      </Flex>
-      <Box>
-        <TableContainer width='fit-content' m='auto'>
-          <Table variant='simple'>
-            <Thead>
-              <Tr>
-                <Th></Th>
-                <Th text>Food</Th>
-                <Th isNumeric># of Serving</Th>
-                <Th>Serving Size</Th>
-                <Th isNumeric>Calories (kcal)</Th>
-                <Th isNumeric>Carbs (g)</Th>
-                <Th isNumeric>Fat (g)</Th>
-                <Th isNumeric>Protein (g)</Th>
-                <Th isNumeric>Sodium (mg)</Th>
-                <Th isNumeric>Sugar (g)</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {foodAdded.map((addFood, index) => (
-                <Tr>
-                  <Td>
+      </Box>
+      {isMobile ? (
+        <Box>
+          <Grid
+            templateColumns='repeat(5, 1fr)'
+          >
+            <GridItem colSpan='5' textAlign='center'>Food</GridItem>
+            {foodAdded.map((addFood, index) => (
+              <GridItem colSpan='5' key={index}>
+                <Grid
+                  templateRows='repeat(2, 1fr)'
+                  templateColumns='repeat(5, 1fr)'
+                >
+                  <GridItem rowSpan='2' colSpan='1' my='auto'>
                     <IconButton
                       size='md'
                       icon={<FiMinusSquare p='100%' />}
                       id={addFood.id}
                       onClick={handleRemoveFood}
                     />
-                  </Td>
-                  <Td>{addFood.title}</Td>
-                  <Td isNumeric>
-                    <Input
-                      width='auto'
-                      textAlign='center'
-                      defaultValue={1}
-                      id={addFood.id}
-                      onChange={handleUpdateServings}
+                  </GridItem>
+                  <GridItem colSpan='4'>{addFood.title}</GridItem>
+                  <GridItem colSpan='4' display='flex' alignItems='center' justifyContent='space-between'>
+                    <Text># of Serving:</Text>
+                    <InputGroup>
+                      <Input
+                        width='auto'
+                        textAlign='center'
+                        defaultValue={1}
+                        id={addFood.id}
+                        onChange={handleUpdateServings}
+                      />
+                      <Popover isLazy placement='left'>
+                        <PopoverTrigger>
+                          <InputRightAddon>
+                            <FiInfo />
+                          </InputRightAddon>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverBody whiteSpace='pre-line'>
+                            Serving Size: {addFood.servingSizeUnit}{'\n'}
+                            Calories: {+parseFloat(addFood.calories).toFixed(2)} kcal {'\n'}
+                            Carbs: {+parseFloat(addFood.carbs).toFixed(2)} g {'\n'}
+                            Fat: {+parseFloat(addFood.fat).toFixed(2)} g {'\n'}
+                            Protein: {+parseFloat(addFood.protein).toFixed(2)} g {'\n'}
+                            Sodium: {+parseFloat(addFood.sodium).toFixed(2)} mg {'\n'}
+                            Sugar: {+parseFloat(addFood.sugar).toFixed(2)} g {'\n'}
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </InputGroup>
+                  </GridItem>
+                </Grid>
+              </GridItem>
+            ))}
+            <GridItem colSpan='1'>
+              <IconButton
+                size='md'
+                icon={<FiPlusSquare p='100%' />}
+                onClick={onOpen}
+              />
+            </GridItem>
+            <GridItem colSpan='4' textAlign='center'> </GridItem>
+          </Grid>
+          {foodAdded.length > 0 ? (
+            <Box>
+              <Text m='auto'>Total Nutrition</Text>
+              <SimpleGrid columns='2'>
+                <Box>Calories</Box>
+                <Box textAlign='end'>{total.calories} kcal</Box>
+                <Box>Carbs</Box>
+                <Box textAlign='end'>{total.carbs} g</Box>
+                <Box>Fat</Box>
+                <Box textAlign='end'>{total.fat} g</Box>
+                <Box>Protein</Box>
+                <Box textAlign='end'>{total.protein} g</Box>
+                <Box>Sodium</Box>
+                <Box textAlign='end'>{total.sodium} mg</Box>
+                <Box>Sugar</Box>
+                <Box textAlign='end'>{total.sugar} g</Box>
+              </SimpleGrid>
+            </Box>
+          ) : (<></>)}
+          <Text textAlign='center'>{errorMessage}</Text>
+        </Box>
+      ) : (
+        <Box>
+          <TableContainer width='fit-content' m='auto'>
+            <Table variant='simple'>
+              <Thead>
+                <Tr>
+                  <Th></Th>
+                  <Th text>Food</Th>
+                  <Th isNumeric># of Serving</Th>
+                  <Th>Serving Size</Th>
+                  <Th isNumeric>Calories (kcal)</Th>
+                  <Th isNumeric>Carbs (g)</Th>
+                  <Th isNumeric>Fat (g)</Th>
+                  <Th isNumeric>Protein (g)</Th>
+                  <Th isNumeric>Sodium (mg)</Th>
+                  <Th isNumeric>Sugar (g)</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {foodAdded.map((addFood, index) => (
+                  <Tr key={index}>
+                    <Td>
+                      <IconButton
+                        size='md'
+                        icon={<FiMinusSquare p='100%' />}
+                        id={addFood.id}
+                        onClick={handleRemoveFood}
+                      />
+                    </Td>
+                    <Td>{addFood.title}</Td>
+                    <Td isNumeric>
+                      <Input
+                        width='auto'
+                        textAlign='center'
+                        defaultValue={1}
+                        id={addFood.id}
+                        onChange={handleUpdateServings}
+                      />
+                    </Td>
+                    <Td>{addFood.servingSizeUnit}</Td>
+                    <Td isNumeric>{+parseFloat(addFood.calories).toFixed(2)}</Td>
+                    <Td isNumeric>{+parseFloat(addFood.carbs).toFixed(2)}</Td>
+                    <Td isNumeric>{+parseFloat(addFood.fat).toFixed(2)}</Td>
+                    <Td isNumeric>{+parseFloat(addFood.protein).toFixed(2)}</Td>
+                    <Td isNumeric>{+parseFloat(addFood.sodium).toFixed(2)}</Td>
+                    <Td isNumeric>{+parseFloat(addFood.sugar).toFixed(2)}</Td>
+                  </Tr>
+                ))}
+                <Tr>
+                  <Td>
+                    <IconButton
+                      size='md'
+                      icon={<FiPlusSquare p='100%' />}
+                      onClick={onOpen}
                     />
                   </Td>
-                  <Td>{addFood.servingSizeUnit}</Td>
-                  <Td isNumeric>{+parseFloat(addFood.calories).toFixed(2)}</Td>
-                  <Td isNumeric>{+parseFloat(addFood.carbs).toFixed(2)}</Td>
-                  <Td isNumeric>{+parseFloat(addFood.fat).toFixed(2)}</Td>
-                  <Td isNumeric>{+parseFloat(addFood.protein).toFixed(2)}</Td>
-                  <Td isNumeric>{+parseFloat(addFood.sodium).toFixed(2)}</Td>
-                  <Td isNumeric>{+parseFloat(addFood.sugar).toFixed(2)}</Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td></Td>
                 </Tr>
-              ))}
-              <Tr>
-                <Td>
-                  <IconButton
-                    size='md'
-                    icon={<FiPlusSquare p='100%' />}
-                    onClick={onOpen}
-                  />
-                </Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-              </Tr>
-              <Tr className='meal-total'>
-                <Td></Td>
-                <Td>Total</Td>
-                <Td></Td>
-                <Td></Td>
-                <Td isNumeric>{total.calories}</Td>
-                <Td isNumeric>{total.carbs}</Td>
-                <Td isNumeric>{total.fat}</Td>
-                <Td isNumeric>{total.protein}</Td>
-                <Td isNumeric>{total.sodium}</Td>
-                <Td isNumeric>{total.sugar}</Td>
-              </Tr>
-            </Tbody>
-          </Table>
-        </TableContainer>
-        <Text textAlign='center'>{errorMessage}</Text>
-      </Box>
+                <Tr className='meal-total'>
+                  <Td></Td>
+                  <Td>Total</Td>
+                  <Td></Td>
+                  <Td></Td>
+                  <Td isNumeric>{total.calories}</Td>
+                  <Td isNumeric>{total.carbs}</Td>
+                  <Td isNumeric>{total.fat}</Td>
+                  <Td isNumeric>{total.protein}</Td>
+                  <Td isNumeric>{total.sodium}</Td>
+                  <Td isNumeric>{total.sugar}</Td>
+                </Tr>
+              </Tbody>
+            </Table>
+          </TableContainer>
+          <Text textAlign='center'>{errorMessage}</Text>
+        </Box>
+      )}
       <Box textAlign='center'>
         <Button variant='solid' onClick={handleAddMeal}>Add Meal</Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent className='meal-modal'>
+        <ModalContent className='meal-modal' maxW={isMobile ? '85%' : '35%'}>
           <ModalHeader>
             My Foods
             <Box>
               <InputGroup>
                 <InputLeftElement pointerEvents='none'>
-                  <FiSearch color='var(--shade5)' />
+                  <FiSearch />
                 </InputLeftElement>
                 <Input onChange={(e) => { setSearchValue(e.target.value) }} />
               </InputGroup>
@@ -407,37 +497,37 @@ const NewMeal = () => {
           <ModalBody overflowY='auto' maxHeight='50vh' >
             {foodsList.map((food, index) => (
               <>
-              {displayState[`${index}`] ? (
-              <Flex key={food._id}
-                justifyContent='space-between'
-                alignItems='center'
-              >
-                <Box>
-                  <Checkbox
-                    value={food.title}
-                    isChecked={checkedState[index]}
-                    onChange={handleChangeState}
+                {displayState[`${index}`] ? (
+                  <Flex key={food._id}
+                    justifyContent='space-between'
+                    alignItems='center'
                   >
-                    {food.title}
-                  </Checkbox>
-                </Box>
-                <Box>
-                  <Popover onOpen={() => { getFoodPreview(index) }}>
-                    <PopoverTrigger>
-                      <IconButton
-                        aria-label={food.title}
-                        icon={<FiInfo p='100%' />}
-                      />
-                    </PopoverTrigger>
-                    <PopoverContent width='fit-content' border='none'>
-                      <PopoverBody>{foodPreview}</PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                </Box>
-              </Flex>
-              ):(
-                <></>
-              )}
+                    <Box>
+                      <Checkbox
+                        value={food.title}
+                        isChecked={checkedState[index]}
+                        onChange={handleChangeState}
+                      >
+                        {food.title}
+                      </Checkbox>
+                    </Box>
+                    <Box>
+                      <Popover onOpen={() => { getFoodPreview(index) }}>
+                        <PopoverTrigger>
+                          <IconButton
+                            aria-label={food.title}
+                            icon={<FiInfo p='100%' />}
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent width='fit-content' border='none'>
+                          <PopoverBody>{foodPreview}</PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Box>
+                  </Flex>
+                ) : (
+                  <></>
+                )}
               </>
             ))}
           </ModalBody>

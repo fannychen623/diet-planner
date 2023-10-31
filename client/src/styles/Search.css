@@ -15,6 +15,11 @@
     margin-bottom: 0.75em;
 }
 
+/* search bar container */
+.search-page .css-1y0e7gb {
+    z-index: 1;
+}
+
 /* search bar */
 .search-page .css-ffroc {
     border-color: var(--shade5);
@@ -40,7 +45,7 @@
 
 /* search info popover content */
 .search-page .css-19q7sx {
-    color: var(--shade6)
+    color: var(--shade6);
 }
 html[theme='dark'] .search-page .css-19q7sx {
     color: var(--shade1)
@@ -57,9 +62,18 @@ html[theme='dark'] .search-page .css-19q7sx {
     background-color: var(--shade5);
     color: var(--shade1);
 }
+html[theme='dark'] .search-page .css-jv498s .css-ez23ye,
+html[theme='dark-invert'] .search-page .css-jv498s .css-ez23ye {
+    background-color: var(--shade3);
+    color: var(--shade6);
+}
 
 /* search button */
 .search-page .css-ez23ye:hover {
+    background-color: var(--shade4);
+}
+html[theme='dark'] .search-page .css-jv498s .css-ez23ye:hover,
+html[theme='dark-invert'] .search-page .css-jv498s .css-ez23ye:hover {
     background-color: var(--shade4);
 }
 
@@ -71,6 +85,14 @@ html[theme='dark'] .search-page .css-19q7sx {
 /* card containers */
 .search-page .css-jv498s {
     margin: 1em;
+}
+html[theme='light'] .search-page .css-jv498s,
+html[theme='light-invert'] .search-page .css-jv498s {
+    border: 0.15em solid var(--shade5);
+}
+html[theme='dark'] .search-page .css-jv498s,
+html[theme='dark-invert'] .search-page .css-jv498s {
+    background-color: var(--shade5);
 }
 
 @media (max-width: 480px) {
@@ -88,7 +110,8 @@ html[theme='dark'] .search-page .css-19q7sx {
     }
 
     /* search bar icons */
-    html[theme='dark'] .search-page svg {
+    html[theme='dark'] .search-page svg,
+    html[theme='dark-invert'] .search-page svg {
         color: var(--shade6);
     }
 

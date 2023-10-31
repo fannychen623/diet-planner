@@ -5,7 +5,9 @@
     --popper-arrow-bg: var(--shade2);
     --popper-arrow-shadow-color: var(--shade5);
 }
-html[theme='dark'] .converter .css-sjj62m {
+
+html[theme='dark'] .converter .css-sjj62m,
+html[theme='dark-invert'] .converter .css-sjj62m {
     background-color: var(--shade5);
 }
 
@@ -34,7 +36,9 @@ html[theme='dark'] .converter .css-sjj62m {
     border-color: var(--shade5);
     width: 75%;
 }
-html[theme='dark'] .converter .css-1cjy4zv {
+
+html[theme='dark'] .converter .css-1cjy4zv,
+html[theme='dark-invert'] .converter .css-1cjy4zv {
     border-color: var(--shade2);
 }
 
@@ -43,8 +47,10 @@ html[theme='dark'] .converter .css-1cjy4zv {
     border-color: var(--shade4);
 }
 
-.converter .css-1cjy4zv:disabled, .converter .css-1cjy4zv[disabled], 
-.converter .css-1cjy4zv[aria-disabled=true], .converter .css-1cjy4zv[data-disabled] {
+.converter .css-1cjy4zv:disabled,
+.converter .css-1cjy4zv[disabled],
+.converter .css-1cjy4zv[aria-disabled=true],
+.converter .css-1cjy4zv[data-disabled] {
     opacity: 0.75
 }
 
@@ -57,23 +63,34 @@ html[theme='dark'] .converter .css-1cjy4zv {
 
 @media (max-width: 480px) {
 
-/* modal header */
-.converter .css-9fgtzh {
-    color: var(--shade5);
-    font-weight: bold;
-    background-color: var(--shade2);
-    margin-bottom: 0.5em;
-    border-top-left-radius: 0.375rem;
-    border-top-right-radius: 0.375rem;
-}
+    /* converter modal container */
+    .converter .css-1htutmd {
+        border: 0.15em solid var(--shade5);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+    html[theme='original-invert'] .converter .css-1htutmd,
+    html[theme='light-invert'] .converter .css-1htutmd,
+    html[theme='dark-invert'] .converter .css-1htutmd {
+        filter: invert(100%);
+    }
 
-/* modal footer */
-.converter .css-k0waxj {
-    text-align: end;
-    background-color: var(--shade2);
-    color: var(--shade5);
-    border-bottom-left-radius: 0.375rem;
-    border-bottom-right-radius: 0.375rem;
-}
+    /* modal header */
+    .converter .css-9fgtzh {
+        color: var(--shade5);
+        font-weight: bold;
+        background-color: var(--shade2);
+        margin-bottom: 0.5em;
+        border-top-left-radius: 0.375rem;
+        border-top-right-radius: 0.375rem;
+    }
+
+    /* modal footer */
+    .converter .css-k0waxj {
+        text-align: end;
+        background-color: var(--shade2);
+        color: var(--shade5);
+        border-bottom-left-radius: 0.375rem;
+        border-bottom-right-radius: 0.375rem;
+    }
 
 }

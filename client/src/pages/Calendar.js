@@ -1,5 +1,5 @@
 // import packages
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, Fragment } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import { format } from 'date-fns';
@@ -26,7 +26,7 @@ import {
   Card, CardHeader, CardBody, CircularProgress, CircularProgressLabel,
   Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
   Tabs, TabList, TabPanels, Tab, TabPanel,
-  Popover, PopoverTrigger, PopoverContent, PopoverBody,
+  Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
 } from '@chakra-ui/react'
@@ -616,10 +616,10 @@ const CalendarPage = () => {
     const planId = id
 
     // add planner if no record exist for date
-    if (planId === 'n/a') {
+    if (planId === 'n/a' && weight !== 0 && weight !== '' && !isNaN(weight)) {
       let type = 'weight'
       handleAddPlanner(type)
-    } else {
+    } else if (weight !== 0 && weight !== '' && !isNaN(weight)) {
       try {
         const { addWeightData } = await addWeight({
           // pass in the selected date to add new tracking data
@@ -750,23 +750,58 @@ const CalendarPage = () => {
                     <Box>
                       <Accordion allowToggle>
                         <AccordionItem bg='var(--shade5)' color='var(--shade1)'>
-                          <h2>
-                            <AccordionButton>
-                              <Box as="span" flex='1' textAlign='left'>
-                                <IconButton isDisabled size='md' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
-                                <IconButton isDisabled size='md' mr='2em' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                          <AccordionButton>
+                            {isMobile ? (
+                              <Box display='flex' justifyContent='space-between' alignItems='center' width='100%'>
                                 Meal
+                                <IconButton
+                                  size='md'
+                                  icon={<FiPlus p='100%' />}
+                                  onClick={onOpen}
+                                />
                               </Box>
-                              <Box as="span" flex='1' textAlign='right'>
-                                Serving
+                            ) : (
+                              <Box display='flex' justifyContent='space-between' alignItems='center'>
+                                <Box as="span" flex='1' textAlign='left'>
+                                  <IconButton isDisabled size='md' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                                  <IconButton isDisabled size='md' mr='2em' bg='var(--shade5)' _hover={{ bg: 'var(--shade5)' }} />
+                                  Meal
+                                </Box>
+                                <Box as="span" flex='1' textAlign='right'>
+                                  Serving
+                                </Box>
                               </Box>
-                            </AccordionButton>
-                          </h2>
+                            )}
+                          </AccordionButton>
                         </AccordionItem>
                         {currentPlannerDiet.map((planner) => (
-                          <AccordionItem>
-                            <h2>
-                              <AccordionButton _hover={{ bg: 'var(--shade2)', color: 'var(--shade6)'}} _expanded={{ bg: 'var(--shade2)', color: 'var(--shade6)', fontWeight: 'bold' }}>
+                          <AccordionItem key={planner.id}>
+                            <AccordionButton
+                              _hover={{ bg: 'var(--shade2)', color: 'var(--shade6)' }}
+                              _expanded={{ bg: 'var(--shade2)', color: 'var(--shade6)', fontWeight: 'bold' }}
+                            >
+                              {isMobile ? (
+                                <Box display='flex' justifyContent='space-between' alignItems='center'>
+                                  <Box display='flex' alignItems='center'>
+                                    <IconButton
+                                      size='md'
+                                      icon={<FiMinus p='100%' />}
+                                      id={planner.id}
+                                      onClick={handleRemoveDiet}
+                                    />
+                                    <IconButton
+                                      mx='1em'
+                                      size='md'
+                                      icon={<FiEdit3 p='100%' />}
+                                      onClick={() => { navigate('/calendar/edit/meal', { state: { planner, date } }) }}
+                                    />
+                                    <Text textAlign='left'>{planner.title}</Text>
+                                  </Box>
+                                  <Box>
+                                    <AccordionIcon />
+                                  </Box>
+                                </Box>
+                              ) : (
                                 <Grid templateColumns='repeat(10, 1fr)' gap='4'>
                                   <GridItem colSpan='9' alignItems='center'>
                                     <Box textAlign='left'>
@@ -792,17 +827,18 @@ const CalendarPage = () => {
                                     <AccordionIcon />
                                   </GridItem>
                                 </Grid>
-                              </AccordionButton>
-                            </h2>
+                              )}
+                            </AccordionButton>
                             <AccordionPanel>
                               <Grid templateColumns='repeat(10, 1fr)' gap='4'>
-                                <GridItem colSpan='6'>
+                                <GridItem colSpan={isMobile ? '10' : '6'}>
+                                  {isMobile ? (<Text mb='1em'><b>Serving Size: </b>{planner.numberOfServing}</Text>) : (<></>)}
                                   <Text as='b'>Contains: </Text>
-                                  {planner.content.map((content) => (
-                                    <Text>{content.servings}{content.servings <= 1 ? (' serving of ') : (' servings of ')}{content.title}</Text>
+                                  {planner.content.map((content, index) => (
+                                    <Text key={index}>{content.servings}{content.servings <= 1 ? (' serving of ') : (' servings of ')}{content.title}</Text>
                                   ))}
                                 </GridItem>
-                                <GridItem colSpan='4'>
+                                <GridItem colSpan={isMobile ? '10' : '4'}>
                                   <Text as='b'>Nutrition Value: </Text>
                                   <Box display='flex'>
                                     <Text>Calories: </Text>
@@ -840,11 +876,48 @@ const CalendarPage = () => {
                           </AccordionItem>
                         ))}
                         {currentPlannerCustomDiet.map((planner) => (
-                          <AccordionItem>
+                          <AccordionItem key={planner.id}>
                             {({ isExpanded }) => (
                               <>
-                                <h2>
-                                  <AccordionButton _hover={{ bg: 'var(--shade2)' }} _expanded={{ bg: 'var(--shade2)', fontWeight: 'bold' }}>
+                                <AccordionButton
+                                  _hover={{ bg: 'var(--shade2)' }}
+                                  _expanded={{ bg: 'var(--shade2)', fontWeight: 'bold' }}
+                                >
+                                  {isMobile ? (
+                                    <Box display='flex' justifyContent='space-between' alignItems='center'>
+                                      <Box display='flex' alignItems='center'>
+                                        <IconButton
+                                          size='md'
+                                          icon={<FiMinus p='100%' />}
+                                          id={planner.id}
+                                          onClick={handleRemoveCustomDiet}
+                                        />
+                                        {editCustom === planner.id ? (
+                                          <IconButton
+                                            mx='1em'
+                                            size='md'
+                                            icon={<FiCheck p='100%' />}
+                                            onClick={() => { handleUpdateCustomDiet(planner.id) }}
+                                          />
+                                        ) : (
+                                          <IconButton
+                                            mx='1em'
+                                            size='md'
+                                            icon={<FiEdit3 p='100%' />}
+                                            isDisabled={isExpanded ? (true) : (false)}
+                                            onClick={() => {
+                                              setEditCustom(planner.id);
+                                              setCustomDiet({ ...customDiet, title: planner.title, calories: planner.calories, carbs: planner.carbs, fat: planner.fat, protein: planner.protein, sodium: planner.sodium, sugar: planner.sugar })
+                                            }}
+                                          />
+                                        )}
+                                        <Text textAlign='left'>{planner.title}</Text>
+                                      </Box>
+                                      <Box>
+                                        <AccordionIcon />
+                                      </Box>
+                                    </Box>
+                                  ) : (
                                     <Grid templateColumns='repeat(10, 1fr)' gap='4'>
                                       <GridItem colSpan='9' alignItems='center'>
                                         <Box textAlign='left'>
@@ -881,8 +954,8 @@ const CalendarPage = () => {
                                         <AccordionIcon />
                                       </GridItem>
                                     </Grid>
-                                  </AccordionButton>
-                                </h2>
+                                  )}
+                                </AccordionButton>
                                 <AccordionPanel>
                                   {editCustom === planner.id ? (
                                     <Box>
@@ -895,7 +968,7 @@ const CalendarPage = () => {
                                         />
                                       </InputGroup>
                                       <InputGroup alignItems='center' mb='0.5em'>
-                                        <Text mr='1em' width='25%'>Calories (kcal) : </Text>
+                                        <Text mr='1em' width={isMobile ? '150%' : '25%'}>Calories (kcal) : </Text>
                                         <Input
                                           name='calories'
                                           value={customDiet.calories}
@@ -903,7 +976,7 @@ const CalendarPage = () => {
                                         />
                                       </InputGroup>
                                       <InputGroup alignItems='center' mb='0.5em'>
-                                        <Text mr='1em' width='25%'>Carbs (g) : </Text>
+                                        <Text mr='1em' width={isMobile ? '150%' : '25%'}>Carbs (g) : </Text>
                                         <Input
                                           name='carbs'
                                           value={customDiet.carbs}
@@ -911,7 +984,7 @@ const CalendarPage = () => {
                                         />
                                       </InputGroup>
                                       <InputGroup alignItems='center' mb='0.5em'>
-                                        <Text mr='1em' width='25%'>Fat (g) : </Text>
+                                        <Text mr='1em' width={isMobile ? '150%' : '25%'}>Fat (g) : </Text>
                                         <Input
                                           name='fat'
                                           value={customDiet.fat}
@@ -919,7 +992,7 @@ const CalendarPage = () => {
                                         />
                                       </InputGroup>
                                       <InputGroup alignItems='center' mb='0.5em'>
-                                        <Text mr='1em' width='25%'>Protein (g) : </Text>
+                                        <Text mr='1em' width={isMobile ? '150%' : '25%'}>Protein (g) : </Text>
                                         <Input
                                           name='protein'
                                           value={customDiet.protein}
@@ -927,7 +1000,7 @@ const CalendarPage = () => {
                                         />
                                       </InputGroup>
                                       <InputGroup alignItems='center' mb='0.5em'>
-                                        <Text mr='1em' width='25%'>Sodium (mg) : </Text>
+                                        <Text mr='1em' width={isMobile ? '150%' : '25%'}>Sodium (mg) : </Text>
                                         <Input
                                           name='sodium'
                                           value={customDiet.sodium}
@@ -935,7 +1008,7 @@ const CalendarPage = () => {
                                         />
                                       </InputGroup>
                                       <InputGroup alignItems='center'>
-                                        <Text mr='1em' width='25%'>Sugar (g) : </Text>
+                                        <Text mr='1em' width={isMobile ? '150%' : '25%'}>Sugar (g) : </Text>
                                         <Input
                                           name='sugar'
                                           value={customDiet.sugar}
@@ -945,6 +1018,7 @@ const CalendarPage = () => {
                                     </Box>
                                   ) : (
                                     <Box>
+                                      {isMobile ? (<Text mb='1em'><b>Serving Size: </b>1</Text>) : (<></>)}
                                       <Text as='b'>Nutrition Value: </Text>
                                       <Box display='flex'>
                                         <Text>Calories: </Text>
@@ -986,15 +1060,13 @@ const CalendarPage = () => {
                       </Accordion>
                       <Accordion allowToggle defaultIndex={isMobile ? '' : 0}>
                         <AccordionItem>
-                          <h2>
-                            <AccordionButton _hover={{ bg: 'var(--shade5)' }}>
-                              <AccordionIcon />
-                              <Box as="span" flex='1' textAlign='center'>
-                                Daily Stats
-                              </Box>
-                              <AccordionIcon />
-                            </AccordionButton>
-                          </h2>
+                          <AccordionButton _hover={{ bg: 'var(--shade5)' }}>
+                            <AccordionIcon />
+                            <Box as="span" flex='1' textAlign='center'>
+                              Daily Stats
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
                           <AccordionPanel borderBottom='none'>
                             <SimpleGrid columns={isMobile ? 2 : 4} spacingY='1em' spacingX='1em' textAlign='center' alignItems='center'>
                               <Box>
@@ -1083,12 +1155,12 @@ const CalendarPage = () => {
           <Box></Box>
         </GridItem>
       </Grid>
-      <Modal isOpen={isOpen} onClose={() => { onClose(); setTabIndex(0) }}>
+      <Modal isCentered isOpen={isOpen} onClose={() => { onClose(); setTabIndex(0) }}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className='add-items-modal' maxW={isMobile ? '85vw' : '40vw'}>
           <ModalHeader>Add Item(s)</ModalHeader>
           <ModalCloseButton />
-          <ModalBody overflowY='auto' maxHeight='50vh' >
+          <ModalBody overflowY='auto' maxHeight={isMobile ? '55vh' : '65vh'}>
             <Tabs isFitted variant='line' onChange={(index) => setTabIndex(index)}>
               <TabList>
                 <Tab _selected={{ color: 'var(--shade1)', bg: 'var(--shade5)' }}>Meals</Tab>
@@ -1113,18 +1185,16 @@ const CalendarPage = () => {
                         </Checkbox>
                       </Box>
                       <Box>
-                        <Popover onOpen={() => { getMealPreview(meal._id) }}>
+                        <Popover onOpen={() => { getMealPreview(meal._id) }} placement='left'>
                           <PopoverTrigger>
                             <IconButton
                               aria-label={meal.title}
-                              bg='var(--shade2)'
-                              color='var(--shade6)'
-                              _hover={{ bg: 'var(--shade4)' }}
                               icon={<FiInfo p='100%' />}
                             />
                           </PopoverTrigger>
                           <PopoverContent width='fit-content' border='none'>
-                            <PopoverBody whiteSpace='pre-line' p='1vw' bg='var(--shade3)' color='var(--shade6)'>{mealPreview}</PopoverBody>
+                            <PopoverArrow />
+                            <PopoverBody>{mealPreview}</PopoverBody>
                           </PopoverContent>
                         </Popover>
                       </Box>
@@ -1148,18 +1218,16 @@ const CalendarPage = () => {
                         </Checkbox>
                       </Box>
                       <Box>
-                        <Popover onOpen={() => { getFoodPreview(food._id) }}>
+                        <Popover onOpen={() => { getFoodPreview(food._id) }} placement='left'>
                           <PopoverTrigger>
                             <IconButton
                               aria-label={food.title}
-                              bg='var(--shade2)'
-                              color='var(--shade6)'
-                              _hover={{ bg: 'var(--shade4)' }}
                               icon={<FiInfo p='100%' />}
                             />
                           </PopoverTrigger>
                           <PopoverContent width='fit-content' border='none'>
-                            <PopoverBody whiteSpace='pre-line' p='1vw' bg='var(--shade3)' color='var(--shade6)'>{mealPreview}</PopoverBody>
+                            <PopoverArrow />
+                            <PopoverBody>{foodPreview}</PopoverBody>
                           </PopoverContent>
                         </Popover>
                       </Box>
@@ -1173,7 +1241,7 @@ const CalendarPage = () => {
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
                       <InputLeftAddon
                         children='Name'
-                        width='25%'
+                        width={isMobile ? '40%' : '25%'}
                         bg='var(--shade3)'
                       />
                       <Input
@@ -1185,7 +1253,7 @@ const CalendarPage = () => {
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
                       <InputLeftAddon
                         children='Calories'
-                        width='25%'
+                        width={isMobile ? '40%' : '25%'}
                         bg='var(--shade3)'
                       />
                       <Input
@@ -1195,14 +1263,14 @@ const CalendarPage = () => {
                       />
                       <InputRightAddon
                         children='kcal'
-                        width='20%'
+                        width={isMobile ? '25%' : '20%'}
                         bg='var(--shade3)'
                       />
                     </InputGroup>
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
                       <InputLeftAddon
                         children='Carbs'
-                        width='25%'
+                        width={isMobile ? '40%' : '25%'}
                         bg='var(--shade2)'
                       />
                       <Input
@@ -1212,14 +1280,14 @@ const CalendarPage = () => {
                       />
                       <InputRightAddon
                         children='g'
-                        width='20%'
+                        width={isMobile ? '25%' : '20%'}
                         bg='var(--shade2)'
                       />
                     </InputGroup>
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
                       <InputLeftAddon
                         children='Fat'
-                        width='25%'
+                        width={isMobile ? '40%' : '25%'}
                         bg='var(--shade2)'
                       />
                       <Input
@@ -1229,14 +1297,14 @@ const CalendarPage = () => {
                       />
                       <InputRightAddon
                         children='g'
-                        width='20%'
+                        width={isMobile ? '25%' : '20%'}
                         bg='var(--shade2)'
                       />
                     </InputGroup>
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
                       <InputLeftAddon
                         children='Protein'
-                        width='25%'
+                        width={isMobile ? '40%' : '25%'}
                         bg='var(--shade2)'
                       />
                       <Input
@@ -1246,14 +1314,14 @@ const CalendarPage = () => {
                       />
                       <InputRightAddon
                         children='g'
-                        width='20%'
+                        width={isMobile ? '25%' : '20%'}
                         bg='var(--shade2)'
                       />
                     </InputGroup>
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
                       <InputLeftAddon
                         children='Sodium'
-                        width='25%'
+                        width={isMobile ? '40%' : '25%'}
                         bg='var(--shade2)'
                       />
                       <Input
@@ -1263,14 +1331,14 @@ const CalendarPage = () => {
                       />
                       <InputRightAddon
                         children='mg'
-                        width='20%'
+                        width={isMobile ? '25%' : '20%'}
                         bg='var(--shade2)'
                       />
                     </InputGroup>
                     <InputGroup size='md' mb='1vh' borderWidth='1px' borderColor='var(--shade5)' borderRadius='10'>
                       <InputLeftAddon
                         children='Sugar'
-                        width='25%'
+                        width={isMobile ? '40%' : '25%'}
                         bg='var(--shade2)'
                       />
                       <Input
@@ -1280,7 +1348,7 @@ const CalendarPage = () => {
                       />
                       <InputRightAddon
                         children='g'
-                        width='20%'
+                        width={isMobile ? '25%' : '20%'}
                         bg='var(--shade2)'
                       />
                     </InputGroup>
@@ -1291,23 +1359,19 @@ const CalendarPage = () => {
             </Tabs>
           </ModalBody>
           <ModalFooter justifyContent='spaced-between'>
-            <Button mr={3} onClick={onClose}>
+            <Button onClick={onClose}>
               Close
             </Button>
             <Spacer />
             {tabIndex === 2 ? (
-              <Button bg='var(--shade5)'
-                color='var(--shade1)'
-                _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+              <Button
                 value={plannerId}
                 onClick={(e) => { handleAddCustomDiet(e.target.value) }}
               >
                 Add Custom Meal
               </Button>
             ) : (
-              <Button bg='var(--shade5)'
-                color='var(--shade1)'
-                _hover={{ bg: 'var(--shade3)', color: 'var(--shade6)' }}
+              <Button
                 value={plannerId}
                 onClick={(e) => { handleAddDiet(e.target.value) }}
               >
@@ -1317,7 +1381,7 @@ const CalendarPage = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </Box >
   );
 }
 

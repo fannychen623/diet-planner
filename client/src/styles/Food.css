@@ -81,7 +81,8 @@
 .food-page .css-1f0rfxj:hover {
     background-color: var(--shade4);
 }
-html[theme='dark'] .food-page .css-1f0rfxj:hover {
+html[theme='dark'] .food-page .css-1f0rfxj:hover,
+html[theme='dark-invert'] .food-page .css-1f0rfxj:hover {
     background-color: var(--shade3);
     color: var(--shade6);
 }
@@ -94,10 +95,10 @@ html[theme='dark'] .food-page .css-1f0rfxj:hover {
 }
 
 /* table row */
-html[theme='dark'] .food-page .css-crlss9:hover {
+html[theme='dark'] .food-page .css-crlss9:hover,
+html[theme='dark-invert'] .food-page .css-crlss9:hover {
     background-color: var(--shade3);
 }
-
 
 /* table items */
 .food-page .css-crlss9 {
@@ -116,6 +117,27 @@ html[theme='dark'] .food-page .css-crlss9:hover {
     background-color: var(--shade2);
 }
 
+/* food alert container */
+html[theme='dark'] .add-food,
+html[theme='dark'] .edit-food,
+html[theme='dark'] .delete-food,
+html[theme='dark-invert'] .add-food,
+html[theme='dark-invert'] .edit-food,
+html[theme='dark-invert'] .delete-food {
+    background-color: var(--shade5);
+}
+html[theme='original-invert'] .add-food,
+html[theme='original-invert'] .edit-food,
+html[theme='original-invert'] .delete-food,
+html[theme='light-invert'] .add-food,
+html[theme='light-invert'] .edit-food,
+html[theme='light-invert'] .delete-food,
+html[theme='dark-invert'] .add-food,
+html[theme='dark-invert'] .edit-food,
+html[theme='dark-invert'] .delete-food {
+    filter: invert(100%);
+}
+
 /* edit food modal header span, delete food alert header span */
 .edit-food span,
 .delete-food span {
@@ -123,7 +145,9 @@ html[theme='dark'] .food-page .css-crlss9:hover {
     color: var(--shade5);
 }
 html[theme='dark'] .edit-food span,
-html[theme='dark'] .delete-food span {
+html[theme='dark'] .delete-food span,
+html[theme='dark-invert'] .edit-food span,
+html[theme='dark-invert'] .delete-food span {
     color: var(--shade4);
 }
 
@@ -139,24 +163,48 @@ html[theme='dark'] .delete-food span {
     color: var(--shade1);
     border-color: var(--shade5)
 }
+html[theme='dark'] .edit-food .css-127xmqf,
+html[theme='dark-invert'] .edit-food .css-127xmqf {
+    border-color: var(--shade2);
+    background-color: var(--shade2);
+    color: var(--shade6);
+}
 
 /* edit food name and serving size input */
 .edit-food .css-10wjqo2,
 .edit-food .css-10wjqo2:hover {
     border-color: var(--shade5);
+    background-color: rgba(255, 255, 255, 0.55);
 }
-
 /* edit food serving size input */
 .edit-food .css-13l1v4l,
 .edit-food .css-13l1v4l:hover {
     border-color: var(--shade5);
     border-right: none;
+    background-color: rgba(255, 255, 255, 0.55);
+}
+html[theme='dark'] .edit-food .css-10wjqo2,
+html[theme='dark'] .edit-food .css-13l1v4l,
+html[theme='dark'] .edit-food .css-10wjqo2:hover,
+html[theme='dark'] .edit-food .css-13l1v4l:hover,
+html[theme='dark-invert'] .edit-food .css-10wjqo2,
+html[theme='dark-invert'] .edit-food .css-13l1v4l,
+html[theme='dark-invert'] .edit-food .css-10wjqo2:hover,
+html[theme='dark-invert'] .edit-food .css-13l1v4l:hover {
+    border-color: var(--shade2);
 }
 
 /* edit food macro inputs */
 .edit-food .css-uhk8uw,
 .edit-food .css-uhk8uw:hover {
     border-color: var(--shade5);
+    background-color: rgba(255, 255, 255, 0.55);
+}
+html[theme='dark'] .edit-food .css-uhk8uw,
+html[theme='dark'] .edit-food .css-uhk8uw:hover,
+html[theme='dark-invert'] .edit-food .css-uhk8uw,
+html[theme='dark-invert'] .edit-food .css-uhk8uw:hover {
+    border-color: var(--shade2);
 }
 
 /* edit food inputrightaddon */
@@ -165,7 +213,9 @@ html[theme='dark'] .delete-food span {
     background-color: var(--shade2);
     border-color: var(--shade5);
 }
-html[theme='dark'] .edit-food .css-1r6jmxn {
+html[theme='dark'] .edit-food .css-1r6jmxn,
+html[theme='dark-invert'] .edit-food .css-1r6jmxn {
+    border-color: var(--shade2);
     color: var(--shade5);
 }
 
@@ -184,7 +234,10 @@ html[theme='dark'] .edit-food .css-1r6jmxn {
 }
 html[theme='dark'] .edit-food .css-ez23ye,
 html[theme='dark'] .add-food .css-ez23ye,
-html[theme='dark'] .delete-food .css-ez23ye {
+html[theme='dark'] .delete-food .css-ez23ye,
+html[theme='dark-invert'] .edit-food .css-ez23ye,
+html[theme='dark-invert'] .add-food .css-ez23ye,
+html[theme='dark-invert'] .delete-food .css-ez23ye {
     color: var(--shade6);
 }
 
@@ -204,7 +257,9 @@ html[theme='dark'] .delete-food .css-ez23ye {
     color: var(--shade5);
 }
 html[theme='dark'] .add-food .css-9fgtzh,
-html[theme='dark'] .delete-food .css-1x2vgm7 {
+html[theme='dark'] .delete-food .css-1x2vgm7,
+html[theme='dark-invert'] .add-food .css-9fgtzh,
+html[theme='dark-invert'] .delete-food .css-1x2vgm7 {
     color: var(--shade4);
 } 
 
@@ -220,6 +275,12 @@ html[theme='dark'] .delete-food .css-1x2vgm7 {
     color: var(--shade1);
     border-color: var(--shade5);
 }
+html[theme='dark'] .add-food .css-127xmqf,
+html[theme='dark-invert'] .add-food .css-127xmqf {
+    border-color: var(--shade2);
+    background-color: var(--shade2);
+    color: var(--shade6);
+}
 
 /* add food inputrightaddon */
 .add-food .css-1r6jmxn {
@@ -228,7 +289,9 @@ html[theme='dark'] .delete-food .css-1x2vgm7 {
     border-color: var(--shade5);
     border-left: none;
 }
-html[theme='dark'] .add-food .css-1r6jmxn {
+html[theme='dark'] .add-food .css-1r6jmxn,
+html[theme='dark-invert'] .add-food .css-1r6jmxn {
+    border-color: var(--shade2);
     color: var(--shade5);
 }
 
@@ -240,6 +303,21 @@ html[theme='dark'] .add-food .css-1r6jmxn {
 .add-food .css-1cjy4zv:hover,
 .add-food .css-uhk8uw:hover {
     border-color: var(--shade5);
+    background-color: rgba(255, 255, 255, 0.55);
+}
+html[theme='dark'] .add-food .css-10wjqo2,
+html[theme='dark'] .add-food .css-1cjy4zv,
+html[theme='dark'] .add-food .css-uhk8uw,
+html[theme='dark'] .add-food .css-10wjqo2:hover,
+html[theme='dark'] .add-food .css-1cjy4zv:hover,
+html[theme='dark'] .add-food .css-uhk8uw:hover,
+html[theme='dark-invert'] .add-food .css-10wjqo2,
+html[theme='dark-invert'] .add-food .css-1cjy4zv,
+html[theme='dark-invert'] .add-food .css-uhk8uw,
+html[theme='dark-invert'] .add-food .css-10wjqo2:hover,
+html[theme='dark-invert'] .add-food .css-1cjy4zv:hover,
+html[theme='dark-invert'] .add-food .css-uhk8uw:hover {
+    border-color: var(--shade2);
 }
 
 
@@ -265,13 +343,20 @@ html[theme='dark'] .add-food .css-1r6jmxn {
         text-align: left;
     }
 
+    /* food alert container */
+    html[theme='dark'] .food-alert,
+    html[theme='dark-invert'] .food-alert {
+        background-color: var(--shade5);
+    }
+
     /* food alert header */
     .food-alert .css-1x2vgm7 {
         text-align: center;
         color: var(--shade5);
         padding-bottom: 0;
     }
-    html[theme='dark'] .food-alert .css-1x2vgm7 {
+    html[theme='dark'] .food-alert .css-1x2vgm7,
+    html[theme='dark-invert'] .food-alert .css-1x2vgm7 {
         color: var(--shade4);
     }
 
@@ -307,21 +392,35 @@ html[theme='dark'] .add-food .css-1r6jmxn {
         background-color: var(--shade5);
         color: var(--shade1);
     }
+    html[theme='dark'] .add-food .css-xi606m,
+    html[theme='dark'] .add-food .css-d3ozfg,
+    html[theme='dark-invert'] .add-food .css-xi606m,
+    html[theme='dark-invert'] .add-food .css-d3ozfg {
+        background-color: var(--shade2);
+        color: var(--shade6);
+    }
 
     /* add food name and serving size input */
     .add-food .css-4uav1b,
-    .add-food .css-4uav1b:hover,
-    .add-food .css-r84t6h,
-    .add-food .css-r84t6h:hover {
+    .add-food .css-r84t6h {
         border-color: var(--shade5);
+        background-color: rgba(255, 255, 255, 0.55);
     }
 
     /* add food serving size input */
-    .add-food .css-1qbkrx6,
-    .add-food .css-1qbkrx6:hover {
+    .add-food .css-1qbkrx6 {
         border-color: var(--shade5);
         border-right: none;
         margin-bottom: 1em;
+        background-color: rgba(255, 255, 255, 0.55);
+    }
+    html[theme='dark'] .add-food .css-4uav1b,
+    html[theme='dark'] .add-food .css-r84t6h,
+    html[theme='dark'] .add-food .css-1qbkrx6,
+    html[theme='dark-invert'] .add-food .css-4uav1b,
+    html[theme='dark-invert'] .add-food .css-r84t6h,
+    html[theme='dark-invert'] .add-food .css-1qbkrx6 {
+        border-color: var(--shade2);
     }
 
     /* add food inputleftaddon */
@@ -345,7 +444,8 @@ html[theme='dark'] .add-food .css-1r6jmxn {
         font-size: 1.25em;
         color: var(--shade5);
     }
-    html[theme='dark'] .edit-food .css-9fgtzh {
+    html[theme='dark'] .edit-food .css-9fgtzh,
+    html[theme='dark-invert'] .edit-food .css-9fgtzh {
         color: var(--shade4);
     }
 
@@ -357,12 +457,28 @@ html[theme='dark'] .add-food .css-1r6jmxn {
         background-color: var(--shade5);
         color: var(--shade1);
     }
+    html[theme='dark'] .edit-food .css-xi606m,
+    html[theme='dark'] .edit-food .css-d3ozfg,
+    html[theme='dark-invert'] .edit-food .css-xi606m,
+    html[theme='dark-invert'] .edit-food .css-d3ozfg {
+        background-color: var(--shade2);
+        color: var(--shade6);
+    }
 
     /* edit food name and serving size inputs */
     .edit-food .css-4uav1b,
     .edit-food .css-1qbkrx6,
     .edit-food .css-r84t6h {
         border-color: var(--shade5);
+        background-color: rgba(255, 255, 255, 0.55);
+    }
+    html[theme='dark'] .edit-food .css-4uav1b,
+    html[theme='dark'] .edit-food .css-1qbkrx6,
+    html[theme='dark'] .edit-food .css-r84t6h,
+    html[theme='dark-invert'] .edit-food .css-4uav1b,
+    html[theme='dark-invert'] .edit-food .css-1qbkrx6,
+    html[theme='dark-invert'] .edit-food .css-r84t6h {
+        border-color: var(--shade2);
     }
 
     /* edit food input container */

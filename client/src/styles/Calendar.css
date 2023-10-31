@@ -7,7 +7,11 @@
 }
 
 /* planner card container */
-html[theme='dark'] .calendar-page .css-jv498s {
+.calendar-page .css-jv498s {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+html[theme='dark'] .calendar-page .css-jv498s,
+html[theme='dark-invert'] .calendar-page .css-jv498s {
     background-color: var(--trans);
     border: 0.1em solid var(--shade5);
 }
@@ -20,17 +24,22 @@ html[theme='dark'] .calendar-page .css-jv498s {
     border: none;
     padding: 3% 0% 0% 4%;
 }
-html[theme='dark'] .calendar-page .css-1sl53ol {
+
+html[theme='dark'] .calendar-page .css-1sl53ol,
+html[theme='dark-invert'] .calendar-page .css-1sl53ol {
     color: var(--shade4);
 }
 
-/* weight input */
+/* weight input container */
 .calendar-page .css-1y0e7gb {
     width: 50%;
     border-color: var(--shade4)
 }
-html[theme='dark'] .calendar-page .css-1y0e7gb {
-    border-color: var(--shade5)
+
+html[theme='dark'] .calendar-page .css-1y0e7gb,
+html[theme='dark-invert'] .calendar-page .css-1y0e7gb {
+    color: var(--shade6);
+    border-color: var(--shade5);
 }
 
 /* weight inputrightaddon */
@@ -56,17 +65,15 @@ html[theme='dark'] .calendar-page .css-1y0e7gb {
 .calendar-page .css-85tvzw {
     margin-bottom: 1.5em;
 }
-html[theme='dark'] .calendar-page .css-85tvzw {
+
+html[theme='dark'] .calendar-page .css-85tvzw,
+html[theme='dark-invert'] .calendar-page .css-85tvzw {
     color: var(--shade5);
 }
 
 /* meal accordian header */
-.calendar-page .css-ohx7pl {
-    border-top-width: 0;
-}
-
-/* meal accordian header */
 .calendar-page .css-uttm9k {
+    display: block;
     font-size: 1.5em;
     background-color: var(--shade5);
     color: var(--shade1);
@@ -76,8 +83,20 @@ html[theme='dark'] .calendar-page .css-85tvzw {
 .calendar-page .css-17mg6aq {
     border: none;
 }
-html[theme='dark'] .calendar-page .css-17mg6aq {
+
+html[theme='dark'] .calendar-page .css-17mg6aq,
+html[theme='dark-invert'] .calendar-page .css-17mg6aq {
     color: var(--shade6);
+}
+
+/* accordian button */
+html[theme='dark'] .calendar-page .css-ymy74v:hover,
+html[theme='dark'] .calendar-page .css-ymy74v[aria-expanded=true], 
+html[theme='dark'] .calendar-page .css-ymy74v[data-expanded],
+html[theme='dark-invert'] .calendar-page .css-ymy74v:hover,
+html[theme='dark-invert'] .calendar-page .css-ymy74v[aria-expanded=true], 
+html[theme='dark-invert'] .calendar-page .css-ymy74v[data-expanded] {
+    background-color: var(--shade3);
 }
 
 /* meal accordian icon (not expanded and expanded) */
@@ -94,28 +113,74 @@ html[theme='dark'] .calendar-page .css-17mg6aq {
     border-bottom: 1px solid var(--shade4)
 }
 
-/* custom meal popover */
-.calendar-page .css-sjj62m {
-    border-color: var(--shade5);
-    --popper-arrow-bg: var(--shade3);
-    --popper-arrow-shadow-color: var(--shade5);
+/* add items modal */
+html[theme='dark'] .add-items-modal,
+html[theme='dark-invert'] .add-items-modal {
+    background-color: var(--shade5);
+}
+html[theme='original-invert'] .add-items-modal,
+html[theme='light-invert'] .add-items-modal,
+html[theme='dark-invert'] .add-items-modal {
+    filter: invert(100%);
 }
 
-/* custom meal popover header and footer */
-.calendar-page .css-1t6b1jw,
-.calendar-page .css-1uyazt3 {
-    background-color: var(--shade3);
-}
-
-/* custom meal popover save button */
-.calendar-page .css-ez23ye {
-    background-color: var(--shade2);
-}
-
-/* custom meal popover save button */
-.calendar-page .css-ez23ye:hover {
+/* add items modal selected tab */
+html[theme='dark'] .add-items-modal .css-iwi0r3[aria-selected=true], 
+html[theme='dark'] .add-items-modal .css-iwi0r3[data-selected],
+html[theme='dark-invert'] .add-items-modal .css-iwi0r3[aria-selected=true], 
+html[theme='dark-invert'] .add-items-modal .css-iwi0r3[data-selected] {
     background-color: var(--shade4);
+    color: var(--shade6);
+}
+
+/* add items modal info iconbuttons */
+.add-items-modal .css-22xpxh {
+    background-color: var(--shade3);
+    color: var(--shade6);
+}
+
+/* add items modal info iconbuttons */
+.add-items-modal .css-22xpxh:hover {
+    background-color: var(--shade4);
+}
+
+/* add items modal footer buttons */
+.add-items-modal .css-ez23ye {
+    background-color: var(--shade3);
+    color: var(--shade6);
+}
+
+/* add items modal footer buttons */
+.add-items-modal .css-ez23ye:hover {
+    background-color: var(--shade4);
+}
+
+/* add items modal popover container */
+.add-items-modal .css-1cj2wja {
+    white-space: pre-line;
+    padding: 0.25em;
+    background-color: var(--shade3);
+    --popper-arrow-bg: var(--shade3);
+}
+html[theme='dark'] .add-items-modal .css-1cj2wja,
+html[theme='dark-invert'] .add-items-modal .css-1cj2wja {
+    color: var(--shade6);
+}
+
+/* add items modal custom tab input containers */
+html[theme='dark'] .add-items-modal .css-mw75w7,
+html[theme='dark-invert'] .add-items-modal .css-mw75w7 {
+    color: var(--shade6);
+    border: 0.1em solid var(--shade3);
+}
+
+/* add items modal custom tab input fields */
+html[theme='dark'] .add-items-modal .css-10wjqo2,
+html[theme='dark'] .add-items-modal .css-uhk8uw,
+html[theme='dark-invert'] .add-items-modal .css-10wjqo2,
+html[theme='dark-invert'] .add-items-modal .css-uhk8uw {
     color: var(--shade1);
+    background-color: rgba(255, 255, 255, 0.55);
 }
 
 /* daily stats accordian header */
@@ -132,7 +197,9 @@ html[theme='dark'] .calendar-page .css-17mg6aq {
     font-size: 2em;
     color: var(--shade5);
 }
-html[theme='dark'] .calendar-page .statTitle {
+
+html[theme='dark'] .calendar-page .statTitle,
+html[theme='dark-invert'] .calendar-page .statTitle {
     color: var(--shade5);
 }
 
@@ -153,7 +220,9 @@ html[theme='dark'] .calendar-page .statTitle {
     font-size: 0.5em;
     color: var(--shade5);
 }
-html[theme='dark'] .calendar-page .css-f1j64i {
+
+html[theme='dark'] .calendar-page .css-f1j64i,
+html[theme='dark-invert'] .calendar-page .css-f1j64i {
     color: var(--shade5);
 }
 
@@ -176,6 +245,21 @@ html[theme='dark'] .calendar-page .css-f1j64i {
         background-color: var(--shade2);
     }
 
+    /* meal accordian header */
+    .calendar-page .css-uttm9k {
+        padding-right: 0.25em;
+    }
+
+    /* meal accordian button container */
+    .calendar-page .css-ymy74v,
+    .calendar-page .css-nf96ne {
+        padding: 0.5em 0em;
+    }
+
+    /* edit meal iconbutton */
+    .calendar-page .css-x9zq2g {
+        margin-left: 0.5em;
+    }
 
     /* daily stat categories */
     .calendar-page .statTitle {
@@ -197,7 +281,9 @@ html[theme='dark'] .calendar-page .css-f1j64i {
     font-size: 2.25vw;
     padding: 2vw;
 }
-html[theme='dark'] .react-calendar {
+
+html[theme='dark'] .react-calendar,
+html[theme='dark-invert'] .react-calendar {
     background-color: var(--trans);
 }
 
@@ -208,7 +294,8 @@ html[theme='dark'] .react-calendar {
     color: var(--shade6);
 }
 
-html[theme='dark'] .react-calendar__tile {
+html[theme='dark'] .react-calendar__tile,
+html[theme='dark-invert'] .react-calendar__tile {
     color: var(--shade5);
 }
 
@@ -220,7 +307,8 @@ html[theme='dark'] .react-calendar__tile {
     margin-top: 8px;
 }
 
-html[theme='dark'] .react-calendar__navigation button {
+html[theme='dark'] .react-calendar__navigation button,
+html[theme='dark-invert'] .react-calendar__navigation button {
     color: var(--shade4);
 }
 
@@ -230,7 +318,9 @@ html[theme='dark'] .react-calendar__navigation button {
 }
 
 html[theme='dark'] .react-calendar__navigation button:enabled:hover,
-html[theme='dark'] .react-calendar__navigation button:enabled:focus {
+html[theme='dark'] .react-calendar__navigation button:enabled:focus,
+html[theme='dark-invert'] .react-calendar__navigation button:enabled:hover,
+html[theme='dark-invert'] .react-calendar__navigation button:enabled:focus {
     background-color: var(--shade6);
 }
 
@@ -242,7 +332,8 @@ abbr[title] {
     text-decoration: none;
 }
 
-html[theme='dark'] abbr[title] {
+html[theme='dark'] abbr[title],
+html[theme='dark-invert'] abbr[title] {
     color: var(--shade5);
 }
 
@@ -250,7 +341,8 @@ html[theme='dark'] abbr[title] {
     color: var(--shade4);
 }
 
-html[theme='dark'] .react-calendar__month-view__days__day--weekend {
+html[theme='dark'] .react-calendar__month-view__days__day--weekend,
+html[theme='dark-invert'] .react-calendar__month-view__days__day--weekend {
     color: var(--shade4);
 }
 
@@ -268,7 +360,8 @@ html[theme='dark'] .react-calendar__month-view__days__day--weekend {
     color: var(--shade1);
 }
 
-html[theme='dark'] .react-calendar__tile--now {
+html[theme='dark'] .react-calendar__tile--now,
+html[theme='dark-invert'] .react-calendar__tile--now {
     background: var(--shade3);
     border-radius: 6px;
     font-weight: bold;
@@ -284,7 +377,9 @@ html[theme='dark'] .react-calendar__tile--now {
 }
 
 html[theme='dark'] .react-calendar__tile--now:enabled:hover,
-html[theme='dark'] .react-calendar__tile--now:enabled:focus {
+html[theme='dark'] .react-calendar__tile--now:enabled:focus,
+html[theme='dark-invert'] .react-calendar__tile--now:enabled:hover,
+html[theme='dark-invert'] .react-calendar__tile--now:enabled:focus {
     background: rgba(211, 211, 211, 0.601);
     border-radius: 6px;
     font-weight: bold;

@@ -59,6 +59,11 @@ const Graph = ({ data, date, graphType }) => {
 	const [weightData, setWeightData] = useState(filterData().weight)
 	const [nutritionData, setNutritionData] = useState(filterData().nutrition)
 
+	// function to calculate the average over the date range
+	const calculateAverage = () => {
+		
+	}
+
 	// define the different combination of data series
 	// blank series on initial render or incomplete variables
 	const blankSeries = [{

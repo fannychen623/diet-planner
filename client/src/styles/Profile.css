@@ -7,7 +7,11 @@
 }
 
 /* profile and metabolic statistics container */
-html[theme='dark'] .profile-page .css-jv498s {
+.profile-page .css-jv498s {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+html[theme='dark'] .profile-page .css-jv498s,
+html[theme='dark-invert'] .profile-page .css-jv498s {
   background-color: var(--trans);
   border: 0.5em solid var(--shade5);
 }
@@ -17,7 +21,8 @@ html[theme='dark'] .profile-page .css-jv498s {
   font-family: var(--font);
   color: var(--shade5)
 }
-html[theme='dark'] .profile-page .css-xrxou1 {
+html[theme='dark'] .profile-page .css-xrxou1,
+html[theme='dark-invert'] .profile-page .css-xrxou1 {
   color: var(--shade4)
 }
 
@@ -32,24 +37,15 @@ html[theme='dark'] .profile-page .css-xrxou1 {
 .profile-page .css-u3vn99, .profile-page .css-u3vn99:hover {
   border-color: var(--shade3);
 }
-html[theme='dark'] .profile-page .css-u3vn99 {
-  color: white;
-}
 
 /* profile age input */
 .profile-page .css-10wjqo2, .profile-page .css-10wjqo2:hover {
   border-color: var(--shade3);
 }
-html[theme='dark'] .profile-page .css-10wjqo2 {
-  color: white;
-}
 
 /* male female radio */
 .profile-page .css-1cqh9jq {
   margin-left: 1em;
-}
-html[theme='dark'] .profile-page .css-1cqh9jq {
-  color: white;
 }
 
 /* profile sex input */
@@ -84,17 +80,27 @@ html[theme='dark'] .profile-page .css-1cqh9jq {
   margin-bottom: 1em;
   border-color: var(--shade3);
 }
-html[theme='dark'] .profile-page .css-1y0e7gb {
-  color: white;
-}
 
 /* profile select fields */
-.profile-page .css-161pkch, .profile-page .css-161pkch:hover {
+.profile-page .css-161pkch, 
+.profile-page .css-161pkch:hover {
   border-color: var(--shade3);
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
-html[theme='dark'] .profile-page .css-161pkch, html[theme='dark'] .profile-page .css-iohxn1 {
+
+html[theme='dark'] .profile-page .css-u3vn99,
+html[theme='dark'] .profile-page .css-10wjqo2,
+html[theme='dark'] .profile-page .css-1cqh9jq,
+html[theme='dark'] .profile-page .css-1y0e7gb,
+html[theme='dark'] .profile-page .css-161pkch, 
+html[theme='dark'] .profile-page .css-iohxn1,
+html[theme='dark-invert'] .profile-page .css-u3vn99,
+html[theme='dark-invert'] .profile-page .css-10wjqo2,
+html[theme='dark-invert'] .profile-page .css-1cqh9jq,
+html[theme='dark-invert'] .profile-page .css-1y0e7gb,
+html[theme='dark-invert'] .profile-page .css-161pkch, 
+html[theme='dark-invert'] .profile-page .css-iohxn1 {
   color: white;
 }
 
@@ -111,7 +117,6 @@ html[theme='dark'] .profile-page .css-161pkch, html[theme='dark'] .profile-page 
 /* add/update profile button */
 .profile-page .css-ez23ye:hover {
   background-color: var(--shade5);
-  color: var(--shade1);
 }
 
 /* profile card bodies */
@@ -142,9 +147,6 @@ html[theme='dark'] .profile-page .css-161pkch, html[theme='dark'] .profile-page 
   margin-right: 1em;
   color: var(--shade4)
 }
-html[theme='dark'] .profile-page .css-1dklj6k {
-  color: var(--shade5)
-}
 
 /* stats values */
 .profile-page .metabolicStats .statsValue {
@@ -153,7 +155,8 @@ html[theme='dark'] .profile-page .css-1dklj6k {
   font-weight: bolder;
   color: var(--shade5)
 }
-html[theme='dark'] .profile-page .metabolicStats .statsValue {
+html[theme='dark'] .profile-page .metabolicStats .statsValue,
+html[theme='dark-theme'] .profile-page .metabolicStats .statsValue {
   color: var(--shade6)
 }
 
@@ -164,7 +167,10 @@ html[theme='dark'] .profile-page .metabolicStats .statsValue {
   margin-left: 1em;
   color: var(--shade3);
 }
-html[theme='dark'] .metabolicStats span {
+html[theme='dark'] .profile-page .css-1dklj6k,
+html[theme='dark'] .metabolicStats span,
+html[theme='dark-invert'] .profile-page .css-1dklj6k,
+html[theme='dark-invert'] .metabolicStats span {
   color: var(--shade5)
 }
 
@@ -178,7 +184,8 @@ html[theme='dark'] .metabolicStats span {
   font-style: italic;
   color: darkblue
 }
-html[theme='dark'] .profile-page a {
+html[theme='dark'] .profile-page a,
+html[theme='dark-invert'] .profile-page a {
   color: lightblue
 }
 

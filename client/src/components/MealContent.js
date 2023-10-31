@@ -110,7 +110,7 @@ const MealContent = ({ contents, foods }) => {
                         <Td>View Total</Td>
                     </PopoverTrigger>
                     <PopoverContent>
-                        <PopoverBody whiteSpace='pre-line'>
+                        <PopoverBody whiteSpace='pre-line' zIndex='999'>
                             {totalText}
                         </PopoverBody>
                     </PopoverContent>

@@ -61,22 +61,22 @@ function Header() {
         <Box className='nav-bar' display='flex' justifyContent='space-between'>
           <Box display='flex' alignItems='center'>
             <Link to='/'>
-              <Tooltip label='Home'>
+              <Tooltip label='Home' color='var(--shade1)' bg='var(--shade6)'>
                 <Image src={`./logo_${profileTheme}.png`} alt='Dietry' />
               </Tooltip>
             </Link>
             <Link to='/food'>
-              <Tooltip label='Foods'>
+              <Tooltip label='Foods' color='var(--shade1)' bg='var(--shade6)'>
                 <IconButton variant='link' aria-label='Foods' icon={<IoNutritionOutline p='100%' />} />
               </Tooltip>
             </Link>
             <Link to='/meal'>
-              <Tooltip label='Meals'>
+              <Tooltip label='Meals' color='var(--shade1)' bg='var(--shade6)'>
                 <IconButton variant='link' aria-label='Meals' icon={<IoFastFoodOutline p='100%' />} />
               </Tooltip>
             </Link>
             <Link to='/search'>
-              <Tooltip label='Search'>
+              <Tooltip label='Search' color='var(--shade1)' bg='var(--shade6)'>
                 <IconButton variant='link' aria-label='Search' icon={<IoSearchOutline p='100%' />} />
               </Tooltip>
             </Link>
@@ -84,7 +84,7 @@ function Header() {
           <Spacer />
           <Box display='flex' alignItems='center'>
             <Popover>
-              <Tooltip label='Converter'>
+              <Tooltip label='Converter' color='var(--shade1)' bg='var(--shade6)'>
                 <Box>
                   <PopoverTrigger>
                     <IconButton variant='link' aria-label='Converter' icon={<IoRepeatSharp p='100%' />} />
@@ -93,20 +93,20 @@ function Header() {
               </Tooltip>
               <Converter />
             </Popover>
-            <Tooltip label='Calendar'>
+            <Tooltip label='Calendar' color='var(--shade1)' bg='var(--shade6)'>
               <IconButton variant='link' aria-label='Calendar' icon={<IoCalendarNumberOutline p='100%' />} onClick={() => { navigate(`/calendar/${format(new Date(), 'MM_dd_yyyy')}`) }} />
             </Tooltip>
             <Link to='/progress'>
-              <Tooltip label='Progress'>
+              <Tooltip label='Progress' color='var(--shade1)' bg='var(--shade6)'>
                 <IconButton variant='link' aria-label='Progress' icon={<IoBarChartOutline p='100%' />} />
               </Tooltip>
             </Link>
             <Link to='/profile'>
-              <Tooltip label='Profile'>
+              <Tooltip label='Profile' color='var(--shade1)' bg='var(--shade6)'>
                 <IconButton variant='link' aria-label='Profile' icon={<IoFitnessOutline p='100%' />} />
               </Tooltip>
             </Link>
-            <Tooltip label='Logout'>
+            <Tooltip label='Logout' color='var(--shade1)' bg='var(--shade6)'>
               <IconButton variant='link' aria-label='Logout' icon={<IoExitOutline p='100%' />} onClick={logout} />
             </Tooltip>
           </Box>

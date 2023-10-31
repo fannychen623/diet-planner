@@ -68,7 +68,8 @@
 .meal-page .css-70qvj9:hover {
     background-color: var(--shade4);
 }
-html[theme='dark'] .meal-page .css-70qvj9:hover {
+html[theme='dark'] .meal-page .css-70qvj9:hover,
+html[theme='dark-invert'] .meal-page .css-70qvj9:hover {
     background-color: var(--shade3);
 }
 
@@ -132,10 +133,18 @@ html[theme='dark'] .meal-page .css-70qvj9:hover {
 .meal-alert {
     text-align: center;
 }
+html[theme='dark'] .meal-alert,
+html[theme='dark-invert'] .meal-alert {
+    background-color: var(--shade5);
+}
 
 /* delete alert header */
 .meal-alert .css-9fgtzh {
     color: var(--shade5);
+}
+html[theme='dark'] .meal-alert .css-9fgtzh,
+html[theme='dark-invert'] .meal-alert .css-9fgtzh {
+    color: var(--shade4);
 }
 
 /* delete alert footer */
@@ -145,10 +154,17 @@ html[theme='dark'] .meal-page .css-70qvj9:hover {
 }
 
 /* delete alert buttons */
-.meal-alert .css-ez23ye,
+.meal-alert .css-ez23ye {
+    background-color: var(--shade3);
+}
+html[theme='dark'] .meal-alert .css-ez23ye,
+html[theme='dark-invert'] .meal-alert .css-ez23ye {
+    color: var(--shade6);
+}
+
+/* delete alert buttons */
 .meal-alert .css-ez23ye:hover {
-    background-color: var(--shade5);
-    color: var(--shade1);
+    background-color: var(--shade4);
 }
 
 @media (max-width: 480px) {
@@ -255,7 +271,8 @@ html[theme='dark'] .meal-page .css-70qvj9:hover {
         border: solid var(--shade5);
         color: var(--shade6);
     }
-    html[theme='dark'] .meal-page .css-sjj62m {
+    html[theme='dark'] .meal-page .css-sjj62m,
+    html[theme='dark-invert'] .meal-page .css-sjj62m {
         color: var(--shade1);
     }
 

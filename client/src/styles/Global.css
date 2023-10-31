@@ -6,7 +6,8 @@
   --font: 'Questrial', sans-serif;
 }
 
-:root[theme='original'] {
+:root[theme='original'],
+:root[theme='original-invert'] {
   --shade1: #ecede8;
   --shade2: #e3e6d8;
   --shade3: #bcd0af;
@@ -15,7 +16,8 @@
   --shade6: #203627;
 }
 
-:root[theme='light'] {
+:root[theme='light'],
+:root[theme='light-invert'] {
   --shade1: #edf6ff;
   --shade2: #d9e4ee;
   --shade3: #9fbad3;
@@ -24,7 +26,8 @@
   --shade6: black;
 }
 
-:root[theme='dark'] {
+:root[theme='dark'],
+:root[theme='dark-invert'] {
   --shade1: #0f1832;
   --shade2: #16213E;
   --shade3: #0F3460;
@@ -42,21 +45,31 @@
   color: var(--shade6);
 }
 
-/* gradient background  for original theme */
-html[theme='original'] .global {
+/* background for original theme */
+html[theme='original'] .global,
+html[theme='original-invert'] .global {
   background: linear-gradient(180deg, var(--shade1), var(--shade2), var(--shade3));
   background-size: 100% 100%;
 }
 
-/* gradient background  for original theme */
-html[theme='light'] .global {
+/* background for light theme */
+html[theme='light'] .global,
+html[theme='light-invert'] .global {
   background-color: white;
   background-size: 100% 100%;
   border-bottom: solid 1em var(--shade5);
 }
 
-/* gradient background  for original theme */
-html[theme='dark'] .global {
+/* background for dark theme */
+html[theme='dark'] .global,
+html[theme='dark-invert'] .global {
   background-color: var(--shade1);
   background-size: 100% 100%;
+}
+
+/* background for inverted theme */
+html[theme='original-invert'] .global,
+html[theme='light-invert'] .global,
+html[theme='dark-invert'] .global {
+  filter: invert(100%);
 }

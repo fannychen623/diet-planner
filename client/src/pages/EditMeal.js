@@ -1,5 +1,6 @@
 // import package
 import React, { useEffect, useMemo, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { useParams } from 'react-router-dom'
 
 // importy query and mutations
@@ -9,9 +10,9 @@ import { UPDATE_MEAL, UPDATE_MEAL_FOOD } from '../utils/mutations';
 
 // import package components
 import {
-  Box, Flex, Spacer, Heading, Text, Button, IconButton,
-  Input, InputGroup, InputLeftElement, InputLeftAddon,
-  Checkbox, NumberInput, NumberInputField,
+  Box, Flex, Spacer, Grid, GridItem, SimpleGrid, Heading, Text, 
+  Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon,
+  Button, IconButton, Checkbox, NumberInput, NumberInputField,
   NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
   Popover, PopoverTrigger, PopoverContent, PopoverBody,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
@@ -37,6 +38,9 @@ function toTitleCase(str) {
 
 // functional component for the edit meal page
 const EditMeal = () => {
+
+  // determine if the viewport size is mobile
+  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -313,7 +317,7 @@ const EditMeal = () => {
   return (
     <Box className='edit-meal-page'>
       <Heading>Modify Meal</Heading>
-      <Flex>
+      <Box display={isMobile ? 'block' : 'flex'} justifyContent='space-between'>
         <Box>
           <InputGroup>
             <InputLeftAddon children='Meal Name' />
@@ -326,7 +330,7 @@ const EditMeal = () => {
             />
           </InputGroup>
         </Box>
-        <Spacer />
+        {isMobile ? (<></>) : (<Spacer />)}
         <Box>
           <InputGroup>
             <InputLeftAddon children='Number of Serving' />
@@ -346,7 +350,92 @@ const EditMeal = () => {
             </NumberInput>
           </InputGroup>
         </Box>
-      </Flex>
+      </Box>
+      {isMobile ? (
+        <Box>
+          <Grid
+            templateColumns='repeat(5, 1fr)'
+          >
+            <GridItem colSpan='5' textAlign='center'>Food</GridItem>
+            {foodAdded.map((addFood, index) => (
+              <GridItem colSpan='5' key={index}>
+                <Grid
+                  templateRows='repeat(2, 1fr)'
+                  templateColumns='repeat(5, 1fr)'
+                >
+                  <GridItem rowSpan='2' colSpan='1' my='auto'>
+                    <IconButton
+                      size='md'
+                      icon={<FiMinusSquare p='100%' />}
+                      id={addFood.id}
+                      onClick={handleRemoveFood}
+                    />
+                  </GridItem>
+                  <GridItem colSpan='4'>{addFood.title}</GridItem>
+                  <GridItem colSpan='4' display='flex' alignItems='center' justifyContent='space-between'>
+                    <Text># of Serving:</Text>
+                    <InputGroup>
+                      <Input
+                        width='auto'
+                        textAlign='center'
+                        defaultValue={1}
+                        id={addFood.id}
+                        onChange={handleUpdateServings}
+                      />
+                      <Popover isLazy placement='left'>
+                        <PopoverTrigger>
+                          <InputRightAddon>
+                            <FiInfo />
+                          </InputRightAddon>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverBody whiteSpace='pre-line'>
+                            Serving Size: {addFood.servingSizeUnit}{'\n'}
+                            Calories: {+parseFloat(addFood.calories).toFixed(2)} kcal {'\n'}
+                            Carbs: {+parseFloat(addFood.carbs).toFixed(2)} g {'\n'}
+                            Fat: {+parseFloat(addFood.fat).toFixed(2)} g {'\n'}
+                            Protein: {+parseFloat(addFood.protein).toFixed(2)} g {'\n'}
+                            Sodium: {+parseFloat(addFood.sodium).toFixed(2)} mg {'\n'}
+                            Sugar: {+parseFloat(addFood.sugar).toFixed(2)} g {'\n'}
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </InputGroup>
+                  </GridItem>
+                </Grid>
+              </GridItem>
+            ))}
+            <GridItem colSpan='1'>
+              <IconButton
+                size='md'
+                icon={<FiPlusSquare p='100%' />}
+                onClick={onOpen}
+              />
+            </GridItem>
+            <GridItem colSpan='4' textAlign='center'> </GridItem>
+          </Grid>
+          {foodAdded.length > 0 ? (
+            <Box>
+              <Text m='auto'>Total Nutrition</Text>
+              <SimpleGrid columns='2'>
+                <Box>Calories</Box>
+                <Box textAlign='end'>{total.calories} kcal</Box>
+                <Box>Carbs</Box>
+                <Box textAlign='end'>{total.carbs} g</Box>
+                <Box>Fat</Box>
+                <Box textAlign='end'>{total.fat} g</Box>
+                <Box>Protein</Box>
+                <Box textAlign='end'>{total.protein} g</Box>
+                <Box>Sodium</Box>
+                <Box textAlign='end'>{total.sodium} mg</Box>
+                <Box>Sugar</Box>
+                <Box textAlign='end'>{total.sugar} g</Box>
+              </SimpleGrid>
+            </Box>
+          ) : (<></>)}
+          <Text textAlign='center'>{errorMessage}</Text>
+        </Box>
+      ) : (
       <Box>
         <TableContainer width='fit-content' m='auto'>
           <Table variant='simple'>
@@ -366,7 +455,7 @@ const EditMeal = () => {
             </Thead>
             <Tbody>
               {foodAdded.map((addFood, index) => (
-                <Tr>
+                <Tr key={index}>
                   <Td>
                     <IconButton
                       size='md'
@@ -429,18 +518,19 @@ const EditMeal = () => {
         </TableContainer>
         <Text textAlign='center'>{errorMessage}</Text>
       </Box>
+      )}
       <Box textAlign='center'>
         <Button variant='solid' onClick={handleUpdateMeal}>Update Meal</Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent className='meal-modal'>
+        <ModalContent className='meal-modal' maxW={isMobile ? '85%' : '35%'}>
           <ModalHeader>
             My Foods
             <Box>
               <InputGroup>
                 <InputLeftElement pointerEvents='none'>
-                  <FiSearch color='var(--shade5)' />
+                  <FiSearch />
                 </InputLeftElement>
                 <Input onChange={(e) => { setSearchValue(e.target.value) }} />
               </InputGroup>
