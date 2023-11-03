@@ -189,7 +189,7 @@ html[theme='dark-invert'] .profile-page a {
   color: lightblue
 }
 
-@media (max-width: 480px) {
+@media (max-width: 820px) {
 
   /* create profile text */
 .profile-page .createProfileText {

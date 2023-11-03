@@ -8,14 +8,19 @@
 
 /* option fields container */
 .progress-page .css-69i1ev {
+    margin: auto;
     margin-bottom: 2.5em;
+    width: 95%;
 }
 
 /* date range and graph selector */
-.progress-page .css-1ophand,
+.progress-page .css-1ophand{
+    border: 0.15em solid var(--shade5);
+}
+
+/* date range and graph selector */
 .progress-page .css-1ophand:hover {
-    border-color: var(--shade5);
-    width: 20em;
+    border: 0.2em solid var(--shade5);
 }
 
 /* date inputlefftaddon */
@@ -28,13 +33,15 @@
 
 /* date input field */
 .progress-page .css-10wjqo2 {
-    border-color: var(--shade5);
+    border: 0.15em solid var(--shade5);
+    border-left: none;
     width: fit-content;
 }
 
 /* date input field */
 .progress-page .css-10wjqo2:hover {
-    border-color: var(--shade4);
+    border: 0.2em solid var(--shade5);
+    border-left: none;
 }
 
 /* date picker icon */
@@ -71,7 +78,7 @@ html[theme='dark-invert'] ::-webkit-calendar-picker-indicator {
     border: 0.1em solid var(--shade5);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 820px) {
 
     /* date range and graph selector container */
     .progress-page .css-42b2qy {

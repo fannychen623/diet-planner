@@ -19,7 +19,7 @@ import { FiMail, FiEyeOff, FiEye, FiLock } from 'react-icons/fi';
 // functional component for the login tab
 const Login = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // define the form state, default empty
   const [formState, setFormState] = useState({ email: '', password: '' });

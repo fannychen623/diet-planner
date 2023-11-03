@@ -35,11 +35,11 @@ window.onscroll = function () { scrollFunction() };
 function scrollFunction() {
   let scrollTopButton = document.getElementById('scroll-top');
   if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-    if (document.body.clientWidth > 480) {
+    if (document.body.clientWidth > 820) {
       scrollTopButton.style.visibility = 'visible';
     }
   } else {
-    if (document.body.clientWidth > 480) {
+    if (document.body.clientWidth > 820) {
       scrollTopButton.style.visibility = 'hidden';
     }
   }
@@ -83,7 +83,7 @@ function Header() {
       {Auth.loggedIn() && !Auth.isTokenExpired() ? (
         <Box className='nav-bar' display='flex' justifyContent='space-between'>
           <Box display='flex' alignItems='center'>
-            <Link to='/'>
+            <Link to='/home'>
               <Tooltip label='Home' color='var(--shade1)' bg='var(--shade6)'>
                 <Image src={`./logo_${profileTheme}.png`} alt='Dietry' />
               </Tooltip>

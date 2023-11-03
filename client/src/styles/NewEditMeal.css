@@ -30,22 +30,25 @@
 .new-meal-page .css-10wjqo2,
 .edit-meal-page .css-10wjqo2,
 .edit-planner-page .css-10wjqo2 {
-    border-color: var(--shade5);
-    width: 45em;
+    border: 0.15em solid var(--shade5);
+    border-left: none;
+    width: 45vw;
 }
 
 /* meal name input */
 .new-meal-page .css-10wjqo2:hover,
 .edit-meal-page .css-10wjqo2:hover,
 .edit-planner-page .css-10wjqo2:hover {
-    border-color: var(--shade4);
+    border: 0.2em solid var(--shade5);
+    border-left: none;
 }
 
 /* number of serving input */
 .new-meal-page .css-1g0mrv8,
 .edit-meal-page .css-1g0mrv8,
 .edit-planner-page .css-1g0mrv8 {
-    border-color: var(--shade5);
+    border: 0.15em solid var(--shade5);
+    border-left: none;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     width: 6em;
@@ -55,14 +58,15 @@
 .new-meal-page .css-1g0mrv8:hover,
 .edit-meal-page .css-1g0mrv8:hover,
 .edit-planner-page .css-1g0mrv8:hover {
-    border-color: var(--shade4);
+    border: 0.2em solid var(--shade5);
+    border-left: none;
 }
 
 /* number input stepper */
 .new-meal-page .css-1m5jnul,
 .edit-meal-page .css-1m5jnul,
 .edit-planner-page .css-1m5jnul {
-    border-color: var(--shade5);
+    border: 0.15em solid var(--shade5);
 }
 
 html[theme='dark'] .new-meal-page .css-1m5jnul,
@@ -78,7 +82,7 @@ html[theme='dark-invert'] .edit-planner-page .css-1m5jnul {
 .new-meal-page .css-1m5jnul:hover,
 .edit-meal-page .css-1m5jnul:hover,
 .edit-planner-page .css-1m5jnul:hover {
-    border-color: var(--shade4);
+    border: 0.2em solid var(--shade5);
 }
 
 /* table container */
@@ -137,7 +141,14 @@ html[theme='dark-invert'] .edit-planner-page .css-1m5jnul {
 .edit-meal-page .css-jbgy1g,
 .edit-planner-page .css-jbgy1g {
     width: 5em;
-    border-color: var(--shade5);
+    border: 0.1em solid var(--shade5);
+}
+
+/* # of serving input */
+.new-meal-page .css-jbgy1g:hover,
+.edit-meal-page .css-jbgy1g:hover,
+.edit-planner-page .css-jbgy1g:hover {
+    border: 0.15em solid var(--shade5);
 }
 
 /* add meal button */
@@ -177,12 +188,11 @@ html[theme='dark-invert'] .meal-modal .css-9fgtzh {
 /* modal search input container */
 .meal-modal .css-1y0e7gb {
     margin-top: 0.5em;
-    border-color: var(--shade4);
     color: var(--shade6);
 }
 html[theme='dark'] .meal-modal .css-1y0e7gb,
 html[theme='dark-invert'] .meal-modal .css-1y0e7gb {
-    border-color: var(--shade2);
+    color: var(--shade1);
 }
 
 /* modal search inputleftelement */
@@ -191,17 +201,22 @@ html[theme='dark-invert'] .meal-modal .css-1y0e7gb {
 }
 html[theme='dark'] .meal-modal .css-gv1iwz svg,
 html[theme='dark-invert'] .meal-modal .css-gv1iwz svg {
-    color: var(--shade2);
+    color: var(--shade3);
 }
 
 /* modal search input field */
 .meal-modal .css-qluo93 {
+    border: 0.15em solid var(--shade5);
     background-color: rgba(255, 255, 255, 0.55);
 }
+html[theme='dark'] .meal-modal .css-qluo93,
+html[theme='dark-invert'] .meal-modal .css-qluo93 {
+    border-color: var(--shade3);
+}
 
-html[theme='dark'] .meal-modal .css-1y0e7gb,
-html[theme='dark-invert'] .meal-modal .css-1y0e7gb {
-    color: var(--shade1);
+/* modal search input field */
+.meal-modal .css-qluo93:hover {
+    border: 0.2em solid var(--shade5);
 }
 
 /* modal food list */
@@ -223,18 +238,20 @@ html[theme='dark-invert'] .meal-modal .css-1y0e7gb {
 
 /* modal info button */
 .meal-modal .css-22xpxh {
-    background-color: var(--shade3);
+    background-color: var(--shade2);
+    color: var(--shade6)
 }
 
-html[theme='dark'] .meal-modal .css-22xpxh,
-html[theme='dark-invert'] .meal-modal .css-22xpxh {
-    color: var(--shade6);
+/* modal info button */
+.meal-modal .css-22xpxh:hover {
+    background-color: var(--shade4);
 }
 
 /* meal modal food info preview */
 .meal-modal .css-1cj2wja {
     white-space: pre-line;
-    background-color: var(--shade2);
+    background-color: var(--shade3);
+    --popper-arrow-bg: var(--shade3);
     border-radius: 0.5em;
     padding: 0.5em;
 }
@@ -244,28 +261,22 @@ html[theme='dark-invert'] .meal-modal .css-1cj2wja {
     color: var(--shade6);
 }
 
-/* modal info button */
-.meal-modal .css-22xpxh:hover {
-    background-color: var(--shade4);
-}
-
 /* modal close and add foods button */
 .meal-modal .css-ez23ye {
-    background-color: var(--shade1);
+    background-color: var(--shade3);
     color: var(--shade6);
 }
 
 /* modal close and add foods button */
 .meal-modal .css-ez23ye:hover {
-    background-color: var(--shade5);
-    color: var(--shade1);
+    background-color: var(--shade4);
 }
 
 html[theme='dark-invert'] .meal-modal {
     filter: invert(100%);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 820px) {
 
     /* page title */
     .new-meal-page .css-1dklj6k,

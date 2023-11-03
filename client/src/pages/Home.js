@@ -25,7 +25,7 @@ import '../styles/Home.css';
 // component for the home page
 export default function Home() {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // navigate for the calendar button
   const navigate = useNavigate();

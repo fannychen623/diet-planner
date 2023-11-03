@@ -61,7 +61,7 @@ html[theme='dark-invert'] .converter .css-1cjy4zv {
     color: var(--shade6)
 }
 
-@media (max-width: 480px) {
+@media (max-width: 820px) {
 
     /* converter modal container */
     .converter .css-1htutmd {

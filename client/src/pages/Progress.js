@@ -19,7 +19,7 @@ import '../styles/Progress.css';
 // functional component for the progress page
 const Progress = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change

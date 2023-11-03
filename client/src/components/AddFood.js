@@ -38,7 +38,7 @@ function toTitleCase(str) {
 // pass in food information from search page if applicable and state of modal
 const AddFood = ({ addDetails, addOpenState }) => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change

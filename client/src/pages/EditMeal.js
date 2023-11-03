@@ -14,7 +14,7 @@ import {
   Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon,
   Button, IconButton, Checkbox, NumberInput, NumberInputField,
   NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
-  Popover, PopoverTrigger, PopoverContent, PopoverBody,
+  Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody,
   Table, Thead, Tbody, Tr, Th, Td, TableContainer,
   Modal, ModalOverlay, ModalContent, ModalHeader,
   ModalFooter, ModalBody, ModalCloseButton, useDisclosure,
@@ -40,7 +40,7 @@ function toTitleCase(str) {
 const EditMeal = () => {
 
   // determine if the viewport size is mobile
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -522,9 +522,9 @@ const EditMeal = () => {
       <Box textAlign='center'>
         <Button variant='solid' onClick={handleUpdateMeal}>Update Meal</Button>
       </Box>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isCentered isOpen={isOpen} onClose={() => { onClose(); setSearchValue('') }}>
         <ModalOverlay />
-        <ModalContent className='meal-modal' maxW={isMobile ? '85%' : '35%'}>
+        <ModalContent className='meal-modal' maxW={isMobile ? '85%' : '30%'}>
           <ModalHeader>
             My Foods
             <Box>
@@ -555,7 +555,7 @@ const EditMeal = () => {
                       </Checkbox>
                     </Box>
                     <Box>
-                      <Popover onOpen={() => { getFoodPreview(index) }}>
+                      <Popover onOpen={() => { getFoodPreview(index) }} placement={isMobile ? 'bottom' : 'right'}>
                         <PopoverTrigger>
                           <IconButton
                             aria-label={food.title}
@@ -563,6 +563,7 @@ const EditMeal = () => {
                           />
                         </PopoverTrigger>
                         <PopoverContent width='fit-content' border='none'>
+                        <PopoverArrow />
                           <PopoverBody>{foodPreview}</PopoverBody>
                         </PopoverContent>
                       </Popover>

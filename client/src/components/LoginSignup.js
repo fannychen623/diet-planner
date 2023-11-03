@@ -20,7 +20,7 @@ import '../styles/LoginSignup.css';
 // functional component for the login and signup modal
 const LoginSignup = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
   const [page, setPage] = useState('login')
 
   return (

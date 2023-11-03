@@ -20,7 +20,7 @@ import '../styles/Converter.css';
 // functional component/popover to convert values
 const Converter = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // set modal to open on default
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true })

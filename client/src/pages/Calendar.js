@@ -1,5 +1,5 @@
 // import packages
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, Fragment } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import { format } from 'date-fns';
@@ -22,7 +22,7 @@ import '../styles/Calendar.css';
 import {
   Box, Flex, Stack, Grid, GridItem, SimpleGrid,
   Spinner, Spacer, Text, Button, IconButton, Checkbox,
-  Input, InputGroup, InputLeftAddon, InputRightAddon,
+  Input, InputGroup, InputLeftElement, InputLeftAddon, InputRightAddon,
   Card, CardHeader, CardBody, CircularProgress, CircularProgressLabel,
   Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon,
   Tabs, TabList, TabPanels, Tab, TabPanel,
@@ -32,7 +32,7 @@ import {
 } from '@chakra-ui/react'
 
 // import icons
-import { FiCheck, FiEdit3, FiDelete, FiPlus, FiMinus, FiInfo } from 'react-icons/fi';
+import { FiCheck, FiEdit3, FiDelete, FiPlus, FiMinus, FiSearch, FiInfo } from 'react-icons/fi';
 
 // function to divide values for daily statistics
 function divide(a, b) {
@@ -59,7 +59,7 @@ function toTitleCase(str) {
 // functional component for the calendar page
 const CalendarPage = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // emulates a fetch (useQuery expects a Promise)
   // used to re-query data and re-render page on event listener/change
@@ -107,6 +107,10 @@ const CalendarPage = () => {
   const [currentPlannerCustomDiet, setCurrentPlannerCustomDiet] = useState([])
   const [mealCheckedState, setMealCheckedState] = useState(Array(meals.length).fill(false))
   const [foodCheckedState, setFoodCheckedState] = useState(Array(foods.length).fill(false))
+  const [mealDisplayState, setMealDisplayState] = useState(Array(meals.length).fill(true))
+  const [foodDisplayState, setFoodDisplayState] = useState(Array(foods.length).fill(true))
+  const [mealSearchValue, setMealSearchValue] = useState('')
+  const [foodSearchValue, setFoodSearchValue] = useState('')
   const [weight, setWeight] = useState('')
   const [tabIndex, setTabIndex] = useState(0)
   const [mealPreview, setMealPreview] = useState('')
@@ -136,6 +140,29 @@ const CalendarPage = () => {
     if (!data) {
       return;
     } else {
+
+      // set displayed meals in modal based on search value
+      setMealDisplayState(Array(meals.length).fill(true))
+      for (let i = 0; i < meals.length; i++) {
+        if (meals[i].title.toLowerCase().indexOf(mealSearchValue.toLowerCase()) >= 0) {
+          mealDisplayState[i] = true
+        } else {
+          mealDisplayState[i] = false
+        }
+      }
+      setMealDisplayState({ ...mealDisplayState })
+
+      // set displayed foods in modal based on search value
+      setFoodDisplayState(Array(foods.length).fill(true))
+      for (let i = 0; i < foods.length; i++) {
+        if (foods[i].title.toLowerCase().indexOf(foodSearchValue.toLowerCase()) >= 0) {
+          foodDisplayState[i] = true
+        } else {
+          foodDisplayState[i] = false
+        }
+      }
+      setFoodDisplayState({ ...foodDisplayState })
+
       // clear weight
       setWeight('')
       // get planner dates and planner ids
@@ -190,7 +217,7 @@ const CalendarPage = () => {
       setCurrentPlannerCustomDiet(customDietInfo)
     }
     // call function on state changes
-  }, [data, date, planners, plannerId]);
+  }, [data, date, planners, plannerId, mealSearchValue, foodSearchValue]);
 
   // set meals/food to add based on checked state
   const handleChangeState = (event) => {
@@ -710,38 +737,39 @@ const CalendarPage = () => {
                     <Text ml='0.5em'>Add Item(s)</Text>
                   </Box>
                 )}
-                <Spacer />
-                <Box display='flex' alignItems='center' justifyContent='spaced-between'>
-                  <Spacer />
+                {isMobile ? (<></>) : (<Spacer />)}
+                <Box display='flex' alignItems='center' justifyContent='space-between'>
+                  {isMobile ? (<></>) : (<Spacer />)}
                   <Text mr='0.5em'>Weight:</Text>
+                  {isMobile ? (<Spacer />) : (<></>)}
                   <InputGroup>
                     <Input defaultValue={weight} onChange={(e) => { setWeight(parseFloat(e.target.value)) }} />
                     <InputRightAddon children='lbs' />
-                  </InputGroup>
-                  {weight ? (
-                    <IconButton
-                      size='md'
-                      value={plannerId}
-                      icon={<FiCheck p='100%' />}
-                      onClick={(e) => { handleAddWeight(plannerId) }}
-                    />
-                  ) : (
-                    isNaN(weight) ? (
+                    {weight ? (
                       <IconButton
                         size='md'
                         value={plannerId}
-                        icon={<FiDelete p='100%' />}
-                        onClick={(e) => { handleRemoveWeight(plannerId) }}
-                      />
-                    ) : (
-                      <IconButton
-                        size='md'
-                        value={plannerId}
-                        icon={<FiPlus p='100%' />}
+                        icon={<FiCheck p='100%' />}
                         onClick={(e) => { handleAddWeight(plannerId) }}
                       />
-                    )
-                  )}
+                    ) : (
+                      isNaN(weight) ? (
+                        <IconButton
+                          size='md'
+                          value={plannerId}
+                          icon={<FiDelete p='100%' />}
+                          onClick={(e) => { handleRemoveWeight(plannerId) }}
+                        />
+                      ) : (
+                        <IconButton
+                          size='md'
+                          value={plannerId}
+                          icon={<FiPlus p='100%' />}
+                          onClick={(e) => { handleAddWeight(plannerId) }}
+                        />
+                      )
+                    )}
+                  </InputGroup>
                 </Box>
               </Box>
               {loading ? (
@@ -751,14 +779,18 @@ const CalendarPage = () => {
               ) : (
                 <Box>
                   {currentPlannerDiet.length <= 0 && currentPlannerCustomDiet.length <= 0 ? (
-                    <Box display='flex' justifyContent='space-between' alignItems='center' width='100%'>
-                    Meal
-                    <IconButton
-                      size='md'
-                      icon={<FiPlus p='100%' />}
-                      onClick={onOpen}
-                    />
-                  </Box>
+                    <>
+                      {isMobile ? (
+                        <Box display='flex' justifyContent='space-between' alignItems='center' width='100%'>
+                          Meal
+                          <IconButton
+                            size='md'
+                            icon={<FiPlus p='100%' />}
+                            onClick={onOpen}
+                          />
+                        </Box>
+                      ) : (<></>)}
+                    </>
                   ) : (
                     <Box>
                       <Accordion allowToggle>
@@ -1168,10 +1200,12 @@ const CalendarPage = () => {
           <Box></Box>
         </GridItem>
       </Grid>
-      <Modal isCentered isOpen={isOpen} onClose={() => { onClose(); setTabIndex(0) }}>
+      <Modal isCentered isOpen={isOpen} onClose={() => { onClose(); setTabIndex(0); setMealSearchValue(''); setFoodSearchValue('') }}>
         <ModalOverlay />
-        <ModalContent className='add-items-modal' maxW={isMobile ? '85vw' : '40vw'}>
-          <ModalHeader>Add Item(s)</ModalHeader>
+        <ModalContent className='add-items-modal' maxW={isMobile ? '85%' : '40%'}>
+          <ModalHeader>
+            Add Item(s)
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody overflowY='auto' maxHeight={isMobile ? '55vh' : '65vh'}>
             <Tabs isFitted variant='line' onChange={(index) => setTabIndex(index)}>
@@ -1182,69 +1216,97 @@ const CalendarPage = () => {
               </TabList>
               <TabPanels>
                 <TabPanel>
+                  <Box>
+                    <InputGroup>
+                      <InputLeftElement pointerEvents='none'>
+                        <FiSearch />
+                      </InputLeftElement>
+                      <Input onChange={(e) => { setMealSearchValue(e.target.value) }} />
+                    </InputGroup>
+                  </Box>
                   {meals.map((meal, index) => (
-                    <Flex key={meal._id}
-                      justifyContent='space-between'
-                      alignItems='center'
-                      my='3'
-                    >
-                      <Box>
-                        <Checkbox
-                          value={meal.title}
-                          isChecked={mealCheckedState[index]}
-                          onChange={handleChangeState}
+                    <Fragment key={meal._id}>
+                      {mealDisplayState[`${index}`] ? (
+                        <Flex key={meal._id}
+                          justifyContent='space-between'
+                          alignItems='center'
+                          my='3'
                         >
-                          {meal.title}
-                        </Checkbox>
-                      </Box>
-                      <Box>
-                        <Popover onOpen={() => { getMealPreview(meal._id) }} placement='left'>
-                          <PopoverTrigger>
-                            <IconButton
-                              aria-label={meal.title}
-                              icon={<FiInfo p='100%' />}
-                            />
-                          </PopoverTrigger>
-                          <PopoverContent width='fit-content' border='none'>
-                            <PopoverArrow />
-                            <PopoverBody>{mealPreview}</PopoverBody>
-                          </PopoverContent>
-                        </Popover>
-                      </Box>
-                    </Flex>
+                          <Box>
+                            <Checkbox
+                              value={meal.title}
+                              isChecked={mealCheckedState[index]}
+                              onChange={handleChangeState}
+                            >
+                              {meal.title}
+                            </Checkbox>
+                          </Box>
+                          <Box>
+                            <Popover onOpen={() => { getMealPreview(meal._id) }} placement={isMobile ? 'bottom' : 'left'}>
+                              <PopoverTrigger>
+                                <IconButton
+                                  aria-label={meal.title}
+                                  icon={<FiInfo p='100%' />}
+                                />
+                              </PopoverTrigger>
+                              <PopoverContent width='fit-content' border='none'>
+                                <PopoverArrow />
+                                <PopoverBody>{mealPreview}</PopoverBody>
+                              </PopoverContent>
+                            </Popover>
+                          </Box>
+                        </Flex>
+                      ) : (
+                        <></>
+                      )}
+                    </Fragment>
                   ))}
                 </TabPanel>
                 <TabPanel>
+                  <Box>
+                    <InputGroup>
+                      <InputLeftElement pointerEvents='none'>
+                        <FiSearch />
+                      </InputLeftElement>
+                      <Input onChange={(e) => { setFoodSearchValue(e.target.value) }} />
+                    </InputGroup>
+                  </Box>
                   {foods.map((food, index) => (
-                    <Flex key={food._id}
-                      justifyContent='space-between'
-                      alignItems='center'
-                      my='3'
-                    >
-                      <Box>
-                        <Checkbox
-                          value={food.title}
-                          isChecked={foodCheckedState[index]}
-                          onChange={handleChangeState}
+                    <Fragment key={food._id}>
+                      {foodDisplayState[`${index}`] ? (
+                        <Flex key={food._id}
+                          justifyContent='space-between'
+                          alignItems='center'
+                          my='3'
                         >
-                          {food.title}
-                        </Checkbox>
-                      </Box>
-                      <Box>
-                        <Popover onOpen={() => { getFoodPreview(food._id) }} placement='left'>
-                          <PopoverTrigger>
-                            <IconButton
-                              aria-label={food.title}
-                              icon={<FiInfo p='100%' />}
-                            />
-                          </PopoverTrigger>
-                          <PopoverContent width='fit-content' border='none'>
-                            <PopoverArrow />
-                            <PopoverBody>{foodPreview}</PopoverBody>
-                          </PopoverContent>
-                        </Popover>
-                      </Box>
-                    </Flex>
+                          <Box>
+                            <Checkbox
+                              value={food.title}
+                              isChecked={foodCheckedState[index]}
+                              onChange={handleChangeState}
+                            >
+                              {food.title}
+                            </Checkbox>
+                          </Box>
+                          <Box>
+                            <Popover onOpen={() => { getFoodPreview(food._id) }} placement={isMobile ? 'bottom' : 'left'}>
+                              <PopoverTrigger>
+                                <IconButton
+                                  aria-label={food.title}
+                                  icon={<FiInfo p='100%' />}
+                                />
+                              </PopoverTrigger>
+                              <PopoverContent width='fit-content' border='none'>
+                                <PopoverArrow />
+                                <PopoverBody>{foodPreview}</PopoverBody>
+                              </PopoverContent>
+                            </Popover>
+                          </Box>
+                        </Flex>
+                      ) : (
+                        <></>
+                      )}
+                    </Fragment>
                   ))}
                 </TabPanel>
                 <TabPanel>

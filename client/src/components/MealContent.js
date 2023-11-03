@@ -4,11 +4,9 @@ import { useMediaQuery } from 'react-responsive';
 
 // import package components
 import {
-    Box, Popover, PopoverTrigger, PopoverContent, PopoverBody,
-    Table, Thead, Tbody, Tr, Th, Td, TableContainer,
-    AlertDialog, AlertDialogBody, AlertDialogFooter,
-    AlertDialogHeader, AlertDialogContent, AlertDialogOverlay,
-    AlertDialogCloseButton, useDisclosure,
+    Box, Table, Thead, Tbody, Tr, Th, Td, TableContainer,
+    AlertDialog, AlertDialogBody, AlertDialogHeader, 
+    AlertDialogContent, AlertDialogOverlay, useDisclosure,
 } from '@chakra-ui/react'
 
 // import local style sheet
@@ -18,7 +16,7 @@ import '../styles/Meal.css';
 // pass in the meal contents and food information
 const MealContent = ({ contents, foods }) => {
 
-    const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+    const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
     // functions to toggle the alert dialog
     const { isOpen, onOpen, onClose } = useDisclosure()

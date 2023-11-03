@@ -45,7 +45,7 @@ html[theme='light'] .nav-bar {
     background-color: var(--shade6);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 820px) {
 
     /* menu button icon */
     .nav-bar .css-22xpxh,

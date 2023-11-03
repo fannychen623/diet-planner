@@ -18,7 +18,7 @@ import { FiUser, FiMail, FiEyeOff, FiEye, FiLock } from 'react-icons/fi';
 // functional component for the signup tab
 const Signup = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 768px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // define the form state, default empty
   const [formState, setFormState] = useState({ username: '', email: '', password: '', });

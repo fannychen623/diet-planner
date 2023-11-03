@@ -37,6 +37,7 @@
 /* add food button */
 .food-page .css-ez23ye:hover {
     background-color: var(--shade4);
+    color: var(--shade6);
 }
 
 /* search bar */
@@ -237,8 +238,9 @@ html[theme='dark-invert'] .edit-food .css-1r6jmxn {
 .add-food-alert .css-ez23ye,
 .delete-food .css-ez23ye {
     background-color: var(--shade3);
+    color: var(--shade6);
 }
-html[theme='dark'] .edit-food .css-ez23ye,
+/* html[theme='dark'] .edit-food .css-ez23ye,
 html[theme='dark'] .add-food .css-ez23ye,
 html[theme='dark'] .add-food-alert .css-ez23ye,
 html[theme='dark'] .delete-food .css-ez23ye,
@@ -247,7 +249,7 @@ html[theme='dark-invert'] .add-food .css-ez23ye,
 html[theme='dark-invert'] .add-food .css-ez23ye,
 html[theme='dark-invert'] .delete-food .css-ez23ye {
     color: var(--shade6);
-}
+} */
 
 /* edit food modal buttons, add food modal buttons, and delete food alert buttons */
 .edit-food .css-ez23ye:hover,
@@ -332,7 +334,7 @@ html[theme='dark-invert'] .add-food .css-uhk8uw:hover {
     border-color: var(--shade2);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 820px) {
 
     /* page title */
     .food-page .css-1dklj6k {

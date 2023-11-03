@@ -66,9 +66,9 @@ html[theme='dark-invert'] .calendar-page .css-1y0e7gb {
     margin-bottom: 1.5em;
 }
 
-html[theme='dark'] .calendar-page .css-85tvzw,
-html[theme='dark-invert'] .calendar-page .css-85tvzw {
-    color: var(--shade5);
+.calendar-page .css-nb2z2f,
+.calendar-page .css-85tvzw {
+    color: var(--shade6);
 }
 
 /* meal accordian header */
@@ -133,15 +133,60 @@ html[theme='dark-invert'] .add-items-modal .css-iwi0r3[data-selected] {
     color: var(--shade6);
 }
 
+/* add items modal meal and food search bar */
+.add-items-modal .css-1y0e7gb {
+    color: var(--shade6);
+}
+html[theme='dark'] .add-items-modal .css-1y0e7gb,
+html[theme='dark-invert'] .add-items-modal .css-1y0e7gb {
+    color: var(--shade1);
+}
+
+/* modal search inputleftelement */
+.add-items-modal .css-gv1iwz svg {
+    color: var(--shade5);
+}
+html[theme='dark'] .add-items-modal .css-gv1iwz svg,
+html[theme='dark-invert'] .add-items-modal .css-gv1iwz svg {
+    color: var(--shade3);
+}
+
+/* modal search input field */
+.add-items-modal .css-qluo93 {
+    border: 0.15em solid var(--shade5);
+    background-color: rgba(255, 255, 255, 0.55);
+}
+html[theme='dark'] .add-items-modal .css-qluo93,
+html[theme='dark-invert'] .add-items-modal .css-qluo93 {
+    border-color: var(--shade3);
+}
+
+/* modal search input field */
+.add-items-modal .css-qluo93:hover {
+    border: 0.2em solid var(--shade5);
+}
+
 /* add items modal info iconbuttons */
 .add-items-modal .css-22xpxh {
-    background-color: var(--shade3);
+    background-color: var(--shade2);
     color: var(--shade6);
 }
 
 /* add items modal info iconbuttons */
 .add-items-modal .css-22xpxh:hover {
     background-color: var(--shade4);
+}
+
+/* add items modal checkbox checked state */
+.add-items-modal .css-1ydjfm6[aria-checked=true],
+.add-items-modal .css-1ydjfm6[data-checked],
+.add-items-modal .css-1ydjfm6[aria-checked=true]:hover,
+.add-items-modal .css-1ydjfm6[data-checked]:hover,
+.add-items-modal .css-1ydjfm6[aria-checked=true][data-hover],
+.add-items-modal .css-1ydjfm6[data-checked][data-hover] {
+    background-color: var(--shade4);
+    background: var(--shade4);
+    border-color: var(--shade4);
 }
 
 /* add items modal footer buttons */
@@ -226,7 +271,7 @@ html[theme='dark-invert'] .calendar-page .css-f1j64i {
     color: var(--shade5);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 820px) {
 
     /* card header */
     .calendar-page .css-1sl53ol {
@@ -245,9 +290,19 @@ html[theme='dark-invert'] .calendar-page .css-f1j64i {
         background-color: var(--shade2);
     }
 
+    /* weight container */
+    .calendar-page .css-1lekzkb {
+        width: 100%;
+    }
+
     /* meal accordian header */
     .calendar-page .css-uttm9k {
         padding-right: 0.25em;
+    }
+
+    /* if meals exist, add meal accordian header text */
+    .calendar-page .css-uttm9k .css-nb2z2f {
+        color: var(--shade1);
     }
 
     /* meal accordian button container */

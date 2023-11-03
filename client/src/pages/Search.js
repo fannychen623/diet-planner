@@ -1,5 +1,5 @@
 // import packages
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import env from 'react-dotenv';
 
@@ -8,7 +8,7 @@ import AddFood from '../components/AddFood';
 
 // import package components
 import {
-  Box, SimpleGrid, Heading, Text, Button, IconButton,
+  Box, SimpleGrid, Spinner, Heading, Text, Button, IconButton,
   Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody,
   Input, InputGroup, InputLeftElement, InputRightElement,
   Card, CardHeader, CardBody, CardFooter,
@@ -33,10 +33,12 @@ function toTitleCase(str) {
 // functional component for the search page
 const Search = () => {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   // define states
   const [searchValue, setSearchValue] = useState('')
+  const [searchStatus, setSearchStatus] = useState(false)
+  const [searchError, setSearchError] = useState(false)
   const [branded, setBranded] = useState([])
   const [foundation, setFoundation] = useState([])
   const [modalState, setModalState] = useState(false)
@@ -84,6 +86,8 @@ const Search = () => {
   // function to search food
   const searchFood = () => {
     if (searchValue !== '') {
+      setSearchStatus(true);
+      setSearchError(false);
       get_food_search().then((response) => {
         let data = response.foods
         let brandedFood = []
@@ -135,8 +139,9 @@ const Search = () => {
           setBranded(brandedFood)
           setFoundation(foundationFood)
         }
-      });
-
+        setSearchStatus(false)
+      })
+        .catch(error => setSearchError(true));
     }
   }
 
@@ -158,7 +163,7 @@ const Search = () => {
             <InputLeftElement>
               <Popover placement='bottom-start'>
                 <PopoverTrigger>
-                  <IconButton icon={<FiInfo />} bg='var(--trans)'/>
+                  <IconButton icon={<FiInfo />} bg='var(--trans)' />
                 </PopoverTrigger>
                 <PopoverContent maxW='fit-content'>
                   <PopoverHeader>Special Operators</PopoverHeader>
@@ -181,12 +186,12 @@ const Search = () => {
             </InputLeftElement>
             <Input
               onKeyDown={handleKeyDown}
-              onChange={(e) => { setSearchValue(e.target.value) }}
+              onChange={(e) => { setSearchValue(e.target.value); setSearchStatus(false); setSearchError(false) }}
             />
             <InputRightElement>
-            <Popover trigger='hover' placement='bottom'>
+              <Popover trigger='hover' placement='bottom'>
                 <PopoverTrigger>
-                  <IconButton icon={<FiInfo />} bg='var(--trans)'/>
+                  <IconButton icon={<FiInfo />} bg='var(--trans)' />
                 </PopoverTrigger>
                 <PopoverContent maxW='fit-content'>
                   <PopoverHeader>Special Operators</PopoverHeader>
@@ -198,87 +203,97 @@ const Search = () => {
           <Button onClick={searchFood}>Search</Button>
         </Box>
       )}
-      <SimpleGrid templateColumns='repeat(auto-fill, minmax(20em, 1fr))'>
-        {foundation.map((food, index) => (
-          <Card key={index}>
-            <CardHeader>
-              <Heading size='md'>{toTitleCase(food.description)}</Heading>
-            </CardHeader>
-            <CardBody>
-              <Text><b>Category: </b>{toTitleCase(food.category)}</Text>
-              <Text><b>Serving: </b>{food.servingSize} {food.servingUnit}</Text>
-              <br></br>
-              <Text><b>Calorie: </b>{food.calories} kcal</Text>
-              <Text><b>Carbs: </b>{food.carbs} g</Text>
-              <Text><b>Fat: </b>{food.fat} g</Text>
-              <Text><b>Protein: </b>{food.protein} g</Text>
-              <Text><b>Sodium: </b>{food.sodium} g</Text>
-              <Text><b>Sugar: </b>{food.sugar} g</Text>
-            </CardBody>
-            <CardFooter>
-              <Button
-                onClick={() => {
-                  setFormState({
-                    ...formState,
-                    title: toTitleCase(food.description),
-                    servingSize: food.servingSize,
-                    servingUnit: food.servingUnit,
-                    calories: food.calories,
-                    carbs: food.carbs,
-                    fat: food.fat,
-                    protein: food.protein,
-                    sodium: food.sodium,
-                    sugar: food.sugar,
-                  });
-                  setModalState(true);
-                }}
-              >
-                Save Food
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-        {branded.map((food, index) => (
-          <Card key={index}>
-            <CardHeader>
-              <Heading size='md'>{toTitleCase(food.description)}</Heading>
-            </CardHeader>
-            <CardBody>
-              <Text><b>Brand: </b>{toTitleCase(food.brand)}</Text>
-              <Text><b>Category: </b>{toTitleCase(food.category)}</Text>
-              <Text><b>Serving: </b>{food.servingSize} {food.servingUnit}</Text>
-              <br></br>
-              <Text><b>Calorie: </b>{food.calories} kcal</Text>
-              <Text><b>Carbs: </b>{food.carbs} g</Text>
-              <Text><b>Fat: </b>{food.fat} g</Text>
-              <Text><b>Protein: </b>{food.protein} g</Text>
-              <Text><b>Sodium: </b>{food.sodium} g</Text>
-              <Text><b>Sugar: </b>{food.sugar} g</Text>
-            </CardBody>
-            <CardFooter>
-              <Button
-                onClick={() => {
-                  setFormState({
-                    ...formState,
-                    title: toTitleCase(food.description),
-                    servingSize: food.servingSize,
-                    servingUnit: food.servingUnit,
-                    calories: food.calories,
-                    carbs: food.carbs,
-                    fat: food.fat,
-                    protein: food.protein,
-                    sodium: food.sodium,
-                    sugar: food.sugar,
-                  });
-                  setModalState(true);
-                }}
-              >
-                Save Food
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </SimpleGrid>
+      {searchStatus ? (
+        <Box display='flex' alignItems='center' mt='1.25em'>
+          {searchError ? (
+            <Text><b>Invalid: </b>No nutrition facts found for <u>{searchValue}</u></Text>
+          ) : (
+            <Box display='flex'><Spinner mr='1em' /><Text>Searching...</Text></Box>
+          )}
+        </Box>
+      ) : (
+        <SimpleGrid templateColumns='repeat(auto-fill, minmax(20em, 1fr))'>
+          {foundation.map((food, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <Heading size='md'>{toTitleCase(food.description)}</Heading>
+              </CardHeader>
+              <CardBody>
+                <Text><b>Category: </b>{toTitleCase(food.category)}</Text>
+                <Text><b>Serving: </b>{food.servingSize} {food.servingUnit}</Text>
+                <br></br>
+                <Text><b>Calorie: </b>{food.calories} kcal</Text>
+                <Text><b>Carbs: </b>{food.carbs} g</Text>
+                <Text><b>Fat: </b>{food.fat} g</Text>
+                <Text><b>Protein: </b>{food.protein} g</Text>
+                <Text><b>Sodium: </b>{food.sodium} g</Text>
+                <Text><b>Sugar: </b>{food.sugar} g</Text>
+              </CardBody>
+              <CardFooter>
+                <Button
+                  onClick={() => {
+                    setFormState({
+                      ...formState,
+                      title: toTitleCase(food.description),
+                      servingSize: food.servingSize,
+                      servingUnit: food.servingUnit,
+                      calories: food.calories,
+                      carbs: food.carbs,
+                      fat: food.fat,
+                      protein: food.protein,
+                      sodium: food.sodium,
+                      sugar: food.sugar,
+                    });
+                    setModalState(true);
+                  }}
+                >
+                  Save Food
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+          {branded.map((food, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <Heading size='md'>{toTitleCase(food.description)}</Heading>
+              </CardHeader>
+              <CardBody>
+                <Text><b>Brand: </b>{toTitleCase(food.brand)}</Text>
+                <Text><b>Category: </b>{toTitleCase(food.category)}</Text>
+                <Text><b>Serving: </b>{food.servingSize} {food.servingUnit}</Text>
+                <br></br>
+                <Text><b>Calorie: </b>{food.calories} kcal</Text>
+                <Text><b>Carbs: </b>{food.carbs} g</Text>
+                <Text><b>Fat: </b>{food.fat} g</Text>
+                <Text><b>Protein: </b>{food.protein} g</Text>
+                <Text><b>Sodium: </b>{food.sodium} g</Text>
+                <Text><b>Sugar: </b>{food.sugar} g</Text>
+              </CardBody>
+              <CardFooter>
+                <Button
+                  onClick={() => {
+                    setFormState({
+                      ...formState,
+                      title: toTitleCase(food.description),
+                      servingSize: food.servingSize,
+                      servingUnit: food.servingUnit,
+                      calories: food.calories,
+                      carbs: food.carbs,
+                      fat: food.fat,
+                      protein: food.protein,
+                      sodium: food.sodium,
+                      sugar: food.sugar,
+                    });
+                    setModalState(true);
+                  }}
+                >
+                  Save Food
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </SimpleGrid>
+      )}
       <AddFood addOpenState={modalState} addDetails={formState} />
     </Box>
   );

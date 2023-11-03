@@ -49,7 +49,7 @@ const client = new ApolloClient({
 
 function App() {
 
-  const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+  const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
   return (
     <ApolloProvider client={client}>
@@ -58,7 +58,7 @@ function App() {
           {isMobile ? <HeaderMobile /> : <Header />}
           <div>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/food" element={isMobile ? <FoodMobile /> : <Food />} />
               <Route path="/meal" element={<Meal />} />

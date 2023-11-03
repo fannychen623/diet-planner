@@ -12,7 +12,7 @@ import {
 // pass in data, date and graph type information
 const Graph = ({ data, date, graphType }) => {
 
-	const isMobile = useMediaQuery({ query: `(max-width: 480px)` });
+	const isMobile = useMediaQuery({ query: `(max-width: 820px)` });
 
 	// set the date range
 	const [dateRange, setDateRange] = useState({ start: new Date(date.start).getTime(), end: new Date(date.end).getTime() })

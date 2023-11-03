@@ -64,7 +64,7 @@ function Header() {
       {/* check that user is logged in and token is not expired */}
       {Auth.loggedIn() && !Auth.isTokenExpired() ? (
         <Box className='nav-bar' display='flex' justifyContent='space-between'>
-          <Link to='/'>
+          <Link to='/home'>
             <Image src={`./logo_${profileTheme}.png`} alt='Dietry' />
           </Link>
           <IconButton icon={<IoMenuOutline />} onClick={drawerOnOpen}></IconButton>
