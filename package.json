@@ -26,7 +26,6 @@
     "@chakra-ui/react": "^2.5.5",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
-    "chart.js": "^4.2.1",
     "dotenv": "^16.0.3",
     "framer-motion": "^10.12.4",
     "os-browserify": "^0.3.0",

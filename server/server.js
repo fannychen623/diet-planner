@@ -11,6 +11,7 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  cache: "bounded",
   context: authMiddleware
 });
 
