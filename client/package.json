@@ -58,8 +58,5 @@
     "fooddata-central": "0.1.0",
     "node-fetch": "3.3.2",
     "react-apexcharts": "1.4.1"
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }
