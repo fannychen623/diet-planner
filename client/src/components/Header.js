@@ -67,15 +67,15 @@ function Header() {
   const { loading, data } = useQuery(QUERY_ME);
 
   // extract the profile data 
-  const profileTheme = useMemo(() => data?.me.profile.theme, [data]);
+  const profile = useMemo(() => data?.me.profile, [data]);
 
   useEffect(() => {
-    if (!profileTheme) {
+    if (!profile) {
       return;
     } else {
-      document.documentElement.setAttribute('theme', profileTheme)
+      document.documentElement.setAttribute('theme', profile.theme)
     }
-  }, [profileTheme]);
+  }, [profile]);
 
   return (
     <Box>
@@ -85,7 +85,11 @@ function Header() {
           <Box display='flex' alignItems='center'>
             <Link to='/home'>
               <Tooltip label='Home' color='var(--shade1)' bg='var(--shade6)'>
-                <Image src={`./logo_${profileTheme}.png`} alt='Dietry' />
+                {profile ? (
+                  <Image src={`./logo_${profile.theme}.png`} alt='Dietry' />
+                ) : (
+                  <Image src={`./logo_original.png`} alt='Dietry' />
+                )}
               </Tooltip>
             </Link>
             <Link to='/food'>

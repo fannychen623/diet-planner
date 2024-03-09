@@ -14,7 +14,7 @@ import Converter from './Converter';
 
 // import package components
 import {
-  Box, Stack, Spacer, Image, 
+  Box, Stack, Spacer, Image,
   IconButton, Modal, ModalOverlay,
   Drawer, DrawerBody, DrawerFooter, DrawerHeader,
   DrawerOverlay, DrawerContent, useDisclosure
@@ -41,20 +41,20 @@ function Header() {
 
   // navigate for the calendar button
   const navigate = useNavigate();
-  
+
   // query all data associated with the signed in user
   const { loading, data } = useQuery(QUERY_ME);
 
   // extract the profile data 
-  const profileTheme = useMemo(() => data?.me.profile.theme, [data]);
-  
+  const profile = useMemo(() => data?.me.profile, [data]);
+
   useEffect(() => {
-    if (!profileTheme) {
+    if (!profile) {
       return;
     } else {
-      document.documentElement.setAttribute('theme', profileTheme)
+      document.documentElement.setAttribute('theme', profile.theme)
     }
-  }, [profileTheme]);
+  }, [profile]);
 
   const { isOpen: drawerIsOpen, onOpen: drawerOnOpen, onClose: drawerOnClose } = useDisclosure()
   const { isOpen: modalIsOpen, onOpen: modalOnOpen, onClose: modalOnClose } = useDisclosure()
@@ -65,8 +65,11 @@ function Header() {
       {Auth.loggedIn() && !Auth.isTokenExpired() ? (
         <Box className='nav-bar' display='flex' justifyContent='space-between'>
           <Link to='/home'>
-            <Image src={`./logo_${profileTheme}.png`} alt='Dietry' />
-          </Link>
+            {profile ? (
+              <Image src={`./logo_${profile.theme}.png`} alt='Dietry' />
+            ) : (
+              <Image src={`./logo_original.png`} alt='Dietry' />
+            )}          </Link>
           <IconButton icon={<IoMenuOutline />} onClick={drawerOnOpen}></IconButton>
           <Drawer onClose={drawerOnClose} isOpen={drawerIsOpen}>
             <DrawerOverlay />
