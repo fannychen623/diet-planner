@@ -1,5 +1,5 @@
 // import packages
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import env from 'react-dotenv';
 
