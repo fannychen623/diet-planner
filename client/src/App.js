@@ -1,6 +1,6 @@
 // import packages
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
@@ -54,7 +54,7 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Router>
+      <Router basename="/">
         <div className="global">
           {isMobile ? <HeaderMobile /> : <Header />}
           <div>
