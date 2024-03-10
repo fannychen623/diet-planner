@@ -86,7 +86,7 @@ function Header() {
             <Link to='/home'>
               <Tooltip label='Home' color='var(--shade1)' bg='var(--shade6)'>
                 {profile ? (
-                  <Image src={`./logo_${profile.theme}.png`} alt='Dietry' />
+                  <Image src={`./logo_${profile.theme.replace('-invert', '')}.png`} alt='Dietry' />
                 ) : (
                   <Image src={`./logo_original.png`} alt='Dietry' />
                 )}

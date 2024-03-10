@@ -66,7 +66,7 @@ function Header() {
         <Box className='nav-bar' display='flex' justifyContent='space-between'>
           <Link to='/home'>
             {profile ? (
-              <Image src={`./logo_${profile.theme}.png`} alt='Dietry' />
+              <Image src={`./logo_${profile.theme.replace('-invert', '')}.png`} alt='Dietry' />
             ) : (
               <Image src={`./logo_original.png`} alt='Dietry' />
             )}          </Link>

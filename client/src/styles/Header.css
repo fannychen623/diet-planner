@@ -21,6 +21,13 @@ html[theme='light'] .nav-bar {
     margin-right: 2em;
 }
 
+/* nav bar logo image */
+html[theme='original-invert'] .nav-bar img,
+html[theme='light-invert'] .nav-bar img,
+html[theme='dark-invert'] .nav-bar img {
+  filter: invert(0.25);
+}
+
 /* nav bar icons */
 .nav-bar .css-1m3sc6v {
     vertical-align: middle;
