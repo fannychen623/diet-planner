@@ -229,6 +229,7 @@ const Food = () => {
             </Table>
           </TableContainer>
           <Heading>No food yet. Click [ + ] to get started!</Heading>
+          <AddFood addOpenState={modalState} addDetails={[]} />
       </Box>
     );
   };

@@ -355,7 +355,7 @@ const EditPlannerMeal = () => {
       }
     }
     // redirect back to the calendar page of directed planner date
-    window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
+    window.location.assign(`#/calendar/${date.replace(/\//g, '_')}`);
   };
 
   return (

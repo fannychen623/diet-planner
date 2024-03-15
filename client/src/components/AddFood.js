@@ -280,7 +280,7 @@ const AddFood = ({ addDetails, addOpenState }) => {
             <Button onClick={onClose}>
               Continue
             </Button>
-            <Button onClick={() => { window.location.assign('/food') }}>
+            <Button onClick={() => { window.location.assign('#/food') }}>
               View Foods
             </Button>
           </AlertDialogFooter>

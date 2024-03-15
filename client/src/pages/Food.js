@@ -216,6 +216,7 @@ const Food = () => {
               Add Food
             </Button>
           </Box>
+          <AddFood addOpenState={modalState} addDetails={[]} />
         </Flex >
       </Box>
     );
@@ -242,6 +243,7 @@ const Food = () => {
             Add Food
           </Button>
         </Box>
+        <AddFood addOpenState={modalState} addDetails={[]} />
       </Flex>
       {loading ? (
         <Box textAlign='center'>

@@ -311,7 +311,7 @@ const EditMeal = () => {
       }
     }
     // redirect back to the meal page
-    window.location.assign('/meal');
+    window.location.assign('#/meal');
   };
 
   return (

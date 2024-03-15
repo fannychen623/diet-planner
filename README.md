@@ -1,70 +1,137 @@
-# Getting Started with Create React App
+# Dietry - Track meals and weight for dieting
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Application Link:** [Dietry](https://dietry.onrender.com)
+>**Note**: When creating an account, must have a valid, unique email and password must be at least 5 characters in length.
 
-## Available Scripts
+**View:** [Table of Content](#table-of-content) / [Creator Notes](#creator-notes) / [Application Pages Preview](#application-pages-preview)
 
-In the project directory, you can run:
+**Application Preview:**
+-
+*Web Version*
+![Dietry](./client/public/screenshots/dietry.gif "web preview")
 
-### `npm start`
+*Mobile Version*
+![Dietry](./client/public/screenshots/mobile.gif "mobile preview")
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## **TABLE OF CONTENT**
 
-### `npm test`
+* [Descripton](#description)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* [Installation Instructions](#installation-instructions)
 
-### `npm run build`
+* [Usage Information](#usage-information)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* [App License](#app-license)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* [Contribution Guidelines](#contribution-guidelines)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* [Questions](#questions)
 
-### `npm run eject`
+* [API Attributions](#api-attributions)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Description
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+> *Dietry* is a site designed to let users keep track of their meals and weight to accomplish any diet goals. With the application, you can create a profile to calculate macronutritions based on workout activity level and weight goal. 
+   
+> Users can add their own unique foods and build unique meals to add to their diet log. They can track their daily caloric intake on an interactive calendar.
+>
+> The site's interface is fun and interactive so users can enjoy the process of viewing and creating meal plans. Application available on both mobile and web interface.
+>
+> Users can create view their diet process, weight and macronutrions, visually on graphs. Specific date ranges can be selected for a more percise breakdown.
+>
+> Users can search for different foods to find its nutrients level (data fetched from USDA Food Data Central) and easily add the food to their own account.
+>
+> Users can convert weight and engeries between different units, making it easier to track the food consumed.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## Installation Instructions 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> To run locally, simply use 'npm install', then 'npm run develop'. Otherwise, access/view live on Render at - [Dietry](https://dietry.onrender.com).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## Usage Information 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+> To start, head to the URL provided above. 
+>
+> Next, head to "Login / Sign up" and create a new account or sign into your existing one.
+>
+> From there, create a profile and start adding foods and creating meals!
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## App License 
 
-### Making a Progressive Web App
+> This app is covered under the following license: None
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Contribution Guidelines 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+> Application not accepting direct contribution.
+> However, any feedback is welcomed to be sent to the contacts below.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Questions 
 
-### `npm run build` fails to minify
+> For more information and questions, please contact me at:
+> <fannychen623@gmail.com> [(GitHub)](https://github.com/fannychen623)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## API Attributions
+> [USDA Food Data Central](https://fdc.nal.usda.gov/index.html)
+
+---
+
+## **CREATOR NOTES**
+
+### **My Task**
+* Create the application from scratch. 
+
+* Use React and Chakra.js as a template engine.
+   > CSS Framework Used: [Chakra.js](https://chakra-ui.com/)
+   > Have polished and responsive UI.
+
+* Get API keys and connect to a server-side API.
+   > API Used: [USDA Food Data Central](https://fdc.nal.usda.gov/api-guide.html)
+
+* Use Node.js and Express.js to create a RESTful API.
+
+* Include authentication (express-session, cookies, JWT).
+   > Used bycrypt to protect user data.
+
+* Use GraphQL, MongoDB, and Mongoose for the database.
+   > Connect to server and use typedefs and resolvers to perform CRUD Operations.
+
+* Use dotenv to protect API keys and sensitive information with environment variables
+
+* Use Apollo Client and Server to create dynamic front-end / back-end integration.
+
+* Organize folder structure to meet Client-Server paradigm. 
+
+## **APPLICATION PAGES PREVIEW**
+### Login Page
+>![Login](./client/public/screenshots/login.png "login page")
+### Signup Page
+>![Signup](./client/public/screenshots/signup.png "signup page")
+### Home Page
+>![Home](./client/public/screenshots/homepage.png "home page")
+### Foods Page
+>![Food](./client/public/screenshots/foods.png "foods page")
+### Meals Page
+>![Meals](./client/public/screenshots/meals.png "meals page")
+### Profile Page
+>![Profile](./client/public/screenshots/profile.png "profile page")
+### Calendar Page
+>![Calendar](./client/public/screenshots/calendar.png "calendar page")
+### Progress Page
+>![Progress](./client/public/screenshots/progress.png "progress page")
+### Sample Theme 1
+>![Sample Theme 1](./client/public/screenshots/theme1.png "theme 1")
+### Sample Theme 2
+>![Sample Theme 2](./client/public/screenshots/theme2.png "theme 2")

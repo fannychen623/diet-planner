@@ -43,7 +43,7 @@ const Profile = () => {
 
   // set the form state, default empty
   const [formState, setFormState] = useState({
-    theme: '',
+    theme: 'original',
     age: '',
     sex: '',
     height: '',
@@ -83,10 +83,10 @@ const Profile = () => {
         fat: profile.fat,
         protein: profile.protein,
       })
-      setWeight({ US: (profile.weight * 2.2046).toFixed(2), Metric: profile.weight })
+      setWeight({ US: (profile.weight * 2.2046).toFixed(2), Metric: profile.weight.toFixed(2) })
       setHeight({
         feet: Math.floor(profile.height / 30.48).toFixed(0),
-        inches: (profile.height / 2.54) - (Math.floor(profile.height / 30.48).toFixed(0) * 12)
+        inches: ((profile.height / 2.54) - (Math.floor(profile.height / 30.48) * 12)).toFixed(0)
       })
       if (profile.sex === 'Male') {
         setBMR(((10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5).toFixed(0))
@@ -209,8 +209,11 @@ const Profile = () => {
     try {
       const { addData } = addProfile({
         variables: { ...formState },
+
+        onCompleted(addData) {
+          refetch()
+        }
       });
-      window.location.reload();
     } catch (err) {
       console.error(err);
     }
@@ -222,8 +225,11 @@ const Profile = () => {
     try {
       const { updateData } = updateProfile({
         variables: { profileId, ...formState },
+
+        onCompleted(updateData) {
+          refetch()
+        }
       });
-      refetch();
     } catch (err) {
       console.error(err);
     }

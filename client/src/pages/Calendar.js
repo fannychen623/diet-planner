@@ -98,6 +98,10 @@ const CalendarPage = () => {
   // navigate to calendar date
   const navigate = useNavigate();
 
+  const updateUrlDate=()=>{
+    navigate.push(`#/calendar/${date.replace(/\//g, '_')}`)
+  }
+
   // functions to toggle add meal modal
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -216,6 +220,8 @@ const CalendarPage = () => {
       setCurrentPlannerDiet(dietInfo)
       setCurrentPlannerCustomDiet(customDietInfo)
     }
+
+    navigate(`./../${date.replace(/\//g, '_')}`)
     // call function on state changes
   }, [data, date, planners, plannerId, mealSearchValue, foodSearchValue]);
 
@@ -660,7 +666,7 @@ const CalendarPage = () => {
 
           onCompleted(weightData) {
             // reload calendar page with selected date
-            window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
+            window.location.reload();
           }
         });
       } catch (e) {
@@ -679,7 +685,7 @@ const CalendarPage = () => {
 
         onCompleted(removeWeightData) {
           checkPlannerContent()
-          window.location.assign(`/calendar/${date.replace(/\//g, '_')}`);
+          window.location.reload();
         }
       });
 
